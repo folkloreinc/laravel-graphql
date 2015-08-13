@@ -1,0 +1,38 @@
+{
+    "name": "folklore/graphql",
+    "description": "Facebook GraphQL for Laravel",
+    "keywords": ["framework", "laravel", "graphql", "react"],
+    "authors": [
+        {
+            "name": "Folklore",
+            "email": "info@atelierfolklore.ca",
+            "homepage": "http://atelierfolklore.ca"
+        },
+        {
+            "name": "David Mongeau-Petitpas",
+            "email": "dmp@atelierfolklore.ca",
+            "homepage": "http://mongo.ca",
+            "role": "Developer"
+        }
+    ],
+    "license": "MIT",
+    "type": "project",
+    "require": {
+        "php": ">=5.5.9",
+        "laravel/support": "5.1.*",
+        "webonyx/graphql-php": "dev-master"
+    },
+    "require-dev": {
+        "orchestra/testbench": "~3.1"
+    },
+    "autoload": {
+        "psr-0": {
+            "Folklore\\GraphQL\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "classmap": [
+            "tests/TestCase.php"
+        ]
+    }
+}
