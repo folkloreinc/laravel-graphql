@@ -41,7 +41,7 @@ Route::group(array(
         ));
         Route::post($queryRoute, array(
             'as' => 'graphql.query',
-            function()
+            function(Request $request)
             {
                 $query = $request->get('query');
                 $params = $request->get('params');
@@ -55,7 +55,7 @@ Route::group(array(
         //Mutation
         Route::post($mutationRoute, array(
             'as' => 'graphql.mutation',
-            function()
+            function(Request $request)
             {
                 $query = $request->get('query');
                 $params = $request->get('params');
