@@ -45,7 +45,7 @@ $ composer update
 'Image' => 'Folklore\GraphQL\Support\Facades\GraphQL',
 ```
 
-**5-** Publish the configuration file and public files
+**5-** Publish the configuration file
 
 ```bash
 $ php artisan vendor:publish --provider="Folklore\GraphQL\GraphQLServiceProvider"
@@ -54,7 +54,7 @@ $ php artisan vendor:publish --provider="Folklore\GraphQL\GraphQLServiceProvider
 **6-** Review the configuration file
 
 ```
-app/config/graphql.php
+config/graphql.php
 ```
 
 ## Usage
