@@ -76,7 +76,7 @@ First you need to create a schema.
             /**
              * User
              */
-            $type = new ObjectType([
+            $userType = new ObjectType([
                 'name' => 'User',
                 'description' => 'A user',
                 'fields' => [
@@ -151,3 +151,5 @@ And thats it. You should be able to query GraphQL with a request to the url `/gr
         }
     }
 ```
+
+eg. http://homestead.app/graphql?query=query+FetchUsers{users{id,email}}
