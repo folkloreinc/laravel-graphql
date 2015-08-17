@@ -18,7 +18,7 @@ This package is compatible with Eloquent model (or any other data source). See t
 ```json
 {
 	"require": {
-		"folklore/graphql": "0.1.*"
+		"folklore/graphql": "0.2.*"
 	}
 }
 ```
@@ -59,85 +59,117 @@ config/graphql.php
 
 ## Usage
 
-First you need to create a schema.
+First you need to create a type.
 
 ```php
+
+	namespace App\GraphQL\Type;
+	
+	use GraphQL\Type\Definition\Type;
+	use Folklore\GraphQL\Support\Type as GraphQLType;
     
-    use GraphQL\Schema;
-    use GraphQL\Type\Definition\ObjectType;
-    use GraphQL\Type\Definition\Type;
-    
-    use App\User;
-    
-    class SchemaBuilder {
+    class UserType extends GraphQLType {
         
-        public static function build()
-        {
-            /**
-             * User
-             */
-            $userType = new ObjectType([
-                'name' => 'User',
-                'description' => 'A user',
-                'fields' => [
-                    'id' => [
-                        'type' => Type::nonNull(Type::string()),
-                        'description' => 'The id of the user.'
-                    ],
-                    'email' => [
-                        'type' => Type::string(),
-                        'description' => 'The email of the user.',
-                        'resolve' => function ($user)
-                        {
-                            return strtolower($user->email);
-                        }
-                    ]
-                ]
-            ]);
-            
-            /**
-             * Users
-             */
-            $usersType = Type::listOf($userType);
-            
-            /**
-             * Query
-             */
-            $queryType = new ObjectType([
-                'name' => 'Query',
-                'fields' => [
-                    'users' => [
-                        'type' => $usersType,
-                        'args' => [
-                            'id' => ['name' => 'id', 'type' => Type::int()]
-                        ],
-                        'resolve' => function ($root, $args)
-                        {
-                            if(isset($args['id']))
-                            {
-                                return User::find($args['id']);
-                            }
-                            else
-                            {
-                                return User::all();
-                            }
-                        }
-                    ]
-                ]
-            ]);
-            
-            return new Schema($queryType);
-        }
+        protected $attributes = [
+	        'name' => 'Bubble',
+	        'description' => 'A bubble'
+	    ];
+	    
+	    public function fields()
+	    {
+	        return [
+				'id' => [
+	                'type' => Type::nonNull(Type::string()),
+	                'description' => 'The id of the user'
+	            ],
+	            'email' => [
+	                'type' => Type::string(),
+	                'description' => 'The email of user'
+	            ]
+			];
+	    }
+		
+		
+		// If you want to resolve the field yourself, you can declare a method
+		// with the following format resolve[FIELD_NAME]Field()
+		protected function resolveEmailField($root, $args)
+		{
+			return strtolower($root->email);
+		}
         
     }
 
 ```
 
-The add the schema to the `config/graphql.php` configuration file
+Add the type to the `config/graphql.php` configuration file
 
 ```php
     
-    'schema' => SchemaBuilder::build()
+    'types' => [
+		'user' => 'App\GraphQL\Type\UserType'
+	]
+
+```
+
+Then you need to define a query
+```php
+
+	namespace App\GraphQL\Query;
+	
+	use GraphQL;
+	use GraphQL\Type\Definition\Type;
+    
+    use App\User;
+    
+    class UsersQuery extends Query {
+        
+        protected $attributes = [
+	        'name' => 'Users query'
+	    ];
+	    
+	    public function type()
+	    {
+	        return Type::listOf(GraphQL::type('user'));
+	    }
+	    
+	    public function args()
+	    {
+	        return [
+				'id' => ['name' => 'id', 'type' => Type::string()],
+				'email' => ['name' => 'email', 'type' => Type::string()]
+			];
+	    }
+		
+		public function resolve($root, $args)
+	    {
+	        if(isset($args['id']))
+			{
+				return User::find($args['id']);
+			}
+			else if(isset($args['email']))
+			{
+				return User::where('email', $args['email'])->get();
+			}
+			else
+			{
+				return User::all();
+			}
+	    }
+        
+    }
+
+```
+
+Add the query to the `config/graphql.php` configuration file
+
+```php
+    
+    'schema' => [
+		'query' => [
+			'users' => 'App\GraphQL\Query\UsersQuery'
+		],
+		// ...
+	]
 
 ```
 

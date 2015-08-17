@@ -20,7 +20,7 @@ return [
     'routes' => '/',
     
     // The schema for query and/or mutation. It expects an array to provide
-    // both the 'query' ObjectType and the 'mutation' ObjectType. You can also
+    // both the 'query' fields and the 'mutation' fields. You can also
     // provide directly an object GraphQL\Schema
     //
     // Example:
@@ -30,19 +30,32 @@ return [
     // or
     //
     // 'schema' => [
-    //     'query' => $queryType,
-    //     'mutation' => $mutationType
+    //     'query' => [
+    //          'users' => 'App\GraphQL\Query\UsersQuery'
+    //      ],
+    //     'mutation' => [
+    //          
+    //     ]
     // ]
     //
     'schema' => [
-        'queries' => [
+        'query' => [
             
         ],
-        'mutations' => [
+        'mutation' => [
             
         ]
     ],
     
+    // The types available in the application. You can then access it from the
+    // facade like this: GraphQL::type('user')
+    //
+    // Example:
+    //
+    // 'types' => [
+    //     'user' => 'App\GraphQL\Type\UserType'
+    // ]
+    //
     'types' => [
         
     ]
