@@ -25,11 +25,11 @@ return [
     //
     // Example:
     //
-    // 'routes' => new Schema($queryType, $mutationType)
+    // 'schema' => new Schema($queryType, $mutationType)
     //
     // or
     //
-    // 'routes' => [
+    // 'schema' => [
     //     'query' => $queryType,
     //     'mutation' => $mutationType
     // ]
