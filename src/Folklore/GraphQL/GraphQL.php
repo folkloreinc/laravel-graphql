@@ -48,7 +48,7 @@ class GraphQL {
         }
         else
         {
-            $mutationFields = array_merge(array_get($schema, 'mutations', []), $this->mutations);
+            $mutationFields = array_merge($configMutation, $this->mutations);
             
             $mutationType = $this->buildTypeFromFields($mutationFields, [
                 'name' => 'Mutation'
