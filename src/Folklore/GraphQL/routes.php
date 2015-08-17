@@ -36,7 +36,7 @@ Route::group(array(
             {
                 $query = $request->get('query');
                 $params = $request->get('params');
-                return app('graphql')->query($query, $params);
+                return app('graphql')->query($query, is_string($params) ? json_decode($params, true):$params);
             }
         ));
         Route::post($queryRoute, array(
@@ -45,7 +45,7 @@ Route::group(array(
             {
                 $query = $request->get('query');
                 $params = $request->get('params');
-                return app('graphql')->query($query, $params);
+                return app('graphql')->query($query, is_string($params) ? json_decode($params, true):$params);
             }
         ));
     }
@@ -59,7 +59,7 @@ Route::group(array(
             {
                 $query = $request->get('query');
                 $params = $request->get('params');
-                return app('graphql')->query($query, $params);
+                return app('graphql')->query($query, is_string($params) ? json_decode($params, true):$params);
             }
         ));
     }
