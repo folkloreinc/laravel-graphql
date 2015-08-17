@@ -1,10 +1,10 @@
 <?php
 
-namespace Folklore\GraphQL;
+namespace Folklore\GraphQL\Support;
 
 use Illuminate\Support\Fluent;
 
-class Query implements Fluent {
+class Field extends Fluent {
     
     public function attributes()
     {
@@ -23,13 +23,13 @@ class Query implements Fluent {
     
     protected function getResolver()
     {
-        if(method_exists($this, 'resolve'))
+        if(!method_exists($this, 'resolve'))
         {
             return null;
         }
         
         $resolver = array($this, 'resolve');
-        return function() use ($callable)
+        return function() use ($resolver)
         {
             $args = func_get_args();
             return call_user_func_array($resolver, $args);

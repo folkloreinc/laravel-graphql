@@ -1,6 +1,6 @@
 <?php
 
-namespace Folklore\GraphQL;
+namespace Folklore\GraphQL\Support;
 
 class Query extends Field {
     

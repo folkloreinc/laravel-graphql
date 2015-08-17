@@ -1,12 +1,12 @@
 <?php
 
-namespace Folklore\GraphQL;
+namespace Folklore\GraphQL\Support;
 
 use Illuminate\Support\Fluent;
 
 use GraphQL\Type\Definition\ObjectType;
 
-class Type implements Fluent {
+class Type extends Fluent {
     
     public function attributes()
     {
@@ -18,15 +18,15 @@ class Type implements Fluent {
         return [];
     }
     
-    protected function getFieldResolver($field)
+    protected function getFieldResolver($name, $field)
     {
         if(isset($field['resolve']))
         {
             return $field['resolve'];
         }
-        else if(method_exists($this, 'resolve'.studly_case($field)))
+        else if(method_exists($this, 'resolve'.studly_case($name).'Field'))
         {
-            $resolver = array($this, 'resolve'.studly_case($field));
+            $resolver = array($this, 'resolve'.studly_case($name).'Field');
             return function() use ($resolver)
             {
                 $args = func_get_args();
@@ -49,7 +49,7 @@ class Type implements Fluent {
             }
             else
             {
-                $resolver = $this->getFieldResolver($field);
+                $resolver = $this->getFieldResolver($name, $field);
                 if($resolver)
                 {
                     $field['resolve'] = $resolver;

@@ -7,9 +7,16 @@ use GraphQL\Type\Definition\ObjectType;
 
 class GraphQL {
     
+    protected $app;
+    
     protected $mutations = [];
     protected $queries = [];
     protected $types = [];
+    
+    public function __construct($app)
+    {
+        $this->app = $app;
+    }
 
     public function schema()
     {
@@ -22,45 +29,53 @@ class GraphQL {
         $configQuery = array_get($schema, 'query', []);
         $configMutation = array_get($schema, 'mutation', []);
         
-        if(is_string($configQuery) && $this->app->bound($configQuery))
+        if(is_string($configQuery))
         {
             $queryType = $this->app->make($configQuery)->toType();
         }
         else
         {
-            $queries = array_merge($configQuery, $this->queries);
-            $queryFields = [];
-            foreach($queries as $key => $query)
-            {
-                $queryFields[$key] = is_array($query) ? $query:$query->toArray();
-            }
-            $queryType = new ObjectType([
-                'name' => 'Query',
-                'fields' => $queryFields
+            $queryFields = array_merge($configQuery, $this->queries);
+            
+            $queryType = $this->buildTypeFromFields($queryFields, [
+                'name' => 'Query'
             ]);
         }
         
-        if(is_string($configMutation) && $this->app->bound($configMutation))
+        if(is_string($configMutation))
         {
             $mutationType = $this->app->make($configMutation)->toType();
         }
         else
         {
-            $mutations = array_merge(array_get($schema, 'mutations', []), $this->mutations);
+            $mutationFields = array_merge(array_get($schema, 'mutations', []), $this->mutations);
             
-            $mutationFields = [];
-            foreach($mutations as $key => $mutation)
-            {
-                $mutationFields[$key] = is_array($mutation) ? $mutation:$mutation->toArray();
-            }
-            
-            $mutationType = new ObjectType([
-                'name' => 'Mutation',
-                'fields' => $mutationFields
+            $mutationType = $this->buildTypeFromFields($mutationFields, [
+                'name' => 'Mutation'
             ]);
         }
         
         return new Schema($queryType, $mutationType);
+    }
+    
+    protected function buildTypeFromFields($fields, $opts = [])
+    {
+        $typeFields = [];
+        foreach($fields as $key => $field)
+        {
+            if(is_string($field))
+            {
+                $typeFields[$key] = app($field)->toArray();
+            }
+            else
+            {
+                $typeFields[$key] = $field;
+            }
+        }
+        
+        return new ObjectType(array_merge([
+            'fields' => $typeFields
+        ], $opts));
     }
     
     public function query($query, $params = [])
@@ -96,6 +111,6 @@ class GraphQL {
         
         $type = app($types[$name]);
         
-        return $this->toType();
+        return $type->toType();
     }
 }
