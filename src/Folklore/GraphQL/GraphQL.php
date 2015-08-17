@@ -96,6 +96,6 @@ class GraphQL {
         
         $type = app($types[$name]);
         
-        return $this->getType();
+        return $this->toType();
     }
 }
