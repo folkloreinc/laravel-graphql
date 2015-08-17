@@ -35,8 +35,12 @@ return [
     // ]
     //
     'schema' => [
-        'query' => null,
-        'mutation' => null
+        'queries' => [
+            
+        ],
+        'mutations' => [
+            
+        ]
     ]
     
 ];
