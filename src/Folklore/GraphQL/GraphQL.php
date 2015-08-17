@@ -9,6 +9,7 @@ class GraphQL {
     
     protected $mutations = [];
     protected $queries = [];
+    protected $types = [];
 
     public function schema()
     {
@@ -18,30 +19,46 @@ class GraphQL {
             return $schema;
         }
         
-        $queries = array_merge(array_get($schema, 'queries', []), $this->queries);
-        $mutations = array_merge(array_get($schema, 'mutations', []), $this->mutations);
+        $configQuery = array_get($schema, 'query', []);
+        $configMutation = array_get($schema, 'mutation', []);
         
-        $queryFields = [];
-        foreach($queries as $key => $query)
+        if(is_string($configQuery) && $this->app->bound($configQuery))
         {
-            $queryFields[$key] = is_array($query) ? $query:$query->toArray();
+            $queryType = $this->app->make($configQuery)->toType();
+        }
+        else
+        {
+            $queries = array_merge($configQuery, $this->queries);
+            $queryFields = [];
+            foreach($queries as $key => $query)
+            {
+                $queryFields[$key] = is_array($query) ? $query:$query->toArray();
+            }
+            $queryType = new ObjectType([
+                'name' => 'Query',
+                'fields' => $queryFields
+            ]);
         }
         
-        $mutationFields = [];
-        foreach($mutations as $key => $mutation)
+        if(is_string($configMutation) && $this->app->bound($configMutation))
         {
-            $mutationFields[$key] = is_array($mutation) ? $mutation:$mutation->toArray();
+            $mutationType = $this->app->make($configMutation)->toType();
         }
-        
-        $queryType = new ObjectType([
-            'name' => 'Query',
-            'fields' => $queryFields
-        ]);
-        
-        $mutationType = new ObjectType([
-            'name' => 'Mutation',
-            'fields' => $mutationFields
-        ]);
+        else
+        {
+            $mutations = array_merge(array_get($schema, 'mutations', []), $this->mutations);
+            
+            $mutationFields = [];
+            foreach($mutations as $key => $mutation)
+            {
+                $mutationFields[$key] = is_array($mutation) ? $mutation:$mutation->toArray();
+            }
+            
+            $mutationType = new ObjectType([
+                'name' => 'Mutation',
+                'fields' => $mutationFields
+            ]);
+        }
         
         return new Schema($queryType, $mutationType);
     }
@@ -60,5 +77,25 @@ class GraphQL {
     public function addQuery($name, $query)
     {
         $this->queries[$name] = $query;
+    }
+    
+    public function addType($name, $type)
+    {
+        $this->types[$name] = $type;
+    }
+    
+    public function type($name)
+    {
+        $configTypes = config('graphql.types');
+        $types = array_merge($configTypes, $this->types);
+        
+        if(!isset($types[$name]))
+        {
+            throw new \Exception('Type '.$name.' not found.');
+        }
+        
+        $type = app($types[$name]);
+        
+        return $this->getType();
     }
 }

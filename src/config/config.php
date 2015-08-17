@@ -41,6 +41,10 @@ return [
         'mutations' => [
             
         ]
+    ],
+    
+    'types' => [
+        
     ]
     
 ];
