@@ -43,7 +43,7 @@ class Type extends Fluent {
         $allFields = [];
         foreach($fields as $name => $field)
         {
-            if(is_string($field) && app()->bound($field))
+            if(is_string($field))
             {
                 $allFields[$name] = app($field)->toArray();
             }

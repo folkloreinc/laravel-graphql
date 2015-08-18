@@ -111,6 +111,13 @@ class GraphQL {
         
         $type = app($types[$name]);
         
+        // If a name is not provided in the type class, we use the registering
+        // name so you can use the same type class on multiple type
+        if(!$type->name)
+        {
+            $type->name = $name;
+        }
+        
         return $type->toType();
     }
 }

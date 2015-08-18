@@ -2,6 +2,6 @@
 
 namespace Folklore\GraphQL\Support;
 
-class Query extends Field {
+class Mutation extends Field {
     
 }
