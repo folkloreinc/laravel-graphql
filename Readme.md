@@ -71,25 +71,25 @@ First you need to create a type.
     class UserType extends GraphQLType {
         
         protected $attributes = [
-	        'name' => 'Bubble',
-	        'description' => 'A bubble'
-	    ];
-	    
-	    public function fields()
-	    {
-	        return [
+			'name' => 'User',
+			'description' => 'A user'
+		];
+		
+		public function fields()
+		{
+			return [
 				'id' => [
-	                'type' => Type::nonNull(Type::string()),
-	                'description' => 'The id of the user'
-	            ],
-	            'email' => [
-	                'type' => Type::string(),
-	                'description' => 'The email of user'
-	            ]
+					'type' => Type::nonNull(Type::string()),
+					'description' => 'The id of the user'
+				],
+				'email' => [
+					'type' => Type::string(),
+					'description' => 'The email of user'
+				]
 			];
-	    }
-		
-		
+		}
+			
+			
 		// If you want to resolve the field yourself, you can declare a method
 		// with the following format resolve[FIELD_NAME]Field()
 		protected function resolveEmailField($root, $args)
@@ -105,7 +105,7 @@ Add the type to the `config/graphql.php` configuration file
 
 ```php
     
-    'types' => [
+	'types' => [
 		'user' => 'App\GraphQL\Type\UserType'
 	]
 
@@ -118,31 +118,31 @@ Then you need to define a query
 	
 	use GraphQL;
 	use GraphQL\Type\Definition\Type;
-    
-    use App\User;
-    
-    class UsersQuery extends Query {
-        
-        protected $attributes = [
-	        'name' => 'Users query'
-	    ];
 	    
-	    public function type()
-	    {
-	        return Type::listOf(GraphQL::type('user'));
-	    }
-	    
-	    public function args()
-	    {
-	        return [
+	use App\User;
+	
+	class UsersQuery extends Query {
+	
+		protected $attributes = [
+			'name' => 'Users query'
+		];
+		
+		public function type()
+		{
+			return Type::listOf(GraphQL::type('user'));
+		}
+		
+		public function args()
+		{
+			return [
 				'id' => ['name' => 'id', 'type' => Type::string()],
 				'email' => ['name' => 'email', 'type' => Type::string()]
 			];
-	    }
+		}
 		
 		public function resolve($root, $args)
-	    {
-	        if(isset($args['id']))
+		{
+			if(isset($args['id']))
 			{
 				return User::find($args['id']);
 			}
@@ -154,9 +154,9 @@ Then you need to define a query
 			{
 				return User::all();
 			}
-	    }
-        
-    }
+		}
+	
+	}
 
 ```
 
