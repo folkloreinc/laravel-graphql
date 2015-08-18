@@ -8,12 +8,19 @@ use GraphQL\Type\Definition\ObjectType;
 
 class Type extends Fluent {
     
+    protected static $instances = [];
+    
     public function attributes()
     {
         return [];
     }
     
     public function fields()
+    {
+        return [];
+    }
+    
+    public function interfaces()
     {
         return [];
     }
@@ -70,10 +77,16 @@ class Type extends Fluent {
     {
         $attributes = $this->attributes();
         $fields = $this->getFields();
+        $interfaces = $this->interfaces();
         
         $attributes = array_merge($this->attributes, [
             'fields' => $fields
         ], $attributes);
+        
+        if(sizeof($interfaces))
+        {
+            $attributes['interfaces'] = $interfaces;
+        }
         
         return $attributes;
     }
@@ -89,6 +102,21 @@ class Type extends Fluent {
     }
     
     public function toType()
+    {
+        $name = !empty($this->name) ? $this->name:get_class($this);
+        
+        if(isset(self::$instances[$name]))
+        {
+            return self::$instances[$name];
+        }
+        
+        $instance = $this->newTypeInstance();
+        self::$instances[$name] = $instance;
+        
+        return $instance;
+    }
+    
+    protected function newTypeInstance()
     {
         return new ObjectType($this->toArray());
     }
