@@ -5,6 +5,7 @@ namespace Folklore\GraphQL\Support;
 use Illuminate\Support\Fluent;
 
 use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\InterfaceType;
 
 class Type extends Fluent {
     
@@ -102,21 +103,6 @@ class Type extends Fluent {
     }
     
     public function toType()
-    {
-        $name = !empty($this->name) ? $this->name:get_class($this);
-        
-        if(isset(self::$instances[$name]))
-        {
-            return self::$instances[$name];
-        }
-        
-        $instance = $this->newTypeInstance();
-        self::$instances[$name] = $instance;
-        
-        return $instance;
-    }
-    
-    protected function newTypeInstance()
     {
         return new ObjectType($this->toArray());
     }

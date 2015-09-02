@@ -39,7 +39,7 @@ class InterfaceType extends Type {
         return $attributes;
     }
     
-    protected function newTypeInstance()
+    public function toType()
     {
         return new BaseInterfaceType($this->toArray());
     }

@@ -4,6 +4,7 @@ use GraphQL\GraphQL as GraphQLBase;
 use GraphQL\Schema;
 
 use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\InterfaceType;
 
 class GraphQL {
     
@@ -12,6 +13,7 @@ class GraphQL {
     protected $mutations = [];
     protected $queries = [];
     protected $types = [];
+    protected $typesInstances = [];
     
     public function __construct($app)
     {
@@ -24,6 +26,11 @@ class GraphQL {
         if($schema instanceof Schema)
         {
             return $schema;
+        }
+        
+        foreach($this->types as $name => $type)
+        {
+            $this->type($name);
         }
         
         $configQuery = array_get($schema, 'query', []);
@@ -94,30 +101,40 @@ class GraphQL {
         $this->queries[$name] = $query;
     }
     
-    public function addType($name, $type)
+    public function addType($class, $name = null)
     {
-        $this->types[$name] = $type;
+        if(!$name)
+        {
+            $type = app($class);
+            $name = $type->name;
+        }
+        
+        $this->types[$name] = $class;
     }
     
     public function type($name)
     {
-        $configTypes = config('graphql.types');
-        $types = array_merge($configTypes, $this->types);
-        
-        if(!isset($types[$name]))
+        if(!isset($this->types[$name]))
         {
             throw new \Exception('Type '.$name.' not found.');
         }
         
-        $type = app($types[$name]);
-        
-        // If a name is not provided in the type class, we use the registering
-        // name so you can use the same type class on multiple type
-        if(!$type->name)
+        if(isset($this->typesInstances[$name]))
         {
-            $type->name = $name;
+            return $this->typesInstances[$name];
         }
         
-        return $type->toType();
+        $type = app($this->types[$name]);
+        
+        $instance = $type->toType();
+        $this->typesInstances[$name] = $instance;
+        
+        //Check if the object has interfaces
+        if($type->interfaces)
+        {
+            InterfaceType::addImplementationToInterfaces($instance);
+        }
+        
+        return $instance;
     }
 }

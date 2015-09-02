@@ -13,6 +13,8 @@ class GraphQLServiceProvider extends ServiceProvider
     {
         $this->bootPublishes();
         
+        $this->bootTypes();
+        
         if(config('graphql.routes'))
         {
             include __DIR__.'/routes.php';
@@ -33,6 +35,27 @@ class GraphQLServiceProvider extends ServiceProvider
         $this->publishes([
             $configPath.'/config.php' => config_path('graphql.php'),
         ], 'config');
+    }
+    
+    /**
+     * Bootstrap publishes
+     *
+     * @return void
+     */
+    protected function bootTypes()
+    {
+        $configTypes = config('graphql.types');
+        foreach($configTypes as $name => $type)
+        {
+            if(is_numeric($name))
+            {
+                $this->app['graphql']->addType($type);
+            }
+            else
+            {
+                $this->app['graphql']->addType($type, $name);
+            }
+        }
     }
 
     /**
