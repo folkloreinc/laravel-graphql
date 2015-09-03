@@ -42,7 +42,7 @@ $ composer update
 
 **4-** Add the facade to your `app/config/app.php` file
 ```php
-'Image' => 'Folklore\GraphQL\Support\Facades\GraphQL',
+'GraphQL' => 'Folklore\GraphQL\Support\Facades\GraphQL',
 ```
 
 **5-** Publish the configuration file
