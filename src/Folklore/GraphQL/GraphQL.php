@@ -22,6 +22,8 @@ class GraphQL {
 
     public function schema()
     {
+        $this->typesInstances = [];
+        
         $schema = config('graphql.schema');
         if($schema instanceof Schema)
         {
@@ -105,26 +107,30 @@ class GraphQL {
     {
         if(!$name)
         {
-            $type = app($class);
-            $name = $type->name;
+            $type = is_object($class) ? $class:app($class);
+            $name = $type->name;    
         }
         
         $this->types[$name] = $class;
     }
     
-    public function type($name)
+    public function type($name, $fresh = false)
     {
         if(!isset($this->types[$name]))
         {
             throw new \Exception('Type '.$name.' not found.');
         }
         
-        if(isset($this->typesInstances[$name]))
+        if(!$fresh && isset($this->typesInstances[$name]))
         {
             return $this->typesInstances[$name];
         }
         
-        $type = app($this->types[$name]);
+        $type = $this->types[$name];
+        if(!is_object($type))
+        {
+            $type = app($type);
+        }
         
         $instance = $type->toType();
         $this->typesInstances[$name] = $instance;
