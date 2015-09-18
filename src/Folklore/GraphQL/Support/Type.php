@@ -53,7 +53,9 @@ class Type extends Fluent {
         {
             if(is_string($field))
             {
-                $allFields[$name] = app($field)->toArray();
+                $field = app($field);
+                $field->name = $name;
+                $allFields[$name] = $field->toArray();
             }
             else
             {
