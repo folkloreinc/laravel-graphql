@@ -118,7 +118,7 @@ Then you need to define a query
 	
 	use GraphQL;
 	use GraphQL\Type\Definition\Type;
-	    
+	use Folklore\GraphQL\Support\Query;    
 	use App\User;
 	
 	class UsersQuery extends Query {
@@ -144,7 +144,7 @@ Then you need to define a query
 		{
 			if(isset($args['id']))
 			{
-				return User::find($args['id']);
+				return User::where('id' , $args['id'])->get();
 			}
 			else if(isset($args['email']))
 			{
