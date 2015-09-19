@@ -185,3 +185,58 @@ And thats it. You should be able to query GraphQL with a request to the url `/gr
 ```
 
 eg. http://homestead.app/graphql?query=query+FetchUsers{users{id,email}}
+
+## Advanced usage
+
+### Eager loading relationships
+
+The third argument passed to a query's resolve method is an instance of `GraphQL\Type\Definition\ResolveInfo` which you can use to retrieve keys from the request. The following is an example of using this information to eager load related Eloquent models.
+
+```php
+	namespace App\GraphQL\Query;
+	
+	use GraphQL;
+	use GraphQL\Type\Definition\Type;
+	use GraphQL\Type\Definition\ResolveInfo;
+	
+	use App\User;
+
+	class UsersQuery extends Query
+	{
+		protected $attributes = [
+			'name' => 'Users query'
+		];
+
+		public function type()
+		{
+			return Type::listOf(GraphQL::type('user'));
+		}
+
+		public function args()
+		{
+			return [
+				'id' => ['name' => 'id', 'type' => Type::string()],
+				'email' => ['name' => 'email', 'type' => Type::string()]
+			];
+		}
+        
+		public function resolve($root, $args, ResolveInfo $info)
+		{
+			$fields = $info->getFieldSelection($depth = 3);
+			
+			$users = User::query();
+			
+			foreach ($fields as $field => $keys) {
+				if ($field === 'profile') {
+					$users->with('profile');
+				}
+				
+				if ($field === 'posts') {
+					$users->with('posts');
+				}
+			}
+			
+			return $users->get();
+		}
+	}
+```
