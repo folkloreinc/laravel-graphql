@@ -198,6 +198,7 @@ The third argument passed to a query's resolve method is an instance of `GraphQL
 	use GraphQL;
 	use GraphQL\Type\Definition\Type;
 	use GraphQL\Type\Definition\ResolveInfo;
+    	use Folklore\GraphQL\Support\Query;
 	
 	use App\User;
 
