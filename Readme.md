@@ -111,7 +111,7 @@ Add the type to the `config/graphql.php` configuration file
 
 ```
 
-Then you need to define a query
+Then you need to define a query that return this type(or a list). You can also specify arguments that you can use in the resolve method.
 ```php
 
 	namespace App\GraphQL\Query;
@@ -184,9 +184,90 @@ And thats it. You should be able to query GraphQL with a request to the url `/gr
     }
 ```
 
-eg. http://homestead.app/graphql?query=query+FetchUsers{users{id,email}}
+For example, if you use homestead:
+```
+http://homestead.app/graphql?query=query+FetchUsers{users{id,email}}
+```
 
 ## Advanced usage
+
+### Custom field
+
+You can also define a field as a class if you want to reuse it in multiple types.
+
+```php
+
+namespace App\GraphQL\Fields;
+	
+use GraphQL\Type\Definition\Type;
+use Folklore\GraphQL\Support\Field;
+
+class PictureField extends Field {
+        
+        protected $attributes = [
+		'description' => 'A picture'
+	];
+		
+	public function args()
+	{
+		return [
+			'width' => [
+				'type' => Type::int(),
+				'description' => 'The width of the picture'
+			],
+			'height' => [
+				'type' => Type::int(),
+				'description' => 'The height of the picture'
+			]
+		];
+	}
+	
+	protected function resolve($root, $args)
+	{
+		$width = isset($args['width']) ? $args['width']:100;
+		$height = isset($args['height']) ? $args['height']:100;
+		return 'http://placehold.it/'.$width.'x'.$height;
+	}
+        
+}
+
+```
+
+You can than use it in your type declaration
+
+```php
+
+namespace App\GraphQL\Type;
+
+use GraphQL\Type\Definition\Type;
+use Folklore\GraphQL\Support\Type as GraphQLType;
+
+class UserType extends GraphQLType {
+        
+        protected $attributes = [
+		'name' => 'User',
+		'description' => 'A user'
+	];
+	
+	public function fields()
+	{
+		return [
+			'id' => [
+				'type' => Type::nonNull(Type::string()),
+				'description' => 'The id of the user'
+			],
+			'email' => [
+				'type' => Type::string(),
+				'description' => 'The email of user'
+			],
+			//Instead of passing an array, you pass a class path to your custom field
+			'picture' => App\GraphQL\Fields\PictureField::class
+		];
+	}
+
+}
+
+```
 
 ### Eager loading relationships
 
