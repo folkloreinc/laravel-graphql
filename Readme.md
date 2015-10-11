@@ -111,7 +111,7 @@ Add the type to the `config/graphql.php` configuration file
 
 ```
 
-Then you need to define a query that return this type(or a list). You can also specify arguments that you can use in the resolve method.
+Then you need to define a query that returns this type (or a list). You can also specify arguments that you can use in the resolve method.
 ```php
 
 	namespace App\GraphQL\Query;
@@ -173,7 +173,7 @@ Add the query to the `config/graphql.php` configuration file
 
 ```
 
-And thats it. You should be able to query GraphQL with a request to the url `/graphql` (or anything you choose in your config). Try a GET request with the following `query` input
+And that's it. You should be able to query GraphQL with a request to the url `/graphql` (or anything you choose in your config). Try a GET request with the following `query` input
 
 ```
     query FetchUsers {
@@ -233,7 +233,7 @@ class PictureField extends Field {
 
 ```
 
-You can than use it in your type declaration
+You can then use it in your type declaration
 
 ```php
 
