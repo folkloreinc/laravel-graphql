@@ -59,6 +59,8 @@ config/graphql.php
 
 ## Usage
 
+### Creating a query
+
 First you need to create a type.
 
 ```php
@@ -108,6 +110,14 @@ Add the type to the `config/graphql.php` configuration file
 	'types' => [
 		'user' => 'App\GraphQL\Type\UserType'
 	]
+
+```
+
+You could also add the type with the `GraphQL` Facade, in a service provider for example.
+
+```php
+    
+	GraphQL::addType('App\GraphQL\Type\UserType', 'user');
 
 ```
 
@@ -173,6 +183,14 @@ Add the query to the `config/graphql.php` configuration file
 
 ```
 
+Or using the `GraphQL` facade
+
+```php
+    
+    GraphQL::addQuery('App\GraphQL\Query\UsersQuery', 'users');
+
+```
+
 And that's it. You should be able to query GraphQL with a request to the url `/graphql` (or anything you choose in your config). Try a GET request with the following `query` input
 
 ```
@@ -188,6 +206,93 @@ For example, if you use homestead:
 ```
 http://homestead.app/graphql?query=query+FetchUsers{users{id,email}}
 ```
+
+### Creating a mutation
+
+A mutation is like any other query, it accepts arguments (which will be used to do the mutation) and return an object of a certain type.
+
+For example a mutation to update the password of a user. First you need to define the Mutation.
+
+```php
+
+	namespace App\GraphQL\Mutation;
+	
+	use GraphQL;
+	use GraphQL\Type\Definition\Type;
+	use Folklore\GraphQL\Support\Mutation;    
+	use App\User;
+	
+	class UpdateUserPasswordMutation extends Mutation {
+	
+		protected $attributes = [
+			'name' => 'UpdateUserPassword'
+		];
+		
+		public function type()
+		{
+			return GraphQL::type('user');
+		}
+		
+		public function args()
+		{
+			return [
+				'id' => ['name' => 'id', 'type' => Type::nonNull(Type::string())],
+				'password' => ['name' => 'password', 'type' => Type::nonNull(Type::string())]
+			];
+		}
+		
+		public function resolve($root, $args)
+		{
+			$user = User::find($args['id']);
+			if(!$user)
+			{
+				return null;
+			}
+			
+			$user->password = bcrypt($args['password']);
+			$user->save();
+			
+			return $user;
+		}
+	
+	}
+
+```
+
+As you can see in the `resolve` method, you use the arguments to update your model and return it.
+
+You then add the muation to the `config/graphql.php` configuration file
+
+```php
+    
+    'schema' => [
+		'mutation' => [
+			'updateUserPassword' => 'App\GraphQL\Mutation\UpdateUserPasswordMutation'
+		],
+		// ...
+	]
+
+```
+
+Or using the `GraphQL` facade
+
+```php
+    
+    GraphQL::addMutation('App\GraphQL\Mutation\UpdateUserPasswordMutation', 'updateUserPassword');
+
+```
+
+You should then be able to use the following query on your endpoint to do the mutation.
+
+```
+    mutation {
+        updateUserPassword(id: "1", password: "newpassword") {
+            id
+            email
+        }
+    }
+```
+
 
 ## Advanced usage
 
