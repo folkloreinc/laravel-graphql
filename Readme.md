@@ -59,6 +59,8 @@ config/graphql.php
 
 ## Usage
 
+### Creating a query
+
 First you need to create a type.
 
 ```php
@@ -111,14 +113,22 @@ Add the type to the `config/graphql.php` configuration file
 
 ```
 
-Then you need to define a query
+You could also add the type with the `GraphQL` Facade, in a service provider for example.
+
+```php
+    
+	GraphQL::addType('App\GraphQL\Type\UserType', 'user');
+
+```
+
+Then you need to define a query that returns this type (or a list). You can also specify arguments that you can use in the resolve method.
 ```php
 
 	namespace App\GraphQL\Query;
 	
 	use GraphQL;
 	use GraphQL\Type\Definition\Type;
-	    
+	use Folklore\GraphQL\Support\Query;    
 	use App\User;
 	
 	class UsersQuery extends Query {
@@ -144,7 +154,7 @@ Then you need to define a query
 		{
 			if(isset($args['id']))
 			{
-				return User::find($args['id']);
+				return User::where('id' , $args['id'])->get();
 			}
 			else if(isset($args['email']))
 			{
@@ -173,7 +183,15 @@ Add the query to the `config/graphql.php` configuration file
 
 ```
 
-And thats it. You should be able to query GraphQL with a request to the url `/graphql` (or anything you choose in your config). Try a GET request with the following `query` input
+Or using the `GraphQL` facade
+
+```php
+    
+    GraphQL::addQuery('App\GraphQL\Query\UsersQuery', 'users');
+
+```
+
+And that's it. You should be able to query GraphQL with a request to the url `/graphql` (or anything you choose in your config). Try a GET request with the following `query` input
 
 ```
     query FetchUsers {
@@ -184,4 +202,228 @@ And thats it. You should be able to query GraphQL with a request to the url `/gr
     }
 ```
 
-eg. http://homestead.app/graphql?query=query+FetchUsers{users{id,email}}
+For example, if you use homestead:
+```
+http://homestead.app/graphql?query=query+FetchUsers{users{id,email}}
+```
+
+### Creating a mutation
+
+A mutation is like any other query, it accepts arguments (which will be used to do the mutation) and return an object of a certain type.
+
+For example a mutation to update the password of a user. First you need to define the Mutation.
+
+```php
+
+	namespace App\GraphQL\Mutation;
+	
+	use GraphQL;
+	use GraphQL\Type\Definition\Type;
+	use Folklore\GraphQL\Support\Mutation;    
+	use App\User;
+	
+	class UpdateUserPasswordMutation extends Mutation {
+	
+		protected $attributes = [
+			'name' => 'UpdateUserPassword'
+		];
+		
+		public function type()
+		{
+			return GraphQL::type('user');
+		}
+		
+		public function args()
+		{
+			return [
+				'id' => ['name' => 'id', 'type' => Type::nonNull(Type::string())],
+				'password' => ['name' => 'password', 'type' => Type::nonNull(Type::string())]
+			];
+		}
+		
+		public function resolve($root, $args)
+		{
+			$user = User::find($args['id']);
+			if(!$user)
+			{
+				return null;
+			}
+			
+			$user->password = bcrypt($args['password']);
+			$user->save();
+			
+			return $user;
+		}
+	
+	}
+
+```
+
+As you can see in the `resolve` method, you use the arguments to update your model and return it.
+
+You then add the muation to the `config/graphql.php` configuration file
+
+```php
+    
+    'schema' => [
+		'mutation' => [
+			'updateUserPassword' => 'App\GraphQL\Mutation\UpdateUserPasswordMutation'
+		],
+		// ...
+	]
+
+```
+
+Or using the `GraphQL` facade
+
+```php
+    
+    GraphQL::addMutation('App\GraphQL\Mutation\UpdateUserPasswordMutation', 'updateUserPassword');
+
+```
+
+You should then be able to use the following query on your endpoint to do the mutation.
+
+```
+    mutation {
+        updateUserPassword(id: "1", password: "newpassword") {
+            id
+            email
+        }
+    }
+```
+
+
+## Advanced usage
+
+### Custom field
+
+You can also define a field as a class if you want to reuse it in multiple types.
+
+```php
+
+namespace App\GraphQL\Fields;
+	
+use GraphQL\Type\Definition\Type;
+use Folklore\GraphQL\Support\Field;
+
+class PictureField extends Field {
+        
+        protected $attributes = [
+		'description' => 'A picture'
+	];
+		
+	public function args()
+	{
+		return [
+			'width' => [
+				'type' => Type::int(),
+				'description' => 'The width of the picture'
+			],
+			'height' => [
+				'type' => Type::int(),
+				'description' => 'The height of the picture'
+			]
+		];
+	}
+	
+	protected function resolve($root, $args)
+	{
+		$width = isset($args['width']) ? $args['width']:100;
+		$height = isset($args['height']) ? $args['height']:100;
+		return 'http://placehold.it/'.$width.'x'.$height;
+	}
+        
+}
+
+```
+
+You can then use it in your type declaration
+
+```php
+
+namespace App\GraphQL\Type;
+
+use GraphQL\Type\Definition\Type;
+use Folklore\GraphQL\Support\Type as GraphQLType;
+
+class UserType extends GraphQLType {
+        
+        protected $attributes = [
+		'name' => 'User',
+		'description' => 'A user'
+	];
+	
+	public function fields()
+	{
+		return [
+			'id' => [
+				'type' => Type::nonNull(Type::string()),
+				'description' => 'The id of the user'
+			],
+			'email' => [
+				'type' => Type::string(),
+				'description' => 'The email of user'
+			],
+			//Instead of passing an array, you pass a class path to your custom field
+			'picture' => App\GraphQL\Fields\PictureField::class
+		];
+	}
+
+}
+
+```
+
+### Eager loading relationships
+
+The third argument passed to a query's resolve method is an instance of `GraphQL\Type\Definition\ResolveInfo` which you can use to retrieve keys from the request. The following is an example of using this information to eager load related Eloquent models.
+
+```php
+	namespace App\GraphQL\Query;
+	
+	use GraphQL;
+	use GraphQL\Type\Definition\Type;
+	use GraphQL\Type\Definition\ResolveInfo;
+	use Folklore\GraphQL\Support\Query;
+	
+	use App\User;
+
+	class UsersQuery extends Query
+	{
+		protected $attributes = [
+			'name' => 'Users query'
+		];
+
+		public function type()
+		{
+			return Type::listOf(GraphQL::type('user'));
+		}
+
+		public function args()
+		{
+			return [
+				'id' => ['name' => 'id', 'type' => Type::string()],
+				'email' => ['name' => 'email', 'type' => Type::string()]
+			];
+		}
+        
+		public function resolve($root, $args, ResolveInfo $info)
+		{
+			$fields = $info->getFieldSelection($depth = 3);
+			
+			$users = User::query();
+			
+			foreach ($fields as $field => $keys) {
+				if ($field === 'profile') {
+					$users->with('profile');
+				}
+				
+				if ($field === 'posts') {
+					$users->with('posts');
+				}
+			}
+			
+			return $users->get();
+		}
+	}
+```

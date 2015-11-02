@@ -3,7 +3,8 @@
 use Illuminate\Http\Request;
 
 Route::group(array(
-    'prefix' => config('graphql.prefix')
+    'prefix' => config('graphql.prefix'),
+    'middleware' => config('graphql.middleware', [])
 ), function()
 {
     $routes = config('graphql.routes');
