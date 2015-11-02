@@ -383,6 +383,32 @@ Alternatively you can define rules with each args
 
 ```
 
+When you execute a mutation, it will returns the validation errors. Since GraphQL specifications define a certain format for errors, the validation errors messages are added to the error object as a custom `validation` attribute. To find the validation error, you should check for the error with a `message` equals to `'validation'`
+
+```json
+	{
+		"data": {
+			"updateUserEmail": null
+		},
+		"errors": [
+			{
+				"message": "validation",
+				"locations": [
+					{
+						"line": 1,
+						"column": 20
+					}
+				],
+				"validation": {
+					"email": [
+						"The email is invalid."
+					]
+				}
+			}
+		]
+	}
+```
+
 ## Advanced usage
 
 ### Custom field
