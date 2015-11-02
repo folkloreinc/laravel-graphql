@@ -391,7 +391,7 @@ Alternatively you can define rules with each args
 
 ```
 
-When you execute a mutation, it will returns the validation errors. Since GraphQL specifications define a certain format for errors, the validation errors messages are added to the error object as a custom `validation` attribute. To find the validation error, you should check for the error with a `message` equals to `'validation'`
+When you execute a mutation, it will returns the validation errors. Since GraphQL specifications define a certain format for errors, the validation errors messages are added to the error object as a extra `validation` attribute. To find the validation error, you should check for the error with a `message` equals to `'validation'`, then the `validation` attribute will contain the normal errors messages returned by the Laravel Validator.
 
 ```json
 	{
