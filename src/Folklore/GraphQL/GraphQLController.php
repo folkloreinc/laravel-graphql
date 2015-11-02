@@ -1,5 +1,6 @@
 <?php namespace Folklore\GraphQL;
 
+use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
 
 class GraphQLController extends Controller {
@@ -14,7 +15,7 @@ class GraphQLController extends Controller {
             $params = json_decode($params, true);
         }
         
-        return $return;
+        return app('graphql')->query($query, $params);
     }
     
 }
