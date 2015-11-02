@@ -14,15 +14,25 @@ class Mutation extends Field {
     
     public function getRules()
     {
-        $rules = $this->rules();
+        $arguments = func_get_args();
+        
+        $rules = call_user_func_array([$this, 'rules'], $arguments);
         $argsRules = [];
         foreach($this->args() as $name => $arg)
         {
             if(isset($arg['rules']))
             {
-                $argsRules[$name] = $arg['rules'];
+                if(is_callable($arg['rules']))
+                {
+                    $argsRules[$name] = call_user_func_array($arg['rules'], $arguments);
+                }
+                else
+                {
+                    $argsRules[$name] = $arg['rules'];
+                }
             }
         }
+        
         return array_merge($argsRules, $rules);
     }
     
@@ -33,20 +43,21 @@ class Mutation extends Field {
             return null;
         }
         
-        $rules = $this->getRules();
         $resolver = array($this, 'resolve');
-        return function() use ($resolver, $rules)
+        return function() use ($resolver)
         {
-            $args = func_get_args();
+            $arguments = func_get_args();
+            $rules = call_user_func_array([$this, 'getRules'], $arguments);
             if(sizeof($rules))
             {
-                $validator = Validator::make($args[1], $rules);
+                $args = array_get($arguments, 1, []);
+                $validator = Validator::make($args, $rules);
                 if($validator->fails()) 
                 {
                     throw with(new ValidationError('validation'))->setValidator($validator);
                 }
             }
-            return call_user_func_array($resolver, $args);
+            return call_user_func_array($resolver, $arguments);
         };
     }
     
