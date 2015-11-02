@@ -160,7 +160,7 @@ class GraphQL {
     public function formatError(Error $e)
     {
         $error = [
-            'message' => (string)$e
+            'message' => $e->getMessage()
         ];
         
         $locations = $e->getLocations();
@@ -169,9 +169,10 @@ class GraphQL {
             $error['locations'] = array_map(function($loc) { return $loc->toArray();}, $locations);
         }
         
-        if($e instanceof ValidationError)
+        $previous = $e->getPrevious();
+        if($previous && $previous instanceof ValidationError)
         {
-            $error['validation'] = $e->getValidatorMessages();
+            $error['validation'] = $previous->getValidatorMessages();
         }
         
         return $error;
