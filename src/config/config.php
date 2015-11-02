@@ -18,6 +18,19 @@ return [
     // ]
     //
     'routes' => '/',
+    
+    // The controller to use in GraphQL request. Either a string that will apply
+    // to both query and mutation or an array containing the key 'query' and/or
+    // 'mutation' with the according Controller and method
+    //
+    // Example:
+    //
+    // 'controllers' => [
+    //     'query' => '\Folklore\GraphQL\GraphQLController@query',
+    //     'mutation' => '\Folklore\GraphQL\GraphQLController@mutation'
+    // ]
+    //
+    'controllers' => '\Folklore\GraphQL\GraphQLController@query',
 
     // Any middleware for the graphql route group
     'middleware' => [],

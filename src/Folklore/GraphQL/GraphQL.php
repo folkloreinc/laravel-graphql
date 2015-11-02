@@ -2,9 +2,12 @@
 
 use GraphQL\GraphQL as GraphQLBase;
 use GraphQL\Schema;
+use GraphQL\Error;
 
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\InterfaceType;
+
+use Folklore\GraphQL\Error\ValidationError;
 
 class GraphQL {
     
@@ -89,8 +92,18 @@ class GraphQL {
     
     public function query($query, $params = [])
     {
+        $executionResult = $this->queryAndReturnResult($query, $params);
+        return [
+            'data' => $executionResult->data,
+            'errors' => array_map([$this, 'formatError'], $executionResult->errors)
+        ];
+    }
+    
+    public function queryAndReturnResult($query, $params = [])
+    {
         $schema = $this->schema();
-        return GraphQLBase::execute($schema, $query, null, $params);
+        $result = GraphQLBase::executeAndReturnResult($schema, $query, null, $params);
+        return $result;
     }
     
     public function addMutation($name, $mutator)
@@ -142,5 +155,25 @@ class GraphQL {
         }
         
         return $instance;
+    }
+    
+    public function formatError(Error $e)
+    {
+        $error = [
+            'message' => $error
+        ];
+        
+        $locations = $error->getLocations();
+        if(!empty($locations))
+        {
+            $error['locations'] = array_map(function($loc) { return $loc->toArray();}, $locations);
+        }
+        
+        if($e instanceof ValidationError)
+        {
+            $error['validation'] = $e->getValidatorMessages();
+        }
+        
+        return $error;
     }
 }

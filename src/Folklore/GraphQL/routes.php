@@ -7,20 +7,14 @@ Route::group(array(
     'middleware' => config('graphql.middleware', [])
 ), function()
 {
+    //Routes
     $routes = config('graphql.routes');
     $queryRoute = null;
     $mutationRoute = null;
     if(is_array($routes))
     {
-        if(isset($routes['query']))
-        {
-            $queryRoute = $routes['query'];
-        }
-        if(isset($routes['mutation']))
-        {
-            $mutationRoute = $routes['mutation'];
-        }
-        
+        $queryRoute = array_get($routes, 'query', null);
+        $mutationRoute = array_get($routes, 'mutation', null);
     }
     else
     {
@@ -28,26 +22,27 @@ Route::group(array(
         $mutationRoute = $routes;
     }
     
+    //Controllers
+    $controllers = config('graphql.controllers');
+    $queryController = null;
+    $mutationController = null;
+    if(is_array($controllers))
+    {
+        $queryController = array_get($controllers, 'query', null);
+        $mutationController = array_get($controllers, 'mutation', null);
+    }
+    else
+    {
+        $queryController = $controllers;
+        $mutationController = $controllers;
+    }
+    
     //Query
     if($queryRoute)
     {
         Route::get($queryRoute, array(
             'as' => 'graphql.query',
-            function(Request $request)
-            {
-                $query = $request->get('query');
-                $params = $request->get('params');
-                return app('graphql')->query($query, is_string($params) ? json_decode($params, true):$params);
-            }
-        ));
-        Route::post($queryRoute, array(
-            'as' => 'graphql.query',
-            function(Request $request)
-            {
-                $query = $request->get('query');
-                $params = $request->get('params');
-                return app('graphql')->query($query, is_string($params) ? json_decode($params, true):$params);
-            }
+            'uses' => $queryController
         ));
     }
     
@@ -56,12 +51,7 @@ Route::group(array(
         //Mutation
         Route::post($mutationRoute, array(
             'as' => 'graphql.mutation',
-            function(Request $request)
-            {
-                $query = $request->get('query');
-                $params = $request->get('params');
-                return app('graphql')->query($query, is_string($params) ? json_decode($params, true):$params);
-            }
+            'uses' => $mutationController
         ));
     }
 });
