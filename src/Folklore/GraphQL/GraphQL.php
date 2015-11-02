@@ -160,10 +160,10 @@ class GraphQL {
     public function formatError(Error $e)
     {
         $error = [
-            'message' => $error
+            'message' => (string)$e
         ];
         
-        $locations = $error->getLocations();
+        $locations = $e->getLocations();
         if(!empty($locations))
         {
             $error['locations'] = array_map(function($loc) { return $loc->toArray();}, $locations);
