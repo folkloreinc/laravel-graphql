@@ -18,9 +18,9 @@ class Mutation extends Field {
         $argsRules = [];
         foreach($this->args() as $name => $arg)
         {
-            if(isset($arg['validation']))
+            if(isset($arg['rules']))
             {
-                $argsRules[$name] = $arg['validation'];
+                $argsRules[$name] = $arg['rules'];
             }
         }
         return array_merge($argsRules, $rules);

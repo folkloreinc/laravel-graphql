@@ -18,7 +18,7 @@ This package is compatible with Eloquent model (or any other data source). See t
 ```json
 {
 	"require": {
-		"folklore/graphql": "0.2.*"
+		"folklore/graphql": "0.3.*"
 	}
 }
 ```
@@ -293,6 +293,95 @@ You should then be able to use the following query on your endpoint to do the mu
     }
 ```
 
+#### Adding validation to mutation
+
+It is possible to add validation rules to mutation. It uses the laravel `Validator` to performs validation against the `args`.
+
+When creating a mutation, you can add a method to define the validation rules that apply by doing the following:
+
+```php
+
+	namespace App\GraphQL\Mutation;
+	
+	use GraphQL;
+	use GraphQL\Type\Definition\Type;
+	use Folklore\GraphQL\Support\Mutation;    
+	use App\User;
+	
+	class UpdateUserEmailMutation extends Mutation {
+	
+		protected $attributes = [
+			'name' => 'UpdateUserEmail'
+		];
+		
+		public function type()
+		{
+			return GraphQL::type('user');
+		}
+		
+		public function args()
+		{
+			return [
+				'id' => ['name' => 'id', 'type' => Type::string()],
+				'email' => ['name' => 'password', 'type' => Type::string()]
+			];
+		}
+		
+		public function rules()
+		{
+			return [
+				'id' => ['required'],
+				'email' => ['required', 'email']
+			];
+		}
+		
+		public function resolve($root, $args)
+		{
+			$user = User::find($args['id']);
+			if(!$user)
+			{
+				return null;
+			}
+			
+			$user->email = $args['email'];
+			$user->save();
+			
+			return $user;
+		}
+	
+	}
+
+```
+
+Alternatively you can define rules with each args
+
+```php
+	
+	class UpdateUserEmailMutation extends Mutation {
+	
+		//...
+		
+		public function args()
+		{
+			return [
+				'id' => [
+					'name' => 'id',
+					'type' => Type::string(),
+					'rules' => ['required']
+				],
+				'email' => [
+					'name' => 'password',
+					'type' => Type::string(),
+					'rules' => ['required', 'email']
+				]
+			];
+		}
+		
+		//...
+	
+	}
+
+```
 
 ## Advanced usage
 
