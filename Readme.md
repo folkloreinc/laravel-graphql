@@ -59,6 +59,14 @@ config/graphql.php
 
 ## Usage
 
+- [Creating a query](#creating-a-query)
+- [Creating a mutation](#creating-a-mutation)
+- [Adding validation to mutation](#adding-validation-to-mutation)
+
+##### Advanced Usage
+- [Custom field](#custom-field)
+- [Eager loading relationships](#eager-loading-relationships)
+
 ### Creating a query
 
 First you need to create a type.
