@@ -23,7 +23,7 @@ Route::group(array(
     }
     
     //Controllers
-    $controllers = config('graphql.controllers');
+    $controllers = config('graphql.controllers', '\Folklore\GraphQL\GraphQLController@query');
     $queryController = null;
     $mutationController = null;
     if(is_array($controllers))
