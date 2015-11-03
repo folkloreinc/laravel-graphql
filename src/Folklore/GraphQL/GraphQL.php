@@ -93,10 +93,20 @@ class GraphQL {
     public function query($query, $params = [])
     {
         $executionResult = $this->queryAndReturnResult($query, $params);
-        return [
-            'data' => $executionResult->data,
-            'errors' => array_map([$this, 'formatError'], $executionResult->errors)
-        ];
+        
+        if (!empty($executionResult->errors))
+        {
+            return [
+                'data' => $executionResult->data,
+                'errors' => array_map([$this, 'formatError'], $executionResult->errors)
+            ];
+        }
+        else
+        {
+            return [
+                'data' => $executionResult->data
+            ];
+        }
     }
     
     public function queryAndReturnResult($query, $params = [])
