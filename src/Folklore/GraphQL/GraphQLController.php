@@ -8,7 +8,7 @@ class GraphQLController extends Controller {
     public function query(Request $request)
     {
         $query = $request->get('query');
-        $params = $request->get('variables');
+        $params = $request->get(config('graphql.param') ?: 'params');
 
         if(is_string($params))
         {
