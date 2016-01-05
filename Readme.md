@@ -18,7 +18,7 @@ This package is compatible with Eloquent model (or any other data source). See t
 ```json
 {
 	"require": {
-		"folklore/graphql": "0.3.*"
+		"folklore/graphql": "0.4.*"
 	}
 }
 ```
