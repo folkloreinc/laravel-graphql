@@ -436,7 +436,7 @@ GraphQL offer you the possibility to use variables in your query so you don't ne
 When you query the GraphQL endpoint, you can pass a `params` parameter.
 
 ```
-http://homestead.app/graphql?query=query+FetchUserByID($id:String){user(id:$id){id,email}}&params={id:"1"}
+http://homestead.app/graphql?query=query+FetchUserByID($id:String){user(id:$id){id,email}}&params={"id":"1"}
 ```
 
 ### Custom field
