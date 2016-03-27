@@ -18,7 +18,7 @@ This package is compatible with Eloquent model (or any other data source). See t
 ```json
 {
 	"require": {
-		"folklore/graphql": "0.3.*"
+		"folklore/graphql": "0.4.*"
 	}
 }
 ```
@@ -64,6 +64,7 @@ config/graphql.php
 - [Adding validation to mutation](#adding-validation-to-mutation)
 
 ##### Advanced Usage
+- [Query variables](#query-variables)
 - [Custom field](#custom-field)
 - [Eager loading relationships](#eager-loading-relationships)
 
@@ -418,6 +419,25 @@ When you execute a mutation, it will returns the validation errors. Since GraphQ
 ```
 
 ## Advanced usage
+
+### Query Variables
+
+GraphQL offer you the possibility to use variables in your query so you don't need to "hardcode" value. This is done like that:
+
+```
+    query FetchUserByID($id: String) {
+        user(id: $id) {
+            id
+            email
+        }
+    }
+```
+
+When you query the GraphQL endpoint, you can pass a `params` parameter.
+
+```
+http://homestead.app/graphql?query=query+FetchUserByID($id:String){user(id:$id){id,email}}&params={"id":"1"}
+```
 
 ### Custom field
 
