@@ -5,11 +5,13 @@ namespace Folklore\GraphQL\Support;
 use Illuminate\Support\Fluent;
 
 use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 
 class Type extends Fluent {
     
     protected static $instances = [];
+    protected static $inputObject = false;
     
     public function attributes()
     {
@@ -28,13 +30,14 @@ class Type extends Fluent {
     
     protected function getFieldResolver($name, $field)
     {
+        $resolveMethod = 'resolve'.studly_case($name).'Field';
         if(isset($field['resolve']))
         {
             return $field['resolve'];
         }
-        else if(method_exists($this, 'resolve'.studly_case($name).'Field'))
+        else if(method_exists($this, $resolveMethod))
         {
-            $resolver = array($this, 'resolve'.studly_case($name).'Field');
+            $resolver = array($this, $resolveMethod);
             return function() use ($resolver)
             {
                 $args = func_get_args();
@@ -106,6 +109,10 @@ class Type extends Fluent {
     
     public function toType()
     {
+        if($this->inputObject)
+        {
+            return new InputObjectType($this->toArray());
+        }
         return new ObjectType($this->toArray());
     }
 
