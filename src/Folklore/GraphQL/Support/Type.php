@@ -11,7 +11,8 @@ use GraphQL\Type\Definition\InterfaceType;
 class Type extends Fluent {
     
     protected static $instances = [];
-    protected static $inputObject = false;
+    
+    protected $inputObject = false;
     
     public function attributes()
     {
