@@ -83,11 +83,12 @@ class Type extends Fluent {
     public function getAttributes()
     {
         $attributes = $this->attributes();
-        $fields = $this->getFields();
         $interfaces = $this->interfaces();
         
         $attributes = array_merge($this->attributes, [
-            'fields' => $fields
+            'fields' => function () {
+                return $this->getFields();
+            }
         ], $attributes);
         
         if(sizeof($interfaces))
