@@ -608,9 +608,13 @@ class UserType extends GraphQLType
                 'type' => Type::nonNull(Type::string()),
                 'description' => 'The email of user'
             ],
-            'team' => [
-                'type' => Type::listOf(GraphQL::type('team')),
-                'description' => 'The users team',
+            'profile' => [
+                'type' => GraphQL::type('Profile'),
+                'description' => 'The user profile',
+            ],
+            'posts' => [
+                'type' => Type::listOf(GraphQL::type('Post')),
+                'description' => 'The user posts',
             ]
         ];
     }
@@ -618,22 +622,46 @@ class UserType extends GraphQLType
 
 ```
 
-At this point we have a team type as expected for any model
+At this point we have a profile and a post type as expected for any model
 
 ```php
-class TeamType extends GraphQLType
+class ProfileType extends GraphQLType
 {
     protected $attributes = [
-        'name' => 'Team',
-        'description' => 'A team',
+        'name' => 'Profile',
+        'description' => 'A user profile',
     ];
 
     public function fields()
     {
         return [
             'name' => [
-                'type' => Type::nonNull(Type::string()),
+                'type' => Type::string(),
                 'description' => 'The name of user'
+            ]
+        ];
+    }
+}
+```
+
+```php
+class PostType extends GraphQLType
+{
+    protected $attributes = [
+        'name' => 'Post',
+        'description' => 'A post',
+    ];
+
+    public function fields()
+    {
+        return [
+            'title' => [
+                'type' => Type::nonNull(Type::string()),
+                'description' => 'The title of the post'
+            ],
+            'body' => [
+                'type' => Type::string(),
+                'description' => 'The body the post'
             ]
         ];
     }
