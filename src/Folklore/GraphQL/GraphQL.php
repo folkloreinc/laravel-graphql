@@ -96,9 +96,11 @@ class GraphQL {
         
         if (!empty($executionResult->errors))
         {
+            $errorFormatter = config('graphql.error_formatter', ['\Folklore\GraphQL', 'formatError']);
+            
             return [
                 'data' => $executionResult->data,
-                'errors' => array_map([$this, 'formatError'], $executionResult->errors)
+                'errors' => array_map($errorFormatter, $executionResult->errors)
             ];
         }
         else
@@ -167,7 +169,7 @@ class GraphQL {
         return $instance;
     }
     
-    public function formatError(Error $e)
+    public static function formatError(Error $e)
     {
         $error = [
             'message' => $e->getMessage()
@@ -176,7 +178,10 @@ class GraphQL {
         $locations = $e->getLocations();
         if(!empty($locations))
         {
-            $error['locations'] = array_map(function($loc) { return $loc->toArray();}, $locations);
+            $error['locations'] = array_map(function($loc)
+            {
+                return $loc->toArray();
+            }, $locations);
         }
         
         $previous = $e->getPrevious();

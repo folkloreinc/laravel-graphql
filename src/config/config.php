@@ -74,6 +74,11 @@ return [
     //
     'types' => [
         
-    ]
+    ],
+    
+    // This method will be passed the Error object for each errors GraphQL catch.
+    // The method should return an array representing the error.
+    // Typically ['message' => '','locations' => []].
+    'error_formatter' => ['\Folklore\GraphQL\GraphQL', 'formatError']
     
 ];
