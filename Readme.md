@@ -521,6 +521,8 @@ class UserType extends GraphQLType {
 
 The third argument passed to a query's resolve method is an instance of `GraphQL\Type\Definition\ResolveInfo` which you can use to retrieve keys from the request. The following is an example of using this information to eager load related Eloquent models.
 
+Your Query would look like
+
 ```php
 	namespace App\GraphQL\Query;
 	
@@ -569,4 +571,108 @@ The third argument passed to a query's resolve method is an instance of `GraphQL
 			return $users->get();
 		}
 	}
+```
+
+Your Type for User would look like
+
+```php
+<?php
+
+namespace App\GraphQL\Type;
+
+use Folklore\GraphQL\Support\Facades\GraphQL;
+use GraphQL\Type\Definition\Type;
+use Folklore\GraphQL\Support\Type as GraphQLType;
+
+class UserType extends GraphQLType
+{
+    /**
+     * @var array
+     */
+    protected $attributes = [
+        'name' => 'User',
+        'description' => 'A user',
+    ];
+
+    /**
+     * @return array
+     */
+    public function fields()
+    {
+        return [
+            'uuid' => [
+                'type' => Type::nonNull(Type::string()),
+                'description' => 'The uuid of the user'
+            ],
+            'email' => [
+                'type' => Type::nonNull(Type::string()),
+                'description' => 'The email of user'
+            ],
+            'profile' => [
+                'type' => GraphQL::type('Profile'),
+                'description' => 'The user profile',
+            ],
+            'posts' => [
+                'type' => Type::listOf(GraphQL::type('Post')),
+                'description' => 'The user posts',
+            ]
+        ];
+    }
+}
+
+```
+
+At this point we have a profile and a post type as expected for any model
+
+```php
+class ProfileType extends GraphQLType
+{
+    protected $attributes = [
+        'name' => 'Profile',
+        'description' => 'A user profile',
+    ];
+
+    public function fields()
+    {
+        return [
+            'name' => [
+                'type' => Type::string(),
+                'description' => 'The name of user'
+            ]
+        ];
+    }
+}
+```
+
+```php
+class PostType extends GraphQLType
+{
+    protected $attributes = [
+        'name' => 'Post',
+        'description' => 'A post',
+    ];
+
+    public function fields()
+    {
+        return [
+            'title' => [
+                'type' => Type::nonNull(Type::string()),
+                'description' => 'The title of the post'
+            ],
+            'body' => [
+                'type' => Type::string(),
+                'description' => 'The body the post'
+            ]
+        ];
+    }
+}
+```
+
+
+Lastly your query would look like, if using Homestead
+
+For example, if you use homestead:
+
+```
+http://homestead.app/graphql?query=query+FetchUsers{users{uuid, email, team{name}}}
 ```
