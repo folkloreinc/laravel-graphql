@@ -294,12 +294,17 @@ Or using the `GraphQL` facade
 You should then be able to use the following query on your endpoint to do the mutation.
 
 ```
-    mutation {
+    mutation users {
         updateUserPassword(id: "1", password: "newpassword") {
             id
             email
         }
     }
+```
+
+if you use homestead:
+```
+http://homestead.app/graphql?query=mutation+users{updateUserPassword(id: "1", password: "newpassword"){id,email}}
 ```
 
 #### Adding validation to mutation
