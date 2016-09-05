@@ -19,7 +19,7 @@
     "type": "project",
     "require": {
         "php": ">=5.5.9",
-        "illuminate/support": "5.2.*",
+        "illuminate/support": "5.*",
         "webonyx/graphql-php": "~0.5"
     },
     "require-dev": {
