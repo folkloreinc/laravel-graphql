@@ -460,6 +460,10 @@ class PictureField extends Field {
         protected $attributes = [
 		'description' => 'A picture'
 	];
+	
+	public function type(){
+		return Type::string();
+	}
 		
 	public function args()
 	{
@@ -495,6 +499,8 @@ namespace App\GraphQL\Type;
 use GraphQL\Type\Definition\Type;
 use Folklore\GraphQL\Support\Type as GraphQLType;
 
+use App\GraphQL\Fields\PictureField;
+
 class UserType extends GraphQLType {
         
         protected $attributes = [
@@ -514,7 +520,7 @@ class UserType extends GraphQLType {
 				'description' => 'The email of user'
 			],
 			//Instead of passing an array, you pass a class path to your custom field
-			'picture' => App\GraphQL\Fields\PictureField::class
+			'picture' => PictureField::class
 		];
 	}
 
