@@ -23,11 +23,11 @@ class GraphQL {
         $this->app = $app;
     }
 
-    public function schema()
+    public function schema($schema = null)
     {
         $this->typesInstances = [];
         
-        $schema = config('graphql.schema');
+        $schema = $schema ? $schema:config('graphql.schema');
         if($schema instanceof Schema)
         {
             return $schema;
@@ -90,9 +90,9 @@ class GraphQL {
         ], $opts));
     }
     
-    public function query($query, $params = [])
+    public function query($query, $params = [], $schema = null)
     {
-        $executionResult = $this->queryAndReturnResult($query, $params);
+        $executionResult = $this->queryAndReturnResult($query, $params, $schema);
         
         if (!empty($executionResult->errors))
         {
@@ -111,9 +111,9 @@ class GraphQL {
         }
     }
     
-    public function queryAndReturnResult($query, $params = [])
+    public function queryAndReturnResult($query, $params = [], $schema = null)
     {
-        $schema = $this->schema();
+        $schema = $this->schema($schema);
         $result = GraphQLBase::executeAndReturnResult($schema, $query, null, $params);
         return $result;
     }
