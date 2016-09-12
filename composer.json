@@ -27,12 +27,13 @@
     },
     "autoload": {
         "psr-0": {
-            "Folklore\\GraphQL\\": "src/"
+            "Folklore\\GraphQL\\": "src/",
+            "Folklore\\GraphQL\\Tests": "tests/"
         }
     },
     "autoload-dev": {
         "classmap": [
-            "tests/TestCase.php"
+            "tests/"
         ]
     }
 }

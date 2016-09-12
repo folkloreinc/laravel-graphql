@@ -139,6 +139,21 @@ class GraphQL {
         $this->types[$name] = $class;
     }
     
+    public function getTypes()
+    {
+        return $this->types;
+    }
+    
+    public function getQueries()
+    {
+        return $this->queries;
+    }
+    
+    public function getMutations()
+    {
+        return $this->mutations;
+    }
+    
     public function type($name, $fresh = false)
     {
         if(!isset($this->types[$name]))
