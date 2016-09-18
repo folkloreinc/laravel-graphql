@@ -17,7 +17,7 @@ return [
     //     'mutation' => '/mutation'
     // ]
     //
-    'routes' => '/',
+    'routes' => '{graphql_schema?}',
     
     // The controller to use in GraphQL request. Either a string that will apply
     // to both query and mutation or an array containing the key 'query' and/or
@@ -35,31 +35,41 @@ return [
     // Any middleware for the graphql route group
     'middleware' => [],
     
-    // The schema for query and/or mutation. It expects an array to provide
+    // The name of the default schema used when no argument is provided
+    // to GraphQL::schema() or when the route is used
+    'schema' => 'default',
+    
+    // The schemas for query and/or mutation. It expects an array to provide
     // both the 'query' fields and the 'mutation' fields. You can also
     // provide directly an object GraphQL\Schema
     //
     // Example:
     //
-    // 'schema' => new Schema($queryType, $mutationType)
+    // 'schemas' => [
+    //     'default' => new Schema($config)
+    // ]
     //
     // or
     //
-    // 'schema' => [
-    //     'query' => [
-    //          'users' => 'App\GraphQL\Query\UsersQuery'
-    //      ],
-    //     'mutation' => [
+    // 'schemas' => [
+    //     'default' => [
+    //         'query' => [
+    //              'users' => 'App\GraphQL\Query\UsersQuery'
+    //          ],
+    //          'mutation' => [
     //          
+    //          ]
     //     ]
     // ]
     //
-    'schema' => [
-        'query' => [
-            
-        ],
-        'mutation' => [
-            
+    'schemas' => [
+        'default' => [
+            'query' => [
+                
+            ],
+            'mutation' => [
+                
+            ]
         ]
     ],
     

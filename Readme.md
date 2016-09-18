@@ -22,7 +22,7 @@ This package is compatible with Eloquent model (or any other data source). See t
 ```json
 {
 	"require": {
-		"folklore/graphql": "0.4.*"
+		"folklore/graphql": "~1.0"
 	}
 }
 ```
@@ -61,8 +61,47 @@ $ php artisan vendor:publish --provider="Folklore\GraphQL\GraphQLServiceProvider
 config/graphql.php
 ```
 
+## Upgrade to 1.0
+
+The main difference between versions prior 1.0 and 1.0 is the use of multiple schemas. You will need to update your config to have the following structure:
+
+```php
+
+	'schema' => 'default',
+    
+	'schemas' => [
+		'default' => [
+			'query' => [
+				// Your queries
+			],
+			'mutation' => [
+				// Your muttations
+			]
+		]
+	]
+
+```
+
+If you want to use routes that can accept schema name, you need to change `routes` to the following:
+
+```php
+
+	'routes' => '{graphql_schema?}',
+	
+	// or if you use different routes for query and mutation
+	
+	'routes' => [
+		'query' => 'query/{graphql_schema?}',
+		'mutation' => 'mutation/{graphql_schema?}'
+	],
+
+```
+
+The method `GraphQL::addQuery` and `GraphQL::addMutation` has been removed since it doesn't make sense with multiple schemas. You can use the new `GraphQL::addSchema` method to add new schemas.
+
 ## Usage
 
+- [Schemas](#schemas)
 - [Creating a query](#creating-a-query)
 - [Creating a mutation](#creating-a-mutation)
 - [Adding validation to mutation](#adding-validation-to-mutation)
@@ -71,6 +110,83 @@ config/graphql.php
 - [Query variables](#query-variables)
 - [Custom field](#custom-field)
 - [Eager loading relationships](#eager-loading-relationships)
+
+### Schemas
+Starting from version 1.0, you can define multiple schemas. Having multiple schemas can be useful if, for example, you want an endpoint that is public and another one that needs authentication.
+
+You can define multiple schemas in the config:
+
+```php
+
+	'schema' => 'default',
+    
+	'schemas' => [
+		'default' => [
+			'query' => [
+				//'users' => 'App\GraphQL\Query\UsersQuery'
+			],
+			'mutation' => [
+				//'updateUserEmail' => 'App\GraphQL\Query\UpdateUserEmailMutation'
+			]
+		],
+		'secret' => [
+			'query' => [
+				//'users' => 'App\GraphQL\Query\UsersQuery'
+			],
+			'mutation' => [
+				//'updateUserEmail' => 'App\GraphQL\Query\UpdateUserEmailMutation'
+			]
+		]
+	]
+
+```
+
+Or you can add schema using the facade:
+
+```php
+
+	GraphQL::addSchema('secret', [
+		'query' => [
+			//'users' => 'App\GraphQL\Query\UsersQuery'
+		],
+		'mutation' => [
+			//'updateUserEmail' => 'App\GraphQL\Query\UpdateUserEmailMutation'
+		]
+	]);
+
+```
+
+Afterwards, you can build the schema using the facade:
+
+```php
+    
+	// Will return the default schema defined by 'schema' in the config
+	$schema = GraphQL::schema(); 
+	
+	// Will return the 'secret' schema
+	$schema = GraphQL::schema('secret');
+	
+	// Will build a new schema
+	$schema = GraphQL::schema([
+		'query' => [
+			//'users' => 'App\GraphQL\Query\UsersQuery'
+		],
+		'mutation' => [
+			//'updateUserEmail' => 'App\GraphQL\Query\UpdateUserEmailMutation'
+		]
+	]);
+	
+```
+
+Or you can request the endpoint of a specific schema
+
+```
+// Default schema
+http://homestead.app/graphql?query=query+FetchUsers{users{id,email}}
+
+// Secret schema
+http://homestead.app/graphql/secret?query=query+FetchUsers{users{id,email}}
+```
 
 ### Creating a query
 
@@ -147,7 +263,7 @@ Then you need to define a query that returns this type (or a list). You can also
 	class UsersQuery extends Query {
 	
 		protected $attributes = [
-			'name' => 'Users query'
+			'name' => 'users'
 		];
 		
 		public function type()
@@ -187,20 +303,14 @@ Add the query to the `config/graphql.php` configuration file
 
 ```php
     
-    'schema' => [
-		'query' => [
-			'users' => 'App\GraphQL\Query\UsersQuery'
-		],
-		// ...
+    'schemas' => [
+		'default' => [
+			'query' => [
+				'users' => 'App\GraphQL\Query\UsersQuery'
+			],
+			// ...
+		]
 	]
-
-```
-
-Or using the `GraphQL` facade
-
-```php
-    
-    GraphQL::addQuery('App\GraphQL\Query\UsersQuery', 'users');
 
 ```
 
@@ -238,7 +348,7 @@ For example a mutation to update the password of a user. First you need to defin
 	class UpdateUserPasswordMutation extends Mutation {
 	
 		protected $attributes = [
-			'name' => 'UpdateUserPassword'
+			'name' => 'updateUserPassword'
 		];
 		
 		public function type()
@@ -279,19 +389,13 @@ You then add the muation to the `config/graphql.php` configuration file
 ```php
     
     'schema' => [
-		'mutation' => [
-			'updateUserPassword' => 'App\GraphQL\Mutation\UpdateUserPasswordMutation'
-		],
-		// ...
+		'default' => [
+			'mutation' => [
+				'updateUserPassword' => 'App\GraphQL\Mutation\UpdateUserPasswordMutation'
+			],
+			// ...
+		]
 	]
-
-```
-
-Or using the `GraphQL` facade
-
-```php
-    
-    GraphQL::addMutation('App\GraphQL\Mutation\UpdateUserPasswordMutation', 'updateUserPassword');
 
 ```
 

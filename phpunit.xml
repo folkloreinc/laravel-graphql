@@ -13,6 +13,7 @@
     <testsuites>
         <testsuite name="Folklore/GraphQL Test Suite">
             <file>./tests/GraphQLTest.php</file>
+            <file>./tests/TypeTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>

@@ -13,7 +13,16 @@ class GraphQLServiceProvider extends ServiceProvider
     {
         $this->bootPublishes();
         
+        //Update the schema route pattern when schema is added
+        $this->app['events']->listen(\Folklore\GraphQL\Events\SchemaAdded::class, function()
+        {
+            $schemas = array_keys($this->app['graphql']->getSchemas());
+            $this->app['router']->pattern('graphql_schema', '('.implode('|', $schemas).')');
+        });
+        
         $this->bootTypes();
+        
+        $this->bootSchemas();
         
         if(config('graphql.routes'))
         {
@@ -38,7 +47,7 @@ class GraphQLServiceProvider extends ServiceProvider
     }
     
     /**
-     * Bootstrap publishes
+     * Add types from config
      *
      * @return void
      */
@@ -55,6 +64,20 @@ class GraphQLServiceProvider extends ServiceProvider
             {
                 $this->app['graphql']->addType($type, $name);
             }
+        }
+    }
+    
+    /**
+     * Add schemas from config
+     *
+     * @return void
+     */
+    protected function bootSchemas()
+    {
+        $configSchemas = config('graphql.schemas');
+        foreach($configSchemas as $name => $schema)
+        {
+            $this->app['graphql']->addSchema($name, $schema);
         }
     }
 
