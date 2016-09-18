@@ -63,6 +63,7 @@ config/graphql.php
 
 ## Upgrade to 1.0
 
+### Multiple schemas
 The main difference between versions prior 1.0 and 1.0 is the use of multiple schemas. You will need to update your config to have the following structure:
 
 ```php
@@ -75,13 +76,14 @@ The main difference between versions prior 1.0 and 1.0 is the use of multiple sc
 				// Your queries
 			],
 			'mutation' => [
-				// Your muttations
+				// Your mutations
 			]
 		]
 	]
 
 ```
 
+### Routes
 If you want to use routes that can accept schema name, you need to change `routes` to the following:
 
 ```php
@@ -97,7 +99,18 @@ If you want to use routes that can accept schema name, you need to change `route
 
 ```
 
+### Facade methods
 The method `GraphQL::addQuery` and `GraphQL::addMutation` has been removed since it doesn't make sense with multiple schemas. You can use the new `GraphQL::addSchema` method to add new schemas.
+
+### Context
+Since graphql-php v0.7 the arguments passed to the `resolve` method has changed. There is a third argument called `context`.
+
+```php
+public function resolve($root, $args, $context, ResolveInfo $info)
+{
+	
+}
+```
 
 ## Usage
 
@@ -178,7 +191,7 @@ Afterwards, you can build the schema using the facade:
 	
 ```
 
-Or you can request the endpoint of a specific schema
+Or you can request the endpoint for a specific schema
 
 ```
 // Default schema
@@ -671,7 +684,7 @@ Your Query would look like
 			];
 		}
         
-		public function resolve($root, $args, ResolveInfo $info)
+		public function resolve($root, $args, $context, ResolveInfo $info)
 		{
 			$fields = $info->getFieldSelection($depth = 3);
 			
