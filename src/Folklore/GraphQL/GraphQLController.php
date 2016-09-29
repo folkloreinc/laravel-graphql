@@ -2,20 +2,31 @@
 
 use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
+use Auth;
 
-class GraphQLController extends Controller {
+class GraphQLController extends Controller
+{
     
-    public function query(Request $request)
+    public function query(Request $request, $schema = null)
     {
+        if (!$schema) {
+            $schema = config('graphql.schema');
+        }
+        
         $query = $request->get('query');
         $params = $request->get('params');
         
-        if(is_string($params))
-        {
+        if (is_string($params)) {
             $params = json_decode($params, true);
         }
         
-        return app('graphql')->query($query, $params);
+        $context = $this->queryContext($query, $params, $schema);
+        
+        return app('graphql')->query($query, $params, $context, $schema);
     }
     
+    protected function queryContext($query, $params, $schema)
+    {
+        return Auth::user();
+    }
 }

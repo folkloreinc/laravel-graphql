@@ -1,0 +1,31 @@
+<?php
+
+namespace DummyNamespace;
+
+use Folklore\GraphQL\Support\Query;
+use GraphQL\Type\Definition\ResolveInfo;
+
+class DummyClass extends Query
+{
+    protected $attributes = [
+        'name' => 'DummyQuery',
+        'description' => 'A query'
+    ];
+
+    public function type()
+    {
+        return Type::listOf(Type::string());
+    }
+
+    public function args()
+    {
+        return [
+            
+        ];
+    }
+
+    public function resolve($root, $args, $context, ResolveInfo $info)
+    {
+        return [];
+    }
+}

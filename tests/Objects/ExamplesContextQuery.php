@@ -4,9 +4,10 @@ namespace Folklore\GraphQL\Tests\Objects;
 
 use GraphQL;
 use GraphQL\Type\Definition\Type;
-use Folklore\GraphQL\Support\Query; 
+use Folklore\GraphQL\Support\Query;
 
-class ExamplesContextQuery extends Query {
+class ExamplesContextQuery extends Query
+{
     
     protected $attributes = [
         'name' => 'Examples context query'
@@ -21,5 +22,4 @@ class ExamplesContextQuery extends Query {
     {
         return $context;
     }
-    
 }

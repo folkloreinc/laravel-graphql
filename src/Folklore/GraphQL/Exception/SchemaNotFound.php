@@ -2,4 +2,6 @@
 
 use Exception;
 
-class SchemaNotFound extends Exception {}
+class SchemaNotFound extends Exception
+{
+}

@@ -12,8 +12,6 @@ class TestCase extends BaseTestCase
     public function setUp()
     {
         parent::setUp();
-        
-        
     }
     
     protected function assertGraphQLSchema($schema)
@@ -22,7 +20,7 @@ class TestCase extends BaseTestCase
     }
     
     protected function assertGraphQLSchemaHasQuery($schema, $key)
-    {    
+    {
         //Query
         $query = $schema->getQueryType();
         $queryFields = $query->getFields();

@@ -8,7 +8,8 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 
-class Type extends Fluent {
+class Type extends Fluent
+{
     
     protected static $instances = [];
     
@@ -32,15 +33,11 @@ class Type extends Fluent {
     protected function getFieldResolver($name, $field)
     {
         $resolveMethod = 'resolve'.studly_case($name).'Field';
-        if(isset($field['resolve']))
-        {
+        if (isset($field['resolve'])) {
             return $field['resolve'];
-        }
-        else if(method_exists($this, $resolveMethod))
-        {
+        } elseif (method_exists($this, $resolveMethod)) {
             $resolver = array($this, $resolveMethod);
-            return function() use ($resolver)
-            {
+            return function () use ($resolver) {
                 $args = func_get_args();
                 return call_user_func_array($resolver, $args);
             };
@@ -53,19 +50,14 @@ class Type extends Fluent {
     {
         $fields = $this->fields();
         $allFields = [];
-        foreach($fields as $name => $field)
-        {
-            if(is_string($field))
-            {
+        foreach ($fields as $name => $field) {
+            if (is_string($field)) {
                 $field = app($field);
                 $field->name = $name;
                 $allFields[$name] = $field->toArray();
-            }
-            else
-            {
+            } else {
                 $resolver = $this->getFieldResolver($name, $field);
-                if($resolver)
-                {
+                if ($resolver) {
                     $field['resolve'] = $resolver;
                 }
                 $allFields[$name] = $field;
@@ -91,8 +83,7 @@ class Type extends Fluent {
             }
         ], $attributes);
         
-        if(sizeof($interfaces))
-        {
+        if (sizeof($interfaces)) {
             $attributes['interfaces'] = $interfaces;
         }
         
@@ -111,8 +102,7 @@ class Type extends Fluent {
     
     public function toType()
     {
-        if($this->inputObject)
-        {
+        if ($this->inputObject) {
             return new InputObjectType($this->toArray());
         }
         return new ObjectType($this->toArray());
@@ -141,5 +131,4 @@ class Type extends Fluent {
         $attributes = $this->getAttributes();
         return isset($attributes[$key]);
     }
-    
 }

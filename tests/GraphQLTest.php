@@ -7,39 +7,22 @@ use GraphQL\Schema;
 use GraphQL\Type\Definition\ObjectType;
 
 class GraphQLTest extends TestCase
-{    
-    protected $exampleQuery = "
-        query QueryExamples {
-            examples {
-                test
-            }
-        }
-    ";
-      
-    protected $exampleQueryCustom = "
-        query QueryExamplesCustom {
-            examplesCustom {
-                test
-            }
-        }
-    ";
-    
-    protected $exampleQueryWithParams = "
-        query QueryExamplesParams(\$index: Int) {
-            examples(index: \$index) {
-                test
-            }
-        }
-    ";
-    
-    protected $exampleQueryWithContext = "
-        query QueryExamplesContext {
-            examplesContext {
-                test
-            }
-        }
-    ";
+{
 
+    protected $queries;
+    protected $data;
+    
+    /**
+     * Setup the test environment.
+     */
+    public function setUp()
+    {
+        parent::setUp();
+        
+        $this->queries = include(__DIR__.'/Objects/queries.php');
+        $this->data = include(__DIR__.'/Objects/data.php');
+    }
+    
     protected function getEnvironmentSetUp($app)
     {
         $app['config']->set('graphql.schemas.default', [
@@ -181,33 +164,32 @@ class GraphQLTest extends TestCase
      */
     public function testQuery()
     {
-        $result = GraphQL::query($this->exampleQuery);
+        $result = GraphQL::query($this->queries['examples']);
         
         $this->assertArrayHasKey('data', $result);
-        $data = include(__DIR__.'/Objects/data.php');
+        
         $this->assertEquals($result['data'], [
-            'examples' => $data
+            'examples' => $this->data
         ]);
     }
     
     public function testQueryWithParams()
     {
-        $result = GraphQL::query($this->exampleQueryWithParams, [
+        $result = GraphQL::query($this->queries['examplesWithParams'], [
             'index' => 0
         ]);
         
         $this->assertArrayHasKey('data', $result);
-        $data = include(__DIR__.'/Objects/data.php');
         $this->assertEquals($result['data'], [
             'examples' => [
-                $data[0]
+                $this->data[0]
             ]
         ]);
     }
     
     public function testQueryWithContext()
     {
-        $result = GraphQL::query($this->exampleQueryWithContext, null, [
+        $result = GraphQL::query($this->queries['examplesWithContext'], null, [
             'test' => 'context'
         ]);
         $this->assertArrayHasKey('data', $result);
@@ -220,15 +202,14 @@ class GraphQLTest extends TestCase
     
     public function testQueryWithSchema()
     {
-        $result = GraphQL::query($this->exampleQueryCustom, null, null, [
+        $result = GraphQL::query($this->queries['examplesCustom'], null, null, [
             'query' => [
                 'examplesCustom' => \Folklore\GraphQL\Tests\Objects\ExamplesQuery::class
             ]
         ]);
         $this->assertArrayHasKey('data', $result);
-        $data = include(__DIR__.'/Objects/data.php');
         $this->assertEquals($result['data'], [
-            'examplesCustom' => $data
+            'examplesCustom' => $this->data
         ]);
     }
     

@@ -5,7 +5,8 @@ namespace Folklore\GraphQL\Tests\Objects;
 use GraphQL\Type\Definition\Type;
 use Folklore\GraphQL\Support\Type as GraphQLType;
 
-class CustomExampleType extends GraphQLType {
+class CustomExampleType extends GraphQLType
+{
 
     protected $attributes = [
         'name' => 'CustomExample',
@@ -21,5 +22,4 @@ class CustomExampleType extends GraphQLType {
             ]
         ];
     }
-
 }

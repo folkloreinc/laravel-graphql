@@ -12,9 +12,15 @@ return [
     //
     // Example:
     //
+    // Same route for both query and mutation
+    //
+    // 'routes' => 'path/to/query/{graphql_schema?}',
+    //
+    // or define each routes
+    //
     // 'routes' => [
-    //     'query' => '/query',
-    //     'mutation' => '/mutation'
+    //     'query' => 'query/{graphql_schema?}',
+    //     'mutation' => 'mutation/{graphql_schema?}'
     // ]
     //
     'routes' => '{graphql_schema?}',
@@ -57,7 +63,7 @@ return [
     //              'users' => 'App\GraphQL\Query\UsersQuery'
     //          ],
     //          'mutation' => [
-    //          
+    //
     //          ]
     //     ]
     // ]

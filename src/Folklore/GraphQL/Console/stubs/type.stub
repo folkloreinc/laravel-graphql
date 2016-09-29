@@ -1,0 +1,20 @@
+<?php
+
+namespace DummyNamespace;
+
+use Folklore\GraphQL\Support\Type;
+
+class DummyClass extends Type
+{
+    protected $attributes = [
+        'name' => 'DummyType',
+        'description' => 'A type'
+    ];
+
+    public function fields()
+    {
+        return [
+            
+        ];
+    }
+}

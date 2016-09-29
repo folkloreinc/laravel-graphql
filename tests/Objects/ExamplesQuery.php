@@ -4,12 +4,13 @@ namespace Folklore\GraphQL\Tests\Objects;
 
 use GraphQL;
 use GraphQL\Type\Definition\Type;
-use Folklore\GraphQL\Support\Query; 
+use Folklore\GraphQL\Support\Query;
 
-class ExamplesQuery extends Query {
+class ExamplesQuery extends Query
+{
     
     protected $attributes = [
-        'name' => 'exampes'
+        'name' => 'examples'
     ];
     
     public function type()
@@ -28,8 +29,7 @@ class ExamplesQuery extends Query {
     {
         $data = include(__DIR__.'/data.php');
         
-        if(isset($args['index']))
-        {
+        if (isset($args['index'])) {
             return [
                 $data[$args['index']]
             ];
@@ -37,5 +37,4 @@ class ExamplesQuery extends Query {
         
         return $data;
     }
-    
 }

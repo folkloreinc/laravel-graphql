@@ -5,19 +5,15 @@ use Illuminate\Http\Request;
 Route::group(array(
     'prefix' => config('graphql.prefix'),
     'middleware' => config('graphql.middleware', [])
-), function()
-{
+), function () {
     //Routes
     $routes = config('graphql.routes');
     $queryRoute = null;
     $mutationRoute = null;
-    if(is_array($routes))
-    {
+    if (is_array($routes)) {
         $queryRoute = array_get($routes, 'query', null);
         $mutationRoute = array_get($routes, 'mutation', null);
-    }
-    else
-    {
+    } else {
         $queryRoute = $routes;
         $mutationRoute = $routes;
     }
@@ -26,29 +22,24 @@ Route::group(array(
     $controllers = config('graphql.controllers', '\Folklore\GraphQL\GraphQLController@query');
     $queryController = null;
     $mutationController = null;
-    if(is_array($controllers))
-    {
+    if (is_array($controllers)) {
         $queryController = array_get($controllers, 'query', null);
         $mutationController = array_get($controllers, 'mutation', null);
-    }
-    else
-    {
+    } else {
         $queryController = $controllers;
         $mutationController = $controllers;
     }
     
     //Query
-    if($queryRoute)
-    {
+    if ($queryRoute) {
         Route::get($queryRoute, array(
             'as' => 'graphql.query',
             'uses' => $queryController
         ));
     }
     
-    if($mutationRoute)
-    {
-        //Mutation
+    if ($mutationRoute) {
+    //Mutation
         Route::post($mutationRoute, array(
             'as' => 'graphql.mutation',
             'uses' => $mutationController

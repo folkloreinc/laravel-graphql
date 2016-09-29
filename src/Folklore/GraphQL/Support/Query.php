@@ -2,6 +2,7 @@
 
 namespace Folklore\GraphQL\Support;
 
-class Query extends Field {
+class Query extends Field
+{
     
 }

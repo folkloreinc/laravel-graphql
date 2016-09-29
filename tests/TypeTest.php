@@ -3,44 +3,14 @@
 namespace Folklore\GraphQL\Tests;
 
 use GraphQL;
+use Closure;
 use Folklore\Support\Field;
 use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\ObjectType;
 use Folklore\GraphQL\Tests\Objects\ExampleType;
 
 class TypeTest extends TestCase
-{    
-    /**
-     * Test get attributes
-     *
-     * @test
-     */
-    public function testGetAttributes()
-    {
-        $type = $this->getMockBuilder(ExampleType::class)
-                         ->setMethods(['getFields'])
-                         ->getMock();
-
-        $type->expects($this->once())
-                 ->method('getFields');
-                 
-        $attributes = $type->getAttributes();
-        $this->assertArrayHasKey('fields', $attributes);
-        $attributes['fields']();
-    } 
-       
-    /**
-     * Test to array
-     *
-     * @test
-     */
-    public function testToArray()
-    {
-        $type = new ExampleType();
-        $attributes = $type->getAttributes();
-        $array = $type->toArray();
-        $this->assertEquals($attributes, $array);
-    }
-    
+{
     /**
      * Test getFields
      *
@@ -57,5 +27,73 @@ class TypeTest extends TestCase
                 'description' => 'A test field'
             ]
         ]);
+    }
+       
+    /**
+     * Test get attributes
+     *
+     * @test
+     */
+    public function testGetAttributes()
+    {
+        $type = new ExampleType();
+        $attributes = $type->getAttributes();
+        
+        $this->assertArrayHasKey('name', $attributes);
+        $this->assertArrayHasKey('fields', $attributes);
+        $this->assertInstanceOf(Closure::class, $attributes['fields']);
+        $this->assertInternalType('array', $attributes['fields']());
+    }
+    
+    /**
+     * Test get attributes fields closure
+     *
+     * @test
+     */
+    public function testGetAttributesFields()
+    {
+        $type = $this->getMockBuilder(ExampleType::class)
+                    ->setMethods(['getFields'])
+                    ->getMock();
+
+        $type->expects($this->once())
+            ->method('getFields');
+        
+        $attributes = $type->getAttributes();
+        $attributes['fields']();
+    }
+       
+    /**
+     * Test to array
+     *
+     * @test
+     */
+    public function testToArray()
+    {
+        $type = new ExampleType();
+        $array = $type->toArray();
+        
+        $this->assertInternalType('array', $array);
+        
+        $attributes = $type->getAttributes();
+        $this->assertEquals($attributes, $array);
+    }
+       
+    /**
+     * Test to type
+     *
+     * @test
+     */
+    public function testToType()
+    {
+        $type = new ExampleType();
+        $objectType = $type->toType();
+        
+        $this->assertInstanceOf(ObjectType::class, $objectType);
+        
+        $this->assertEquals($objectType->name, $type->name);
+        
+        $fields = $objectType->getFields();
+        $this->assertArrayHasKey('test', $fields);
     }
 }

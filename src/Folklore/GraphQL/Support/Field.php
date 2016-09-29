@@ -4,7 +4,8 @@ namespace Folklore\GraphQL\Support;
 
 use Illuminate\Support\Fluent;
 
-class Field extends Fluent {
+class Field extends Fluent
+{
     
     public function attributes()
     {
@@ -23,14 +24,12 @@ class Field extends Fluent {
     
     protected function getResolver()
     {
-        if(!method_exists($this, 'resolve'))
-        {
+        if (!method_exists($this, 'resolve')) {
             return null;
         }
         
         $resolver = array($this, 'resolve');
-        return function() use ($resolver)
-        {
+        return function () use ($resolver) {
             $args = func_get_args();
             return call_user_func_array($resolver, $args);
         };
@@ -47,18 +46,16 @@ class Field extends Fluent {
         $args = $this->args();
         
         $attributes = array_merge($this->attributes, [
-            'args' => $this->args()
+            'args' => $args
         ], $attributes);
         
         $type = $this->type();
-        if(isset($type))
-        {
+        if (isset($type)) {
             $attributes['type'] = $type;
         }
         
         $resolver = $this->getResolver();
-        if(isset($resolver))
-        {
+        if (isset($resolver)) {
             $attributes['resolve'] = $resolver;
         }
         
@@ -98,5 +95,4 @@ class Field extends Fluent {
         $attributes = $this->getAttributes();
         return isset($attributes[$key]);
     }
-    
 }

@@ -2,4 +2,6 @@
 
 use Exception;
 
-class TypeNotFound extends Exception {}
+class TypeNotFound extends Exception
+{
+}

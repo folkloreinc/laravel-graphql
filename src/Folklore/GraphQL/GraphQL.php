@@ -14,7 +14,8 @@ use Folklore\GraphQL\Exception\SchemaNotFound;
 use Folklore\GraphQL\Events\SchemaAdded;
 use Folklore\GraphQL\Events\TypeAdded;
 
-class GraphQL {
+class GraphQL
+{
     
     protected $app;
     
@@ -29,17 +30,15 @@ class GraphQL {
 
     public function schema($schema = null)
     {
-        if($schema instanceof Schema)
-        {
+        if ($schema instanceof Schema) {
             return $schema;
         }
         
-        $this->typesInstances = [];
+        $this->clearTypeInstances();
         
         $schemaName = is_string($schema) ? $schema:config('graphql.schema', 'default');
         
-        if(!is_array($schema) && !isset($this->schemas[$schemaName]))
-        {
+        if (!is_array($schema) && !isset($this->schemas[$schemaName])) {
             throw new SchemaNotFound('Type '.$schemaName.' not found.');
         }
         
@@ -51,65 +50,27 @@ class GraphQL {
         
         //Get the types either from the schema, or the global types.
         $types = [];
-        if(sizeof($schemaTypes))
-        {
-            foreach($schemaTypes as $type)
-            {
-                if(is_string($type) && isset($this->types[$type]))
-                {
+        if (sizeof($schemaTypes)) {
+            foreach ($schemaTypes as $type) {
+                if (is_string($type) && isset($this->types[$type])) {
                     $types[] = $this->type($name);
-                }
-                else
-                {
+                } else {
                     $types[] = $this->buildObjectTypeFromClass($type);
                 }
             }
-        }
-        else
-        {
-            foreach($this->types as $name => $type)
-            {
+        } else {
+            foreach ($this->types as $name => $type) {
                 $types[] = $this->type($name);
             }
         }
         
-        // Get the query ObjectType. If it's a string, assume it's a class
-        // name. If it's an object, check if it's an ObjectType, if not assume
-        // it's a Query object, otherwise assume it's an array of fields and
-        // build the ObjectType from it.
-        if(is_string($schemaQuery))
-        {
-            $query = $this->app->make($schemaQuery)->toType();
-        }
-        else if(is_object($schemaQuery))
-        {
-            $query = $schemaQuery instanceof ObjectType ? $schemaQuery:$schemaQuery->toType();
-        }
-        else
-        {
-            $query = $this->buildObjectTypeFromFields($schemaQuery, [
-                'name' => 'Query'
-            ]);
-        }
+        $query = $this->objectType($schemaQuery, [
+            'name' => 'Query'
+        ]);
         
-        // Get the mutation ObjectType. If it's a string, assume it's a class
-        // name. If it's an object, check if it's an ObjectType, if not assume
-        // it's a Mutation object, otherwise assume it's an array of fields and
-        // build the ObjectType from it.
-        if(is_string($schemaMutation))
-        {
-            $mutation = $this->app->make($schemaMutation)->toType();
-        }
-        else if(is_object($schemaQuery))
-        {
-            $mutation = $schemaMutation instanceof ObjectType ? $schemaMutation:$schemaMutation->toType();
-        }
-        else
-        {
-            $mutation = $this->buildObjectTypeFromFields($schemaMutation, [
-                'name' => 'Mutation'
-            ]);
-        }
+        $mutation = $this->objectType($schemaMutation, [
+            'name' => 'Mutation'
+        ]);
         
         return new Schema([
             'query' => $query,
@@ -120,21 +81,43 @@ class GraphQL {
     
     public function type($name, $fresh = false)
     {
-        if(!isset($this->types[$name]))
-        {
+        if (!isset($this->types[$name])) {
             throw new TypeNotFound('Type '.$name.' not found.');
         }
         
-        if(!$fresh && isset($this->typesInstances[$name]))
-        {
+        if (!$fresh && isset($this->typesInstances[$name])) {
             return $this->typesInstances[$name];
         }
         
         $class = $this->types[$name];
-        $type = $this->buildObjectTypeFromClass($class);
+        $type = $this->objectType($class, [
+            'name' => $name
+        ]);
         $this->typesInstances[$name] = $type;
         
         return $type;
+    }
+    
+    public function objectType($type, $opts = [])
+    {
+        // If it's already an ObjectType, just update properties and return it.
+        // If it's an array, assume it's an array of fields and build ObjectType
+        // from it. Otherwise, build it from a string or an instance.
+        $objectType = null;
+        if ($type instanceof ObjectType) {
+            $objectType = $type;
+            foreach ($opts as $key => $value) {
+                if (property_exists($this, $key)) {
+                    $this->{$key} = $value;
+                }
+            }
+        } elseif (is_array($type)) {
+            $objectType = $this->buildObjectTypeFromFields($type, $opts);
+        } else {
+            $objectType = $this->buildObjectTypeFromClass($type, $opts);
+        }
+        
+        return $objectType;
     }
     
     public function query($query, $params = [], $context = null, $schema = null)
@@ -142,17 +125,14 @@ class GraphQL {
         $schema = $this->schema($schema);
         $result = GraphQLBase::executeAndReturnResult($schema, $query, null, $context, $params);
         
-        if (!empty($result->errors))
-        {
+        if (!empty($result->errors)) {
             $errorFormatter = config('graphql.error_formatter', ['\Folklore\GraphQL', 'formatError']);
             
             return [
                 'data' => $result->data,
                 'errors' => array_map($errorFormatter, $result->errors)
             ];
-        }
-        else
-        {
+        } else {
             return [
                 'data' => $result->data
             ];
@@ -181,6 +161,20 @@ class GraphQL {
         $this->app['events']->fire(new SchemaAdded($schema, $name));
     }
     
+    public function clearType($name)
+    {
+        if (isset($this->types[$name])) {
+            unset($this->types[$name]);
+        }
+    }
+    
+    public function clearSchema($name)
+    {
+        if (isset($this->schemas[$name])) {
+            unset($this->schemas[$name]);
+        }
+    }
+    
     public function clearTypes()
     {
         $this->types = [];
@@ -201,11 +195,19 @@ class GraphQL {
         return $this->schemas;
     }
     
-    protected function buildObjectTypeFromClass($type)
+    protected function clearTypeInstances()
     {
-        if(!is_object($type))
-        {
+        $this->typesInstances = [];
+    }
+    
+    protected function buildObjectTypeFromClass($type, $opts = [])
+    {
+        if (!is_object($type)) {
             $type = $this->app->make($type);
+        }
+        
+        foreach ($opts as $key => $value) {
+            $type->{$key} = $value;
         }
         
         return $type->toType();
@@ -214,15 +216,14 @@ class GraphQL {
     protected function buildObjectTypeFromFields($fields, $opts = [])
     {
         $typeFields = [];
-        foreach($fields as $name => $field)
-        {
-            $field = is_string($field) ? $this->app->make($field)->toArray():$field;
-            if(is_numeric($name))
-            {
-                $name = $field['name'];
-            }
-            else
-            {
+        foreach ($fields as $name => $field) {
+            if (is_string($field)) {
+                $field = $this->app->make($field);
+                $name = is_numeric($name) ? $field->name:$name;
+                $field->name = $name;
+                $field = $field->toArray();
+            } else {
+                $name = is_numeric($name) ? $field['name']:$name;
                 $field['name'] = $name;
             }
             $typeFields[$name] = $field;
@@ -235,8 +236,7 @@ class GraphQL {
     
     protected function getTypeName($class, $name = null)
     {
-        if($name)
-        {
+        if ($name) {
             return $name;
         }
         
@@ -251,17 +251,14 @@ class GraphQL {
         ];
         
         $locations = $e->getLocations();
-        if(!empty($locations))
-        {
-            $error['locations'] = array_map(function($loc)
-            {
+        if (!empty($locations)) {
+            $error['locations'] = array_map(function ($loc) {
                 return $loc->toArray();
             }, $locations);
         }
         
         $previous = $e->getPrevious();
-        if($previous && $previous instanceof ValidationError)
-        {
+        if ($previous && $previous instanceof ValidationError) {
             $error['validation'] = $previous->getValidatorMessages();
         }
         

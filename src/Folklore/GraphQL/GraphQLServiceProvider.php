@@ -11,23 +11,31 @@ class GraphQLServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->bootPublishes();
+        $this->bootEvents();
         
-        //Update the schema route pattern when schema is added
-        $this->app['events']->listen(\Folklore\GraphQL\Events\SchemaAdded::class, function()
-        {
-            $schemas = array_keys($this->app['graphql']->getSchemas());
-            $this->app['router']->pattern('graphql_schema', '('.implode('|', $schemas).')');
-        });
+        $this->bootPublishes();
         
         $this->bootTypes();
         
         $this->bootSchemas();
         
-        if(config('graphql.routes'))
-        {
+        if (config('graphql.routes')) {
             include __DIR__.'/routes.php';
         }
+    }
+    
+    /**
+     * Bootstrap events
+     *
+     * @return void
+     */
+    protected function bootEvents()
+    {
+        //Update the schema route pattern when schema is added
+        $this->app['events']->listen(\Folklore\GraphQL\Events\SchemaAdded::class, function () {
+            $schemas = array_keys($this->app['graphql']->getSchemas());
+            $this->app['router']->pattern('graphql_schema', '('.implode('|', $schemas).')');
+        });
     }
     
     /**
@@ -54,14 +62,10 @@ class GraphQLServiceProvider extends ServiceProvider
     protected function bootTypes()
     {
         $configTypes = config('graphql.types');
-        foreach($configTypes as $name => $type)
-        {
-            if(is_numeric($name))
-            {
+        foreach ($configTypes as $name => $type) {
+            if (is_numeric($name)) {
                 $this->app['graphql']->addType($type);
-            }
-            else
-            {
+            } else {
                 $this->app['graphql']->addType($type, $name);
             }
         }
@@ -75,8 +79,7 @@ class GraphQLServiceProvider extends ServiceProvider
     protected function bootSchemas()
     {
         $configSchemas = config('graphql.schemas');
-        foreach($configSchemas as $name => $schema)
-        {
+        foreach ($configSchemas as $name => $schema) {
             $this->app['graphql']->addSchema($name, $schema);
         }
     }
@@ -87,7 +90,7 @@ class GraphQLServiceProvider extends ServiceProvider
      * @return void
      */
     public function register()
-    {    
+    {
         $this->registerGraphQL();
     }
     
@@ -98,8 +101,7 @@ class GraphQLServiceProvider extends ServiceProvider
      */
     public function registerGraphQL()
     {
-        $this->app->singleton('graphql', function($app)
-        {
+        $this->app->singleton('graphql', function ($app) {
             return new GraphQL($app);
         });
     }

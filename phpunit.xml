@@ -14,6 +14,11 @@
         <testsuite name="Folklore/GraphQL Test Suite">
             <file>./tests/GraphQLTest.php</file>
             <file>./tests/TypeTest.php</file>
+            <file>./tests/FieldTest.php</file>
+            <file>./tests/QueryTest.php</file>
+            <file>./tests/MutationTest.php</file>
+            <file>./tests/ConsoleTest.php</file>
+            <file>./tests/EndpointTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>
