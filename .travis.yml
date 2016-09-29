@@ -10,19 +10,19 @@ env:
   - LARAVEL=5.2
   - LARAVEL=5.3
   - LARAVEL=dev-master
-  - LARAVEL=dev-features/v1
+  - LARAVEL=dev-v1
 
 matrix:
   allow_failures:
     - env: LARAVEL=dev-master
-      - env: LARAVEL=dev-features/v1
+      - env: LARAVEL=dev-v1
   exclude:
     - php: 5.5
       env: LARAVEL=5.3
     - php: 5.5
       env: LARAVEL=dev-master
     - php: 5.5
-      env: LARAVEL=dev-features/v1
+      env: LARAVEL=dev-v1
 
 before_script:
   - curl -s http://getcomposer.org/installer | php
