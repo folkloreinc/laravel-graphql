@@ -68,29 +68,31 @@ config/graphql.php
 
 **1-** Load the service provider in `bootstrap/app.php`
 ```php
-$app->register(LumenGraphQLServiceProvider::class);
+$app->register(Folklore\GraphQL\LumenGraphQLServiceProvider::class);
 ```
 
-**2-** Publish the configuration file
+**2-** For using the facade you have to uncomment the line `$app->withFacades();` in `bootstrap/app.php`
+
+After uncommenting this line you have the `GraphQL` facade enabled
+
+```php
+$app->withFacades();
+```
+
+**3-** Publish the configuration file
 
 ```bash
 $ php artisan graphql:publish
 ```
 
-**3-** Load configuration file in `bootstrap/app.php`
+**4-** Load configuration file in `bootstrap/app.php`
 
 *Important*: this command needs to be executed before the registration of the service provider
 
 ```php
 $app->configure('graphql');
 ...
-$app->register(LumenGraphQLServiceProvider::class)
-```
-
-**4-** For using the facade you have to uncomment the line `$app->withFacades();` in `bootstrap/app.php`
-
-```php
-$app->withFacades();
+$app->register(Folklore\GraphQL\LumenGraphQLServiceProvider::class)
 ```
 
 **5-** Review the configuration file
