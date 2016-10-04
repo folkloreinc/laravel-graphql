@@ -1,6 +1,6 @@
 <?php
 
-namespace Folklore\GraphQL\Commands;
+namespace Folklore\GraphQL\Console;
 
 
 use Illuminate\Console\Command;

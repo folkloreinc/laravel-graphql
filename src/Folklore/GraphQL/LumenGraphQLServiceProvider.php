@@ -86,7 +86,7 @@ class LumenGraphQLServiceProvider extends ServiceProvider
     public function registerCommands()
     {
         $this->commands([
-            \Folklore\GraphQL\Commands\PublishCommand::class
+            \Folklore\GraphQL\Console\PublishCommand::class
         ]);
     }
 }
