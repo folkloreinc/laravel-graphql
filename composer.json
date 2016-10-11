@@ -20,7 +20,7 @@
     "require": {
         "php": ">=5.5.9",
         "illuminate/support": "~5.1",
-        "webonyx/graphql-php": "0.6.*"
+        "webonyx/graphql-php": "0.7.*"
     },
     "require-dev": {
         "orchestra/testbench": "~3.1"

@@ -129,4 +129,25 @@ class GraphQLTest extends TestCase
         $mutation = app($mutations['updateExampleCustom']);
         $this->assertInstanceOf('Folklore\GraphQL\Support\Mutation', $mutation);
     }
+
+    /**
+    * Test interface implementation
+    * 
+    * @test
+    */
+    public function testInterface()
+    {
+        $schema = GraphQL::schema([
+            'types' => [
+                'ExampleInterface' => \Folklore\GraphQL\Tests\ExampleInterfaceType::class,
+                'ExampleImplementer' => \Folklore\GraphQL\Tests\ExampleImplementerType::class
+            ]
+        ]);
+        
+        $interfaceType = $schema->getType('ExampleInterface');
+        $implementerType = $schema->getType('ExampleImplementer');
+
+        $isImplementation = $schema->isPossibleType($interfaceType, $implementerType);
+        $this->assertTrue($isImplementation);
+    }
 }

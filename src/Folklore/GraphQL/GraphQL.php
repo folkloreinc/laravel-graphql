@@ -33,9 +33,16 @@ class GraphQL {
             return $schema;
         }
         
+        $objectTypes = [];
+        $types = array_get($schema, 'types', []);
+
+        foreach($types as $name => $type) {
+            $this->addType($type, $name);
+        }
+
         foreach($this->types as $name => $type)
         {
-            $this->type($name);
+            $objectTypes[] = $this->type($name);
         }
         
         $configQuery = array_get($schema, 'query', []);
@@ -66,8 +73,12 @@ class GraphQL {
                 'name' => 'Mutation'
             ]);
         }
-        
-        return new Schema($queryType, $mutationType);
+
+        return new Schema([
+            'query' => $queryType, 
+            'mutation' => $mutationType,
+            'types' => $objectTypes
+            ]);
     }
     
     protected function buildTypeFromFields($fields, $opts = [])
@@ -174,13 +185,7 @@ class GraphQL {
         
         $instance = $type->toType();
         $this->typesInstances[$name] = $instance;
-        
-        //Check if the object has interfaces
-        if($type->interfaces)
-        {
-            InterfaceType::addImplementationToInterfaces($instance);
-        }
-        
+
         return $instance;
     }
     
