@@ -13,6 +13,7 @@ This package is compatible with Eloquent model (or any other data source). See t
 #### Dependencies:
 
 * [Laravel 5.x](https://github.com/laravel/laravel)
+* or [Lumen](https://github.com/laravel/lumen)
 * [GraphQL PHP](https://github.com/webonyx/graphql-php)
 
 
@@ -39,23 +40,62 @@ or
 $ composer update
 ```
 
-**3-** Add the service provider to your `app/config/app.php` file
+#### Configuration Laravel
+
+**1-** Add the service provider to your `app/config/app.php` file
 ```php
 'Folklore\GraphQL\GraphQLServiceProvider',
 ```
 
-**4-** Add the facade to your `app/config/app.php` file
+**2-** Add the facade to your `app/config/app.php` file
 ```php
 'GraphQL' => 'Folklore\GraphQL\Support\Facades\GraphQL',
 ```
 
-**5-** Publish the configuration file
+**3-** Publish the configuration file
 
 ```bash
 $ php artisan vendor:publish --provider="Folklore\GraphQL\GraphQLServiceProvider"
 ```
 
-**6-** Review the configuration file
+**4-** Review the configuration file
+
+```
+config/graphql.php
+```
+
+#### Configuration Lumen
+
+**1-** Load the service provider in `bootstrap/app.php`
+```php
+$app->register(Folklore\GraphQL\LumenGraphQLServiceProvider::class);
+```
+
+**2-** For using the facade you have to uncomment the line `$app->withFacades();` in `bootstrap/app.php`
+
+After uncommenting this line you have the `GraphQL` facade enabled
+
+```php
+$app->withFacades();
+```
+
+**3-** Publish the configuration file
+
+```bash
+$ php artisan graphql:publish
+```
+
+**4-** Load configuration file in `bootstrap/app.php`
+
+*Important*: this command needs to be executed before the registration of the service provider
+
+```php
+$app->configure('graphql');
+...
+$app->register(Folklore\GraphQL\LumenGraphQLServiceProvider::class)
+```
+
+**5-** Review the configuration file
 
 ```
 config/graphql.php
@@ -79,17 +119,17 @@ First you need to create a type.
 ```php
 
 	namespace App\GraphQL\Type;
-	
+
 	use GraphQL\Type\Definition\Type;
 	use Folklore\GraphQL\Support\Type as GraphQLType;
-    
+
     class UserType extends GraphQLType {
-        
+
         protected $attributes = [
 			'name' => 'User',
 			'description' => 'A user'
 		];
-		
+
 		public function fields()
 		{
 			return [
@@ -103,15 +143,15 @@ First you need to create a type.
 				]
 			];
 		}
-			
-			
+
+
 		// If you want to resolve the field yourself, you can declare a method
 		// with the following format resolve[FIELD_NAME]Field()
 		protected function resolveEmailField($root, $args)
 		{
 			return strtolower($root->email);
 		}
-        
+
     }
 
 ```
@@ -119,7 +159,7 @@ First you need to create a type.
 Add the type to the `config/graphql.php` configuration file
 
 ```php
-    
+
 	'types' => [
 		'user' => 'App\GraphQL\Type\UserType'
 	]
@@ -129,7 +169,7 @@ Add the type to the `config/graphql.php` configuration file
 You could also add the type with the `GraphQL` Facade, in a service provider for example.
 
 ```php
-    
+
 	GraphQL::addType('App\GraphQL\Type\UserType', 'user');
 
 ```
@@ -138,23 +178,23 @@ Then you need to define a query that returns this type (or a list). You can also
 ```php
 
 	namespace App\GraphQL\Query;
-	
+
 	use GraphQL;
 	use GraphQL\Type\Definition\Type;
-	use Folklore\GraphQL\Support\Query;    
+	use Folklore\GraphQL\Support\Query;
 	use App\User;
-	
+
 	class UsersQuery extends Query {
-	
+
 		protected $attributes = [
 			'name' => 'Users query'
 		];
-		
+
 		public function type()
 		{
 			return Type::listOf(GraphQL::type('user'));
 		}
-		
+
 		public function args()
 		{
 			return [
@@ -162,7 +202,7 @@ Then you need to define a query that returns this type (or a list). You can also
 				'email' => ['name' => 'email', 'type' => Type::string()]
 			];
 		}
-		
+
 		public function resolve($root, $args)
 		{
 			if(isset($args['id']))
@@ -178,7 +218,7 @@ Then you need to define a query that returns this type (or a list). You can also
 				return User::all();
 			}
 		}
-	
+
 	}
 
 ```
@@ -186,7 +226,7 @@ Then you need to define a query that returns this type (or a list). You can also
 Add the query to the `config/graphql.php` configuration file
 
 ```php
-    
+
     'schema' => [
 		'query' => [
 			'users' => 'App\GraphQL\Query\UsersQuery'
@@ -199,7 +239,7 @@ Add the query to the `config/graphql.php` configuration file
 Or using the `GraphQL` facade
 
 ```php
-    
+
     GraphQL::addQuery('App\GraphQL\Query\UsersQuery', 'users');
 
 ```
@@ -229,23 +269,23 @@ For example a mutation to update the password of a user. First you need to defin
 ```php
 
 	namespace App\GraphQL\Mutation;
-	
+
 	use GraphQL;
 	use GraphQL\Type\Definition\Type;
-	use Folklore\GraphQL\Support\Mutation;    
+	use Folklore\GraphQL\Support\Mutation;
 	use App\User;
-	
+
 	class UpdateUserPasswordMutation extends Mutation {
-	
+
 		protected $attributes = [
 			'name' => 'UpdateUserPassword'
 		];
-		
+
 		public function type()
 		{
 			return GraphQL::type('user');
 		}
-		
+
 		public function args()
 		{
 			return [
@@ -253,7 +293,7 @@ For example a mutation to update the password of a user. First you need to defin
 				'password' => ['name' => 'password', 'type' => Type::nonNull(Type::string())]
 			];
 		}
-		
+
 		public function resolve($root, $args)
 		{
 			$user = User::find($args['id']);
@@ -261,13 +301,13 @@ For example a mutation to update the password of a user. First you need to defin
 			{
 				return null;
 			}
-			
+
 			$user->password = bcrypt($args['password']);
 			$user->save();
-			
+
 			return $user;
 		}
-	
+
 	}
 
 ```
@@ -277,7 +317,7 @@ As you can see in the `resolve` method, you use the arguments to update your mod
 You then add the muation to the `config/graphql.php` configuration file
 
 ```php
-    
+
     'schema' => [
 		'mutation' => [
 			'updateUserPassword' => 'App\GraphQL\Mutation\UpdateUserPasswordMutation'
@@ -290,7 +330,7 @@ You then add the muation to the `config/graphql.php` configuration file
 Or using the `GraphQL` facade
 
 ```php
-    
+
     GraphQL::addMutation('App\GraphQL\Mutation\UpdateUserPasswordMutation', 'updateUserPassword');
 
 ```
@@ -320,23 +360,23 @@ When creating a mutation, you can add a method to define the validation rules th
 ```php
 
 	namespace App\GraphQL\Mutation;
-	
+
 	use GraphQL;
 	use GraphQL\Type\Definition\Type;
-	use Folklore\GraphQL\Support\Mutation;    
+	use Folklore\GraphQL\Support\Mutation;
 	use App\User;
-	
+
 	class UpdateUserEmailMutation extends Mutation {
-	
+
 		protected $attributes = [
 			'name' => 'UpdateUserEmail'
 		];
-		
+
 		public function type()
 		{
 			return GraphQL::type('user');
 		}
-		
+
 		public function args()
 		{
 			return [
@@ -344,7 +384,7 @@ When creating a mutation, you can add a method to define the validation rules th
 				'email' => ['name' => 'password', 'type' => Type::string()]
 			];
 		}
-		
+
 		public function rules()
 		{
 			return [
@@ -352,7 +392,7 @@ When creating a mutation, you can add a method to define the validation rules th
 				'email' => ['required', 'email']
 			];
 		}
-		
+
 		public function resolve($root, $args)
 		{
 			$user = User::find($args['id']);
@@ -360,13 +400,13 @@ When creating a mutation, you can add a method to define the validation rules th
 			{
 				return null;
 			}
-			
+
 			$user->email = $args['email'];
 			$user->save();
-			
+
 			return $user;
 		}
-	
+
 	}
 
 ```
@@ -374,11 +414,11 @@ When creating a mutation, you can add a method to define the validation rules th
 Alternatively you can define rules with each args
 
 ```php
-	
+
 	class UpdateUserEmailMutation extends Mutation {
-	
+
 		//...
-		
+
 		public function args()
 		{
 			return [
@@ -394,9 +434,9 @@ Alternatively you can define rules with each args
 				]
 			];
 		}
-		
+
 		//...
-	
+
 	}
 
 ```
@@ -455,20 +495,20 @@ You can also define a field as a class if you want to reuse it in multiple types
 ```php
 
 namespace App\GraphQL\Fields;
-	
+
 use GraphQL\Type\Definition\Type;
 use Folklore\GraphQL\Support\Field;
 
 class PictureField extends Field {
-        
+
         protected $attributes = [
 		'description' => 'A picture'
 	];
-	
+
 	public function type(){
 		return Type::string();
 	}
-		
+
 	public function args()
 	{
 		return [
@@ -482,14 +522,14 @@ class PictureField extends Field {
 			]
 		];
 	}
-	
+
 	protected function resolve($root, $args)
 	{
 		$width = isset($args['width']) ? $args['width']:100;
 		$height = isset($args['height']) ? $args['height']:100;
 		return 'http://placehold.it/'.$width.'x'.$height;
 	}
-        
+
 }
 
 ```
@@ -506,12 +546,12 @@ use Folklore\GraphQL\Support\Type as GraphQLType;
 use App\GraphQL\Fields\PictureField;
 
 class UserType extends GraphQLType {
-        
+
         protected $attributes = [
 		'name' => 'User',
 		'description' => 'A user'
 	];
-	
+
 	public function fields()
 	{
 		return [
@@ -540,12 +580,12 @@ Your Query would look like
 
 ```php
 	namespace App\GraphQL\Query;
-	
+
 	use GraphQL;
 	use GraphQL\Type\Definition\Type;
 	use GraphQL\Type\Definition\ResolveInfo;
 	use Folklore\GraphQL\Support\Query;
-	
+
 	use App\User;
 
 	class UsersQuery extends Query
@@ -566,23 +606,23 @@ Your Query would look like
 				'email' => ['name' => 'email', 'type' => Type::string()]
 			];
 		}
-        
+
 		public function resolve($root, $args, ResolveInfo $info)
 		{
 			$fields = $info->getFieldSelection($depth = 3);
-			
+
 			$users = User::query();
-			
+
 			foreach ($fields as $field => $keys) {
 				if ($field === 'profile') {
 					$users->with('profile');
 				}
-				
+
 				if ($field === 'posts') {
 					$users->with('posts');
 				}
 			}
-			
+
 			return $users->get();
 		}
 	}
