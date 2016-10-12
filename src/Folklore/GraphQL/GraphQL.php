@@ -123,12 +123,12 @@ class GraphQL
         return $objectType;
     }
     
-    public function query($query, $params = [], $context = null, $schema = null)
+    public function query($query, $params = [], $opts = [])
     {
-        $result = $this->queryAndReturnResult($query, $params, $context, $schema);
+        $result = $this->queryAndReturnResult($query, $params, $opts);
         
         if (!empty($result->errors)) {
-            $errorFormatter = config('graphql.error_formatter', ['\Folklore\GraphQL', 'formatError']);
+            $errorFormatter = config('graphql.error_formatter', [self::class, 'formatError']);
             
             return [
                 'data' => $result->data,
@@ -141,10 +141,13 @@ class GraphQL
         }
     }
     
-    public function queryAndReturnResult($query, $params = [], $context = null, $schema = null)
+    public function queryAndReturnResult($query, $params = [], $opts = [])
     {
-        $schema = $this->schema($schema);
-        $result = GraphQLBase::executeAndReturnResult($schema, $query, null, $context, $params);
+        $root = array_get($opts, 'root', null);
+        $context = array_get($opts, 'context', null);
+        $schemaName = array_get($opts, 'schema', null);
+        $schema = $this->schema($schemaName);
+        $result = GraphQLBase::executeAndReturnResult($schema, $query, $root, $context, $params);
         return $result;
     }
     

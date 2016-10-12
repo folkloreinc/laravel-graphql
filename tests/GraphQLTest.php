@@ -26,7 +26,8 @@ class GraphQLTest extends TestCase
         $app['config']->set('graphql.schemas.default', [
             'query' => [
                 'examples' => ExamplesQuery::class,
-                'examplesContext' => ExamplesContextQuery::class
+                'examplesContext' => ExamplesContextQuery::class,
+                'examplesRoot' => ExamplesRootQuery::class
             ],
             'mutation' => [
                 'updateExample' => UpdateExampleMutation::class
@@ -204,59 +205,98 @@ class GraphQLTest extends TestCase
     }
     
     /**
-     * Test query
+     * Test queryAndReturnResult
      *
      * @test
      */
-    public function testQuery()
+    public function testQueryAndReturnResult()
     {
-        $result = GraphQL::query($this->queries['examples']);
+        $result = GraphQL::queryAndReturnResult($this->queries['examples']);
         
-        $this->assertArrayHasKey('data', $result);
+        $this->assertObjectHasAttribute('data', $result);
         
-        $this->assertEquals($result['data'], [
+        $this->assertEquals($result->data, [
             'examples' => $this->data
         ]);
     }
     
-    public function testQueryWithParams()
+    public function testQueryAndReturnResultWithParams()
     {
-        $result = GraphQL::query($this->queries['examplesWithParams'], [
+        $result = GraphQL::queryAndReturnResult($this->queries['examplesWithParams'], [
             'index' => 0
         ]);
         
-        $this->assertArrayHasKey('data', $result);
-        $this->assertEquals($result['data'], [
+        $this->assertObjectHasAttribute('data', $result);
+        $this->assertEquals($result->data, [
             'examples' => [
                 $this->data[0]
             ]
         ]);
     }
     
-    public function testQueryWithContext()
+    public function testQueryAndReturnResultWithRoot()
     {
-        $result = GraphQL::query($this->queries['examplesWithContext'], null, [
-            'test' => 'context'
+        $result = GraphQL::queryAndReturnResult($this->queries['examplesWithRoot'], null, [
+            'root' => [
+                'test' => 'root'
+            ]
         ]);
-        $this->assertArrayHasKey('data', $result);
-        $this->assertEquals($result['data'], [
+        $this->assertObjectHasAttribute('data', $result);
+        $this->assertEquals($result->data, [
+            'examplesRoot' => [
+                'test' => 'root'
+            ]
+        ]);
+    }
+    
+    public function testQueryAndReturnResultWithContext()
+    {
+        $result = GraphQL::queryAndReturnResult($this->queries['examplesWithContext'], null, [
+            'context' => [
+                'test' => 'context'
+            ]
+        ]);
+        $this->assertObjectHasAttribute('data', $result);
+        $this->assertEquals($result->data, [
             'examplesContext' => [
                 'test' => 'context'
             ]
         ]);
     }
     
-    public function testQueryWithSchema()
+    public function testQueryAndReturnResultWithSchema()
     {
-        $result = GraphQL::query($this->queries['examplesCustom'], null, null, [
-            'query' => [
-                'examplesCustom' => ExamplesQuery::class
+        $result = GraphQL::queryAndReturnResult($this->queries['examplesCustom'], null, [
+            'schema' => [
+                'query' => [
+                    'examplesCustom' => ExamplesQuery::class
+                ]
             ]
         ]);
-        $this->assertArrayHasKey('data', $result);
-        $this->assertEquals($result['data'], [
+        $this->assertObjectHasAttribute('data', $result);
+        $this->assertEquals($result->data, [
             'examplesCustom' => $this->data
         ]);
+    }
+    
+    public function testQuery()
+    {
+        $resultArray = GraphQL::query($this->queries['examples']);
+        $result = GraphQL::queryAndReturnResult($this->queries['examples']);
+        
+        $this->assertInternalType('array', $resultArray);
+        $this->assertArrayHasKey('data', $resultArray);
+        $this->assertEquals($resultArray['data'], $result->data);
+    }
+    
+    public function testQueryWithError()
+    {
+        $result = GraphQL::query($this->queries['examplesWithError']);
+        
+        $this->assertArrayHasKey('data', $result);
+        $this->assertArrayHasKey('errors', $result);
+        $this->assertNull($result['data']);
+        $this->assertCount(1, $result['errors']);
     }
     
     /**

@@ -22,7 +22,10 @@ class GraphQLController extends Controller
         
         $context = $this->queryContext($query, $params, $schema);
         
-        return app('graphql')->query($query, $params, $context, $schema);
+        return app('graphql')->query($query, $params, [
+            'context' => $context,
+            'schema' => $schema
+        ]);
     }
     
     protected function queryContext($query, $params, $schema)
