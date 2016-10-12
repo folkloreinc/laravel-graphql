@@ -15,7 +15,7 @@ env:
 matrix:
   allow_failures:
     - env: LARAVEL=dev-master
-      - env: LARAVEL=dev-v1
+    - env: LARAVEL=dev-v1
   exclude:
     - php: 5.5
       env: LARAVEL=5.3
