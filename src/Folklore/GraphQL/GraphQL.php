@@ -107,8 +107,11 @@ class GraphQL
         if ($type instanceof ObjectType) {
             $objectType = $type;
             foreach ($opts as $key => $value) {
-                if (property_exists($this, $key)) {
-                    $this->{$key} = $value;
+                if (property_exists($objectType, $key)) {
+                    $objectType->{$key} = $value;
+                }
+                if (isset($objectType->config[$key])) {
+                    $objectType->config[$key] = $value;
                 }
             }
         } elseif (is_array($type)) {
@@ -122,8 +125,7 @@ class GraphQL
     
     public function query($query, $params = [], $context = null, $schema = null)
     {
-        $schema = $this->schema($schema);
-        $result = GraphQLBase::executeAndReturnResult($schema, $query, null, $context, $params);
+        $result = $this->queryAndReturnResult($query, $params, $context, $schema);
         
         if (!empty($result->errors)) {
             $errorFormatter = config('graphql.error_formatter', ['\Folklore\GraphQL', 'formatError']);

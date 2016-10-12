@@ -2,6 +2,7 @@
 
 use GraphQL\Schema;
 use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\Type;
 
 class GraphQLTest extends TestCase
 {
@@ -152,6 +153,54 @@ class GraphQLTest extends TestCase
         
         $this->expectException(\Folklore\GraphQL\Exception\TypeNotFound::class);
         $typeWrong = GraphQL::type('ExampleWrong');
+    }
+    
+    /**
+     * Test objectType
+     *
+     * @test
+     */
+    public function testObjectType()
+    {
+        $objectType = new ObjectType([
+            'name' => 'ObjectType'
+        ]);
+        $type = GraphQL::objectType($objectType, [
+            'name' => 'ExampleType'
+        ]);
+        
+        $this->assertInstanceOf(\GraphQL\Type\Definition\ObjectType::class, $type);
+        $this->assertEquals($objectType, $type);
+        $this->assertEquals($type->name, 'ExampleType');
+    }
+    
+    public function testObjectTypeFromFields()
+    {
+        $type = GraphQL::objectType([
+            'test' => [
+                'type' => Type::string(),
+                'description' => 'A test field'
+            ]
+        ], [
+            'name' => 'ExampleType'
+        ]);
+
+        $this->assertInstanceOf(\GraphQL\Type\Definition\ObjectType::class, $type);
+        $this->assertEquals($type->name, 'ExampleType');
+        $fields = $type->getFields();
+        $this->assertArrayHasKey('test', $fields);
+    }
+    
+    public function testObjectTypeClass()
+    {
+        $type = GraphQL::objectType(ExampleType::class, [
+            'name' => 'ExampleType'
+        ]);
+
+        $this->assertInstanceOf(\GraphQL\Type\Definition\ObjectType::class, $type);
+        $this->assertEquals($type->name, 'ExampleType');
+        $fields = $type->getFields();
+        $this->assertArrayHasKey('test', $fields);
     }
     
     /**
