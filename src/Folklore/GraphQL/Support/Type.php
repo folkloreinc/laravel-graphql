@@ -10,7 +10,6 @@ use GraphQL\Type\Definition\InterfaceType;
 
 class Type extends Fluent
 {
-    
     protected static $instances = [];
     
     protected $inputObject = false;
