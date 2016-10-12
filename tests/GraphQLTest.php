@@ -1,8 +1,5 @@
 <?php
 
-namespace Folklore\GraphQL\Tests;
-
-use GraphQL;
 use GraphQL\Schema;
 use GraphQL\Type\Definition\ObjectType;
 
@@ -27,25 +24,25 @@ class GraphQLTest extends TestCase
     {
         $app['config']->set('graphql.schemas.default', [
             'query' => [
-                'examples' => \Folklore\GraphQL\Tests\Objects\ExamplesQuery::class,
-                'examplesContext' => \Folklore\GraphQL\Tests\Objects\ExamplesContextQuery::class
+                'examples' => ExamplesQuery::class,
+                'examplesContext' => ExamplesContextQuery::class
             ],
             'mutation' => [
-                'updateExample' => \Folklore\GraphQL\Tests\Objects\UpdateExampleMutation::class
+                'updateExample' => UpdateExampleMutation::class
             ]
         ]);
         
         $app['config']->set('graphql.schemas.custom', [
             'query' => [
-                'examplesCustom' => \Folklore\GraphQL\Tests\Objects\ExamplesQuery::class
+                'examplesCustom' => ExamplesQuery::class
             ],
             'mutation' => [
-                'updateExampleCustom' => \Folklore\GraphQL\Tests\Objects\UpdateExampleMutation::class
+                'updateExampleCustom' => UpdateExampleMutation::class
             ]
         ]);
         
         $app['config']->set('graphql.types', [
-            'Example' => \Folklore\GraphQL\Tests\Objects\ExampleType::class
+            'Example' => ExampleType::class
         ]);
     }
     
@@ -110,13 +107,13 @@ class GraphQLTest extends TestCase
     {
         $schema = GraphQL::schema([
             'query' => [
-                'examplesCustom' => \Folklore\GraphQL\Tests\Objects\ExamplesQuery::class
+                'examplesCustom' => ExamplesQuery::class
             ],
             'mutation' => [
-                'updateExampleCustom' => \Folklore\GraphQL\Tests\Objects\UpdateExampleMutation::class
+                'updateExampleCustom' => UpdateExampleMutation::class
             ],
             'types' => [
-                \Folklore\GraphQL\Tests\Objects\CustomExampleType::class
+                CustomExampleType::class
             ]
         ]);
         
@@ -204,7 +201,7 @@ class GraphQLTest extends TestCase
     {
         $result = GraphQL::query($this->queries['examplesCustom'], null, null, [
             'query' => [
-                'examplesCustom' => \Folklore\GraphQL\Tests\Objects\ExamplesQuery::class
+                'examplesCustom' => ExamplesQuery::class
             ]
         ]);
         $this->assertArrayHasKey('data', $result);
@@ -220,13 +217,13 @@ class GraphQLTest extends TestCase
      */
     public function testAddType()
     {
-        GraphQL::addType(\Folklore\GraphQL\Tests\Objects\CustomExampleType::class);
+        GraphQL::addType(CustomExampleType::class);
 
         $types = GraphQL::getTypes();
         $this->assertArrayHasKey('CustomExample', $types);
 
         $type = app($types['CustomExample']);
-        $this->assertInstanceOf(\Folklore\GraphQL\Tests\Objects\CustomExampleType::class, $type);
+        $this->assertInstanceOf(CustomExampleType::class, $type);
 
         $type = GraphQL::type('CustomExample');
         $this->assertInstanceOf(\GraphQL\Type\Definition\ObjectType::class, $type);
@@ -239,13 +236,13 @@ class GraphQLTest extends TestCase
      */
     public function testAddTypeWithName()
     {
-        GraphQL::addType(\Folklore\GraphQL\Tests\Objects\ExampleType::class, 'CustomExample');
+        GraphQL::addType(ExampleType::class, 'CustomExample');
         
         $types = GraphQL::getTypes();
         $this->assertArrayHasKey('CustomExample', $types);
         
         $type = app($types['CustomExample']);
-        $this->assertInstanceOf(\Folklore\GraphQL\Tests\Objects\ExampleType::class, $type);
+        $this->assertInstanceOf(ExampleType::class, $type);
         
         $type = GraphQL::type('CustomExample');
         $this->assertInstanceOf(\GraphQL\Type\Definition\ObjectType::class, $type);

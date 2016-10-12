@@ -92,10 +92,12 @@ class GraphQLServiceProvider extends ServiceProvider
     public function register()
     {
         $this->registerGraphQL();
+        
+        $this->registerConsole();
     }
     
     /**
-     * Register panneau
+     * Register GraphQL facade
      *
      * @return void
      */
@@ -104,5 +106,17 @@ class GraphQLServiceProvider extends ServiceProvider
         $this->app->singleton('graphql', function ($app) {
             return new GraphQL($app);
         });
+    }
+    
+    /**
+     * Register console commands
+     *
+     * @return void
+     */
+    public function registerConsole()
+    {
+        $this->commands(\Folklore\GraphQL\Console\TypeMakeCommand::class);
+        $this->commands(\Folklore\GraphQL\Console\QueryMakeCommand::class);
+        $this->commands(\Folklore\GraphQL\Console\MutationMakeCommand::class);
     }
 }

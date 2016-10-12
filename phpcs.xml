@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<ruleset name="PHP_CodeSniffer">
+    <description>The coding standard for laravel package</description>
+
+    <file>src</file>
+    
+    <exclude-pattern>*.json</exclude-pattern>
+    <exclude-pattern>*.xml</exclude-pattern>
+
+    <rule ref="PSR2"/>
+    <rule ref="PSR1.Classes.ClassDeclaration.MissingNamespace">
+        <exclude-pattern>*/tests/*</exclude-pattern>
+    </rule>
+</ruleset>

@@ -1,13 +1,8 @@
 <?php
 
-namespace Folklore\GraphQL\Tests;
-
-use GraphQL;
-use Closure;
 use Folklore\Support\Field;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\ObjectType;
-use Folklore\GraphQL\Tests\Objects\ExampleType;
 
 class TypeTest extends TestCase
 {

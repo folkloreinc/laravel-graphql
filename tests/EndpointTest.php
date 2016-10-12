@@ -1,8 +1,5 @@
 <?php
 
-namespace Folklore\GraphQL\Tests;
-
-use GraphQL;
 use GraphQL\Schema;
 use GraphQL\Type\Definition\ObjectType;
 
@@ -27,25 +24,25 @@ class EndpointTest extends TestCase
     {
         $app['config']->set('graphql.schemas.default', [
             'query' => [
-                'examples' => \Folklore\GraphQL\Tests\Objects\ExamplesQuery::class,
-                'examplesContext' => \Folklore\GraphQL\Tests\Objects\ExamplesContextQuery::class
+                'examples' => ExamplesQuery::class,
+                'examplesContext' => ExamplesContextQuery::class
             ],
             'mutation' => [
-                'updateExample' => \Folklore\GraphQL\Tests\Objects\UpdateExampleMutation::class
+                'updateExample' => UpdateExampleMutation::class
             ]
         ]);
         
         $app['config']->set('graphql.schemas.custom', [
             'query' => [
-                'examplesCustom' => \Folklore\GraphQL\Tests\Objects\ExamplesQuery::class
+                'examplesCustom' => ExamplesQuery::class
             ],
             'mutation' => [
-                'updateExampleCustom' => \Folklore\GraphQL\Tests\Objects\UpdateExampleMutation::class
+                'updateExampleCustom' => UpdateExampleMutation::class
             ]
         ]);
         
         $app['config']->set('graphql.types', [
-            'Example' => \Folklore\GraphQL\Tests\Objects\ExampleType::class
+            'Example' => ExampleType::class
         ]);
     }
     

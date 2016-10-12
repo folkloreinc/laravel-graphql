@@ -1,15 +1,20 @@
 <?php
 
 use GraphQL\Type\Definition\Type;
-use Folklore\GraphQL\Support\Type as GraphQLType;
+use Folklore\GraphQL\Support\InterfaceType;
 
-class ExampleType extends GraphQLType
+class ExampleInterfaceType extends InterfaceType
 {
 
     protected $attributes = [
-        'name' => 'Example',
-        'description' => 'An example'
+        'name' => 'ExampleInterface',
+        'description' => 'An example interface'
     ];
+    
+    public function resolveType($root)
+    {
+        return Type::string();
+    }
 
     public function fields()
     {

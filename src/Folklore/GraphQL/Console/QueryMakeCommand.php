@@ -12,7 +12,7 @@ class QueryMakeCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'make:graphql_query {name}';
+    protected $signature = 'make:graphql:query {name}';
 
     /**
      * The console command description.
@@ -71,9 +71,10 @@ class QueryMakeCommand extends GeneratorCommand
      */
     protected function replaceType($stub, $name)
     {
+        preg_match('/([^\\\]+)$/', $name, $matches);
         $stub = str_replace(
             'DummyQuery',
-            $name,
+            $matches[1],
             $stub
         );
 

@@ -1,8 +1,5 @@
 <?php
 
-namespace Folklore\GraphQL\Tests\Objects;
-
-use GraphQL;
 use GraphQL\Type\Definition\Type;
 use Folklore\GraphQL\Support\Mutation;
 
