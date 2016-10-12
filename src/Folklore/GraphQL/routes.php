@@ -2,11 +2,12 @@
 
 use Illuminate\Http\Request;
 
-Route::group(array(
+$router->group(array(
     'prefix' => config('graphql.prefix'),
     'middleware' => config('graphql.middleware', [])
-), function () {
-    //Routes
+), function ($router) {
+    
+    //Get routes from config
     $routes = config('graphql.routes');
     $queryRoute = null;
     $mutationRoute = null;
@@ -18,7 +19,7 @@ Route::group(array(
         $mutationRoute = $routes;
     }
     
-    //Controllers
+    //Get controllers from config
     $controllers = config('graphql.controllers', '\Folklore\GraphQL\GraphQLController@query');
     $queryController = null;
     $mutationController = null;
@@ -32,15 +33,15 @@ Route::group(array(
     
     //Query
     if ($queryRoute) {
-        Route::get($queryRoute, array(
+        $router->get($queryRoute, array(
             'as' => 'graphql.query',
             'uses' => $queryController
         ));
     }
     
-    if ($mutationRoute) {
     //Mutation
-        Route::post($mutationRoute, array(
+    if ($mutationRoute) {
+        $router->post($mutationRoute, array(
             'as' => 'graphql.mutation',
             'uses' => $mutationController
         ));

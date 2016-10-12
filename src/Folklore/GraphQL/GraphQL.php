@@ -16,7 +16,6 @@ use Folklore\GraphQL\Events\TypeAdded;
 
 class GraphQL
 {
-    
     protected $app;
     
     protected $schemas = [];

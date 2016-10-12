@@ -1,9 +1,19 @@
 <?php namespace Folklore\GraphQL;
 
-use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
-class GraphQLServiceProvider extends ServiceProvider
+class ServiceProvider extends BaseServiceProvider
 {
+    /**
+     * Get the active router.
+     *
+     * @return Router
+     */
+    protected function getRouter()
+    {
+        return $this->app['router'];
+    }
+    
     /**
      * Bootstrap any application services.
      *
@@ -20,6 +30,7 @@ class GraphQLServiceProvider extends ServiceProvider
         $this->bootSchemas();
         
         if (config('graphql.routes')) {
+            $router = $this->getRouter();
             include __DIR__.'/routes.php';
         }
     }
@@ -33,8 +44,8 @@ class GraphQLServiceProvider extends ServiceProvider
     {
         //Update the schema route pattern when schema is added
         $this->app['events']->listen(\Folklore\GraphQL\Events\SchemaAdded::class, function () {
-            $schemas = array_keys($this->app['graphql']->getSchemas());
-            $this->app['router']->pattern('graphql_schema', '('.implode('|', $schemas).')');
+            $schemaNames = array_keys($this->app['graphql']->getSchemas());
+            $this->getRouter()->pattern('graphql_schema', '('.implode('|', $schemaNames).')');
         });
     }
     
@@ -118,5 +129,16 @@ class GraphQLServiceProvider extends ServiceProvider
         $this->commands(\Folklore\GraphQL\Console\TypeMakeCommand::class);
         $this->commands(\Folklore\GraphQL\Console\QueryMakeCommand::class);
         $this->commands(\Folklore\GraphQL\Console\MutationMakeCommand::class);
+    }
+    
+    
+    /**
+     * Get the services provided by the provider.
+     *
+     * @return array
+     */
+    public function provides()
+    {
+        return ['graphql'];
     }
 }

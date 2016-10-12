@@ -48,7 +48,7 @@ class TestCase extends BaseTestCase
     protected function getPackageProviders($app)
     {
         return [
-            \Folklore\GraphQL\GraphQLServiceProvider::class
+            \Folklore\GraphQL\ServiceProvider::class
         ];
     }
     

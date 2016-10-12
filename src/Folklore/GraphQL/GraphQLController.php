@@ -1,12 +1,10 @@
 <?php namespace Folklore\GraphQL;
 
-use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
 use Auth;
 
 class GraphQLController extends Controller
 {
-    
     public function query(Request $request, $schema = null)
     {
         if (!$schema) {
