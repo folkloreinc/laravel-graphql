@@ -11,8 +11,6 @@ class GraphQLServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->bootEvents();
-        
         $this->bootPublishes();
         
         $this->bootTypes();
@@ -20,6 +18,7 @@ class GraphQLServiceProvider extends ServiceProvider
         $this->bootSchemas();
         
         if (config('graphql.routes')) {
+            $this->bootEvents();
             include __DIR__.'/routes.php';
         }
     }
