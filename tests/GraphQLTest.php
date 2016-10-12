@@ -3,6 +3,8 @@
 use GraphQL\Schema;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
+use GraphQL\Error;
+use Folklore\GraphQL\Error\ValidationError;
 
 class GraphQLTest extends TestCase
 {
@@ -297,6 +299,42 @@ class GraphQLTest extends TestCase
         $this->assertArrayHasKey('errors', $result);
         $this->assertNull($result['data']);
         $this->assertCount(1, $result['errors']);
+        $this->assertArrayHasKey('message', $result['errors'][0]);
+        $this->assertArrayHasKey('locations', $result['errors'][0]);
+    }
+    
+    public function testFormatError()
+    {
+        $result = GraphQL::queryAndReturnResult($this->queries['examplesWithError']);
+        $error = GraphQL::formatError($result->errors[0]);
+        
+        $this->assertInternalType('array', $error);
+        $this->assertArrayHasKey('message', $error);
+        $this->assertArrayHasKey('locations', $error);
+        $this->assertEquals($error, [
+            'message' => 'Cannot query field "examplesNotFound" on type "Query".',
+            'locations' => [
+                [
+                    'line' => 3,
+                    'column' => 13
+                ]
+            ]
+        ]);
+    }
+    
+    public function testFormatValidationError()
+    {
+        $validator = Validator::make([], [
+            'test' => 'required'
+        ]);
+        $validator->fails();
+        $validationError = with(new ValidationError('validation'))->setValidator($validator);
+        $error = new Error('error', null, $validationError);
+        $error = GraphQL::formatError($error);
+        
+        $this->assertInternalType('array', $error);
+        $this->assertArrayHasKey('validation', $error);
+        $this->assertTrue($error['validation']->has('test'));
     }
     
     /**
