@@ -3,14 +3,6 @@
 
 return [
     
-    'examplesWithError' =>  "
-        query QueryExamplesWithError {
-            examplesNotFound {
-                test
-            }
-        }
-    ",
-    
     'examples' =>  "
         query QueryExamples {
             examples {
@@ -47,6 +39,22 @@ return [
         query QueryExamplesRoot {
             examplesRoot {
                 test
+            }
+        }
+    ",
+        
+    'examplesWithError' =>  "
+        query QueryExamplesWithError {
+            examplesQueryNotFound {
+                test
+            }
+        }
+    ",
+    
+    'examplesWithValidation' =>  "
+        query QueryExamplesWithValidation {
+            examples {
+                test_validation
             }
         }
     "

@@ -17,7 +17,8 @@ class ExampleType extends GraphQLType
             'test' => [
                 'type' => Type::string(),
                 'description' => 'A test field'
-            ]
+            ],
+            'test_validation' => ExampleValidationField::class
         ];
     }
 }

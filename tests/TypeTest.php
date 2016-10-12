@@ -16,11 +16,10 @@ class TypeTest extends TestCase
         $type = new ExampleType();
         $fields = $type->getFields();
         
-        $this->assertEquals($fields, [
-            'test' => [
-                'type' => Type::string(),
-                'description' => 'A test field'
-            ]
+        $this->assertArrayHasKey('test', $fields);
+        $this->assertEquals($fields['test'], [
+            'type' => Type::string(),
+            'description' => 'A test field'
         ]);
     }
        

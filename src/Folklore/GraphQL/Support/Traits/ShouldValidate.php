@@ -28,7 +28,7 @@ trait ShouldValidate
             }
         }
         
-        return array_merge($argsRules, $rules);
+        return array_merge($rules, $argsRules);
     }
     
     protected function getValidator($args, $rules)
