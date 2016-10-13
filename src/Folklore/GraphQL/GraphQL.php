@@ -87,18 +87,41 @@ class GraphQL
     
     public function type($name, $fresh = false)
     {
+        $error = false;
+        $class = null;
         if (!isset($this->types[$name])) {
-            throw new TypeNotFound('Type '.$name.' not found.');
+            $error = true;
         }
-        
+
+        // @TODO: Find a better way to fix this issue.
+        // I think this function needs to be aware of what schema are
+        // being used as this fix might cause things to break.
+        if ($error == true) {
+            foreach($this->schemas as $schema) {
+                $get = array_get($schema['types'], $name);
+                if ($get) {
+                    $class = $this->buildObjectTypeFromClass($get);
+                    $error = false;
+                    break;
+                }
+                $error = true;
+            }
+        }
+
+        if ($error == true)
+            throw new TypeNotFound('Type '.$name.' not found.');
+
         if (!$fresh && isset($this->typesInstances[$name])) {
             return $this->typesInstances[$name];
         }
-        
-        $class = $this->types[$name];
+
+        if (!$class)
+            $class = $this->types[$name];
+
         $type = $this->objectType($class, [
             'name' => $name
         ]);
+
         $this->typesInstances[$name] = $type;
         
         return $type;
