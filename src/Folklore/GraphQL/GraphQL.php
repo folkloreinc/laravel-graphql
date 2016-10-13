@@ -187,7 +187,13 @@ class GraphQL
         
         $this->app['events']->fire(new TypeAdded($class, $name));
     }
-    
+
+    public function addTypes($types) {
+        foreach($types as $name => $class) {
+            $this->addType($class, $name);
+        }
+    }
+
     public function addSchema($name, $schema)
     {
         $this->schemas[$name] = $schema;
