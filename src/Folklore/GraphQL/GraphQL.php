@@ -46,6 +46,8 @@ class GraphQL
         $schemaQuery = array_get($schema, 'query', []);
         $schemaMutation = array_get($schema, 'mutation', []);
         $schemaTypes = array_get($schema, 'types', []);
+
+        $newSchema = [];
         
         //Get the types either from the schema, or the global types.
         $types = [];
@@ -63,19 +65,24 @@ class GraphQL
             }
         }
         
-        $query = $this->objectType($schemaQuery, [
-            'name' => 'Query'
-        ]);
-        
-        $mutation = $this->objectType($schemaMutation, [
-            'name' => 'Mutation'
-        ]);
-        
-        return new Schema([
-            'query' => $query,
-            'mutation' => $mutation,
-            'types' => $types
-        ]);
+        $newSchema['types'] = $types;
+
+        if (!empty($schemaQuery)) {
+            $query = $this->objectType($schemaQuery, [
+                'name' => 'Query'
+            ]);
+            $newSchema['query'] = $query;
+        }
+
+
+        if (!empty($schemaMutation)) {
+            $mutation = $this->objectType($schemaMutation, [
+                'name' => 'Mutation'
+            ]);
+            $newSchema['mutation'] = $mutation;
+        }
+
+        return new Schema($newSchema);
     }
     
     public function type($name, $fresh = false)
