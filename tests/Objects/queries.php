@@ -52,9 +52,9 @@ return [
     ",
     
     'examplesWithValidation' =>  "
-        query QueryExamplesWithValidation {
+        query QueryExamplesWithValidation(\$index: Int) {
             examples {
-                test_validation
+                test_validation(index: \$index)
             }
         }
     "

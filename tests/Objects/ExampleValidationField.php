@@ -23,7 +23,7 @@ class ExampleValidationField extends Field
             'index' => [
                 'name' => 'index',
                 'type' => Type::int(),
-                'rules' => ['required', 'between:0,10']
+                'rules' => ['required']
             ]
         ];
     }
