@@ -108,40 +108,4 @@ class EndpointTest extends TestCase
             ]
         ]);
     }
-    
-    /**
-     * Test get with validation error
-     *
-     * @test
-     */
-    public function testGetWithValidationError()
-    {
-        $response = $this->call('GET', '/graphql', [
-            'query' => $this->queries['examplesWithValidation']
-        ]);
-
-        $this->assertEquals($response->getStatusCode(), 200);
-
-        $content = $response->getOriginalContent();
-        $this->assertArrayHasKey('data', $content);
-        $this->assertArrayHasKey('errors', $content);
-        $this->assertArrayHasKey('validation', $content['errors'][0]);
-        $this->assertTrue($content['errors'][0]['validation']->has('index'));
-    }
-    
-    public function testGetWithValidation()
-    {
-        $response = $this->call('GET', '/graphql', [
-            'query' => $this->queries['examplesWithValidation'],
-            'params' => [
-                'index' => 1
-            ]
-        ]);
-
-        $this->assertEquals($response->getStatusCode(), 200);
-
-        $content = $response->getOriginalContent();
-        $this->assertArrayHasKey('data', $content);
-        $this->assertArrayNotHasKey('errors', $content);
-    }
 }
