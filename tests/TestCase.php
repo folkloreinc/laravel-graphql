@@ -4,12 +4,45 @@ use Orchestra\Testbench\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
 {
+    protected $queries;
+    protected $data;
+    
     /**
      * Setup the test environment.
      */
     public function setUp()
     {
         parent::setUp();
+        
+        $this->queries = include(__DIR__.'/Objects/queries.php');
+        $this->data = include(__DIR__.'/Objects/data.php');
+    }
+    
+    protected function getEnvironmentSetUp($app)
+    {
+        $app['config']->set('graphql.schemas.default', [
+            'query' => [
+                'examples' => ExamplesQuery::class,
+                'examplesContext' => ExamplesContextQuery::class,
+                'examplesRoot' => ExamplesRootQuery::class
+            ],
+            'mutation' => [
+                'updateExample' => UpdateExampleMutation::class
+            ]
+        ]);
+        
+        $app['config']->set('graphql.schemas.custom', [
+            'query' => [
+                'examplesCustom' => ExamplesQuery::class
+            ],
+            'mutation' => [
+                'updateExampleCustom' => UpdateExampleMutation::class
+            ]
+        ]);
+        
+        $app['config']->set('graphql.types', [
+            'Example' => ExampleType::class
+        ]);
     }
     
     protected function assertGraphQLSchema($schema)

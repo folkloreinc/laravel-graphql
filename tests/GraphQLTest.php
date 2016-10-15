@@ -5,51 +5,11 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Error;
 use Folklore\GraphQL\Error\ValidationError;
+use Folklore\GraphQL\Events\TypeAdded;
+use Folklore\GraphQL\Events\SchemaAdded;
 
 class GraphQLTest extends TestCase
 {
-
-    protected $queries;
-    protected $data;
-    
-    /**
-     * Setup the test environment.
-     */
-    public function setUp()
-    {
-        parent::setUp();
-        
-        $this->queries = include(__DIR__.'/Objects/queries.php');
-        $this->data = include(__DIR__.'/Objects/data.php');
-    }
-    
-    protected function getEnvironmentSetUp($app)
-    {
-        $app['config']->set('graphql.schemas.default', [
-            'query' => [
-                'examples' => ExamplesQuery::class,
-                'examplesContext' => ExamplesContextQuery::class,
-                'examplesRoot' => ExamplesRootQuery::class
-            ],
-            'mutation' => [
-                'updateExample' => UpdateExampleMutation::class
-            ]
-        ]);
-        
-        $app['config']->set('graphql.schemas.custom', [
-            'query' => [
-                'examplesCustom' => ExamplesQuery::class
-            ],
-            'mutation' => [
-                'updateExampleCustom' => UpdateExampleMutation::class
-            ]
-        ]);
-        
-        $app['config']->set('graphql.types', [
-            'Example' => ExampleType::class
-        ]);
-    }
-    
     /**
      * Test schema default
      *
@@ -247,6 +207,8 @@ class GraphQLTest extends TestCase
      */
     public function testAddType()
     {
+        $this->expectsEvents(TypeAdded::class);
+        
         GraphQL::addType(CustomExampleType::class);
 
         $types = GraphQL::getTypes();
@@ -290,5 +252,43 @@ class GraphQLTest extends TestCase
         
         $type = app($types['Example']);
         $this->assertInstanceOf(\Folklore\GraphQL\Support\Type::class, $type);
+    }
+    
+    /**
+     * Test add schema
+     *
+     * @test
+     */
+    public function testAddSchema()
+    {
+        $this->expectsEvents(SchemaAdded::class);
+        
+        GraphQL::addSchema('custom_add', [
+            'query' => [
+                'examplesCustom' => ExamplesQuery::class
+            ],
+            'mutation' => [
+                'updateExampleCustom' => UpdateExampleMutation::class
+            ],
+            'types' => [
+                CustomExampleType::class
+            ]
+        ]);
+
+        $schemas = GraphQL::getSchemas();
+        $this->assertArrayHasKey('custom_add', $schemas);
+    }
+    
+    /**
+     * Test get schemas
+     *
+     * @test
+     */
+    public function testGetSchemas()
+    {
+        $schemas = GraphQL::getSchemas();
+        $this->assertArrayHasKey('default', $schemas);
+        $this->assertArrayHasKey('custom', $schemas);
+        $this->assertInternalType('array', $schemas['default']);
     }
 }

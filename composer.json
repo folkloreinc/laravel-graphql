@@ -23,7 +23,12 @@
         "webonyx/graphql-php": "~0.7.0"
     },
     "require-dev": {
-        "orchestra/testbench": "~3.1"
+        "orchestra/testbench": "~3.1",
+        "fzaninotto/faker": "~1.4",
+        "mockery/mockery": "0.9.*",
+        "phpunit/phpunit": "~5.0",
+        "symfony/css-selector": "3.1.*",
+        "symfony/dom-crawler": "3.1.*"
     },
     "autoload": {
         "psr-0": {

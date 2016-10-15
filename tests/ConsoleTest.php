@@ -8,6 +8,8 @@ class ConsoleTest extends TestCase
     
     protected function getEnvironmentSetUp($app)
     {
+        parent::getEnvironmentSetUp($app);
+        
         $app->setBasePath(__DIR__.'/fixture');
     }
     

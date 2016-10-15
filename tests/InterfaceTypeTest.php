@@ -6,7 +6,6 @@ use GraphQL\Type\Definition\InterfaceType;
 
 class InterfaceTypeTest extends TestCase
 {
-  
     /**
      * Test get attributes
      *
