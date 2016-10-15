@@ -57,6 +57,14 @@ return [
                 test_validation(index: \$index)
             }
         }
+    ",
+    
+    'updateExampleCustom' =>  "
+        mutation UpdateExampleCustom(\$test: String) {
+            updateExampleCustom(test: \$test) {
+                test
+            }
+        }
     "
     
 ];

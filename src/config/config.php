@@ -23,6 +23,10 @@ return [
     //     'mutation' => 'mutation/{graphql_schema?}'
     // ]
     //
+    // you can also disable routes by setting routes to null
+    //
+    // 'routes' => null,
+    //
     'routes' => '{graphql_schema?}',
     
     // The controller to use in GraphQL request. Either a string that will apply
@@ -42,7 +46,8 @@ return [
     'middleware' => [],
     
     // The name of the default schema used when no argument is provided
-    // to GraphQL::schema() or when the route is used
+    // to GraphQL::schema() or when the route is used without the graphql_schema
+    // parameter.
     'schema' => 'default',
     
     // The schemas for query and/or mutation. It expects an array to provide
@@ -88,17 +93,25 @@ return [
     //     'user' => 'App\GraphQL\Type\UserType'
     // ]
     //
+    // or whitout specifying a key (it will use the ->name property of your type)
+    //
+    // 'types' => [
+    //     'App\GraphQL\Type\UserType'
+    // ]
+    //
     'types' => [
         
     ],
     
-    // This callable will be passed the Error object for each errors GraphQL catch.
+    // This callable will received every Error objects for each errors GraphQL catch.
     // The method should return an array representing the error.
+    //
     // Typically:
     // [
     //     'message' => '',
     //     'locations' => []
     // ]
+    //
     'error_formatter' => ['\Folklore\GraphQL\GraphQL', 'formatError']
     
 ];
