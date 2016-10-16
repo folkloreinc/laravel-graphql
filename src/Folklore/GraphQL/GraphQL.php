@@ -155,14 +155,14 @@ class GraphQL
         $name = $this->getTypeName($class, $name);
         $this->types[$name] = $class;
         
-        $this->app['events']->fire(new TypeAdded($class, $name));
+        event(new TypeAdded($class, $name));
     }
     
     public function addSchema($name, $schema)
     {
         $this->schemas[$name] = $schema;
         
-        $this->app['events']->fire(new SchemaAdded($schema, $name));
+        event(new SchemaAdded($schema, $name));
     }
     
     public function clearType($name)
