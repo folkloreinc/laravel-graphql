@@ -1,6 +1,6 @@
 # Laravel GraphQL
 
-Use Facebook GraphQL with Laravel 5. It is based on the PHP implementation [here](https://github.com/webonyx/graphql-php). You can find more information about GraphQL in the [GraphQL Introduction](http://facebook.github.io/react/blog/2015/05/01/graphql-introduction.html) on the [React](http://facebook.github.io/react) blog or you can read the [GraphQL specifications](https://facebook.github.io/graphql/). This is a work in progress.
+Use Facebook GraphQL with Laravel 5 or Lumen. It is based on the PHP implementation [here](https://github.com/webonyx/graphql-php). You can find more information about GraphQL in the [GraphQL Introduction](http://facebook.github.io/react/blog/2015/05/01/graphql-introduction.html) on the [React](http://facebook.github.io/react) blog or you can read the [GraphQL specifications](https://facebook.github.io/graphql/). This is a work in progress.
 
 This package is compatible with Eloquent model (or any other data source). See the example below.
 
@@ -15,8 +15,6 @@ This package is compatible with Eloquent model (or any other data source). See t
 * [Laravel 5.x](https://github.com/laravel/laravel) or [Lumen](https://github.com/laravel/lumen)
 * [GraphQL PHP](https://github.com/webonyx/graphql-php)
 
-
-#### Installation:
 
 **1-** Require the package via Composer in your `composer.json`.
 ```json
@@ -39,11 +37,11 @@ or
 $ composer update
 ```
 
-#### Configuration Laravel
+### Laravel 5.x
 
 **1-** Add the service provider to your `app/config/app.php` file
 ```php
-'Folklore\GraphQL\GraphQLServiceProvider',
+'Folklore\GraphQL\ServiceProvider',
 ```
 
 **2-** Add the facade to your `app/config/app.php` file
@@ -54,7 +52,7 @@ $ composer update
 **3-** Publish the configuration file
 
 ```bash
-$ php artisan vendor:publish --provider="Folklore\GraphQL\GraphQLServiceProvider"
+$ php artisan vendor:publish --provider="Folklore\GraphQL\ServiceProvider"
 ```
 
 **4-** Review the configuration file
@@ -63,11 +61,11 @@ $ php artisan vendor:publish --provider="Folklore\GraphQL\GraphQLServiceProvider
 config/graphql.php
 ```
 
-#### Configuration Lumen
+### Lumen
 
 **1-** Load the service provider in `bootstrap/app.php`
 ```php
-$app->register(Folklore\GraphQL\LumenGraphQLServiceProvider::class);
+$app->register(Folklore\GraphQL\LumenServiceProvider::class);
 ```
 
 **2-** For using the facade you have to uncomment the line `$app->withFacades();` in `bootstrap/app.php`
@@ -91,7 +89,7 @@ $ php artisan graphql:publish
 ```php
 $app->configure('graphql');
 ...
-$app->register(Folklore\GraphQL\LumenGraphQLServiceProvider::class)
+$app->register(Folklore\GraphQL\LumenServiceProvider::class)
 ```
 
 **5-** Review the configuration file
@@ -127,14 +125,14 @@ If you want to use routes that can accept schema name, you need to change `route
 
 ```php
 
-	'routes' => '{graphql_schema?}',
-	
-	// or if you use different routes for query and mutation
-	
-	'routes' => [
-		'query' => 'query/{graphql_schema?}',
-		'mutation' => 'mutation/{graphql_schema?}'
-	],
+'routes' => '{graphql_schema?}',
+
+// or if you use different routes for query and mutation
+
+'routes' => [
+	'query' => 'query/{graphql_schema?}',
+	'mutation' => 'mutation/{graphql_schema?}'
+],
 
 ```
 
@@ -170,26 +168,26 @@ You can define multiple schemas in the config:
 
 ```php
 
-	'schema' => 'default',
-    
-	'schemas' => [
-		'default' => [
-			'query' => [
-				//'users' => 'App\GraphQL\Query\UsersQuery'
-			],
-			'mutation' => [
-				//'updateUserEmail' => 'App\GraphQL\Query\UpdateUserEmailMutation'
-			]
+'schema' => 'default',
+
+'schemas' => [
+	'default' => [
+		'query' => [
+			//'users' => 'App\GraphQL\Query\UsersQuery'
 		],
-		'secret' => [
-			'query' => [
-				//'users' => 'App\GraphQL\Query\UsersQuery'
-			],
-			'mutation' => [
-				//'updateUserEmail' => 'App\GraphQL\Query\UpdateUserEmailMutation'
-			]
+		'mutation' => [
+			//'updateUserEmail' => 'App\GraphQL\Query\UpdateUserEmailMutation'
+		]
+	],
+	'secret' => [
+		'query' => [
+			//'users' => 'App\GraphQL\Query\UsersQuery'
+		],
+		'mutation' => [
+			//'updateUserEmail' => 'App\GraphQL\Query\UpdateUserEmailMutation'
 		]
 	]
+]
 
 ```
 
@@ -197,14 +195,14 @@ Or you can add schema using the facade:
 
 ```php
 
-	GraphQL::addSchema('secret', [
-		'query' => [
-			//'users' => 'App\GraphQL\Query\UsersQuery'
-		],
-		'mutation' => [
-			//'updateUserEmail' => 'App\GraphQL\Query\UpdateUserEmailMutation'
-		]
-	]);
+GraphQL::addSchema('secret', [
+	'query' => [
+		'users' => 'App\GraphQL\Query\UsersQuery'
+	],
+	'mutation' => [
+		'updateUserEmail' => 'App\GraphQL\Query\UpdateUserEmailMutation'
+	]
+]);
 
 ```
 
@@ -212,21 +210,21 @@ Afterwards, you can build the schema using the facade:
 
 ```php
     
-	// Will return the default schema defined by 'schema' in the config
-	$schema = GraphQL::schema(); 
-	
-	// Will return the 'secret' schema
-	$schema = GraphQL::schema('secret');
-	
-	// Will build a new schema
-	$schema = GraphQL::schema([
-		'query' => [
-			//'users' => 'App\GraphQL\Query\UsersQuery'
-		],
-		'mutation' => [
-			//'updateUserEmail' => 'App\GraphQL\Query\UpdateUserEmailMutation'
-		]
-	]);
+// Will return the default schema defined by 'schema' in the config
+$schema = GraphQL::schema(); 
+
+// Will return the 'secret' schema
+$schema = GraphQL::schema('secret');
+
+// Will build a new schema
+$schema = GraphQL::schema([
+	'query' => [
+		//'users' => 'App\GraphQL\Query\UsersQuery'
+	],
+	'mutation' => [
+		//'updateUserEmail' => 'App\GraphQL\Query\UpdateUserEmailMutation'
+	]
+]);
 	
 ```
 
@@ -246,41 +244,41 @@ First you need to create a type.
 
 ```php
 
-	namespace App\GraphQL\Type;
+namespace App\GraphQL\Type;
 
-	use GraphQL\Type\Definition\Type;
-	use Folklore\GraphQL\Support\Type as GraphQLType;
+use GraphQL\Type\Definition\Type;
+use Folklore\GraphQL\Support\Type as GraphQLType;
 
-    class UserType extends GraphQLType {
+class UserType extends GraphQLType {
 
-        protected $attributes = [
-			'name' => 'User',
-			'description' => 'A user'
+    protected $attributes = [
+		'name' => 'User',
+		'description' => 'A user'
+	];
+
+	public function fields()
+	{
+		return [
+			'id' => [
+				'type' => Type::nonNull(Type::string()),
+				'description' => 'The id of the user'
+			],
+			'email' => [
+				'type' => Type::string(),
+				'description' => 'The email of user'
+			]
 		];
-
-		public function fields()
-		{
-			return [
-				'id' => [
-					'type' => Type::nonNull(Type::string()),
-					'description' => 'The id of the user'
-				],
-				'email' => [
-					'type' => Type::string(),
-					'description' => 'The email of user'
-				]
-			];
-		}
+	}
 
 
-		// If you want to resolve the field yourself, you can declare a method
-		// with the following format resolve[FIELD_NAME]Field()
-		protected function resolveEmailField($root, $args)
-		{
-			return strtolower($root->email);
-		}
+	// If you want to resolve the field yourself, you can declare a method
+	// with the following format resolve[FIELD_NAME]Field()
+	protected function resolveEmailField($root, $args)
+	{
+		return strtolower($root->email);
+	}
 
-    }
+}
 
 ```
 
@@ -288,9 +286,9 @@ Add the type to the `config/graphql.php` configuration file
 
 ```php
 
-	'types' => [
-		'user' => 'App\GraphQL\Type\UserType'
-	]
+'types' => [
+	'user' => 'App\GraphQL\Type\UserType'
+]
 
 ```
 
@@ -298,56 +296,56 @@ You could also add the type with the `GraphQL` Facade, in a service provider for
 
 ```php
 
-	GraphQL::addType('App\GraphQL\Type\UserType', 'user');
+GraphQL::addType('App\GraphQL\Type\UserType', 'user');
 
 ```
 
 Then you need to define a query that returns this type (or a list). You can also specify arguments that you can use in the resolve method.
 ```php
 
-	namespace App\GraphQL\Query;
+namespace App\GraphQL\Query;
 
-	use GraphQL;
-	use GraphQL\Type\Definition\Type;
-	use Folklore\GraphQL\Support\Query;
-	use App\User;
+use GraphQL;
+use GraphQL\Type\Definition\Type;
+use Folklore\GraphQL\Support\Query;
+use App\User;
 
-	class UsersQuery extends Query {
+class UsersQuery extends Query {
 
-		protected $attributes = [
-			'name' => 'users'
-		];
+	protected $attributes = [
+		'name' => 'users'
+	];
 
-		public function type()
-		{
-			return Type::listOf(GraphQL::type('user'));
-		}
-
-		public function args()
-		{
-			return [
-				'id' => ['name' => 'id', 'type' => Type::string()],
-				'email' => ['name' => 'email', 'type' => Type::string()]
-			];
-		}
-
-		public function resolve($root, $args)
-		{
-			if(isset($args['id']))
-			{
-				return User::where('id' , $args['id'])->get();
-			}
-			else if(isset($args['email']))
-			{
-				return User::where('email', $args['email'])->get();
-			}
-			else
-			{
-				return User::all();
-			}
-		}
-
+	public function type()
+	{
+		return Type::listOf(GraphQL::type('user'));
 	}
+
+	public function args()
+	{
+		return [
+			'id' => ['name' => 'id', 'type' => Type::string()],
+			'email' => ['name' => 'email', 'type' => Type::string()]
+		];
+	}
+
+	public function resolve($root, $args)
+	{
+		if(isset($args['id']))
+		{
+			return User::where('id' , $args['id'])->get();
+		}
+		else if(isset($args['email']))
+		{
+			return User::where('email', $args['email'])->get();
+		}
+		else
+		{
+			return User::all();
+		}
+	}
+
+}
 
 ```
 
@@ -355,26 +353,28 @@ Add the query to the `config/graphql.php` configuration file
 
 ```php
 
-    'schemas' => [
-		'default' => [
-			'query' => [
-				'users' => 'App\GraphQL\Query\UsersQuery'
-			],
-			// ...
-		]
+'schemas' => [
+	'default' => [
+		'query' => [
+			'users' => 'App\GraphQL\Query\UsersQuery'
+		],
+		// ...
 	]
+]
 
 ```
 
 And that's it. You should be able to query GraphQL with a request to the url `/graphql` (or anything you choose in your config). Try a GET request with the following `query` input
 
 ```
-    query FetchUsers {
-        users {
-            id
-            email
-        }
+
+query FetchUsers {
+    users {
+        id
+        email
     }
+}
+
 ```
 
 For example, if you use homestead:
@@ -390,47 +390,47 @@ For example a mutation to update the password of a user. First you need to defin
 
 ```php
 
-	namespace App\GraphQL\Mutation;
+namespace App\GraphQL\Mutation;
 
-	use GraphQL;
-	use GraphQL\Type\Definition\Type;
-	use Folklore\GraphQL\Support\Mutation;
-	use App\User;
+use GraphQL;
+use GraphQL\Type\Definition\Type;
+use Folklore\GraphQL\Support\Mutation;
+use App\User;
 
-	class UpdateUserPasswordMutation extends Mutation {
+class UpdateUserPasswordMutation extends Mutation {
 
-		protected $attributes = [
-			'name' => 'updateUserPassword'
-		];
+	protected $attributes = [
+		'name' => 'updateUserPassword'
+	];
 
-		public function type()
-		{
-			return GraphQL::type('user');
-		}
-
-		public function args()
-		{
-			return [
-				'id' => ['name' => 'id', 'type' => Type::nonNull(Type::string())],
-				'password' => ['name' => 'password', 'type' => Type::nonNull(Type::string())]
-			];
-		}
-
-		public function resolve($root, $args)
-		{
-			$user = User::find($args['id']);
-			if(!$user)
-			{
-				return null;
-			}
-
-			$user->password = bcrypt($args['password']);
-			$user->save();
-
-			return $user;
-		}
-
+	public function type()
+	{
+		return GraphQL::type('user');
 	}
+
+	public function args()
+	{
+		return [
+			'id' => ['name' => 'id', 'type' => Type::nonNull(Type::string())],
+			'password' => ['name' => 'password', 'type' => Type::nonNull(Type::string())]
+		];
+	}
+
+	public function resolve($root, $args)
+	{
+		$user = User::find($args['id']);
+		if(!$user)
+		{
+			return null;
+		}
+
+		$user->password = bcrypt($args['password']);
+		$user->save();
+
+		return $user;
+	}
+
+}
 
 ```
 
@@ -440,14 +440,14 @@ You then add the muation to the `config/graphql.php` configuration file
 
 ```php
 
-    'schema' => [
-		'default' => [
-			'mutation' => [
-				'updateUserPassword' => 'App\GraphQL\Mutation\UpdateUserPasswordMutation'
-			],
-			// ...
-		]
+'schema' => [
+	'default' => [
+		'mutation' => [
+			'updateUserPassword' => 'App\GraphQL\Mutation\UpdateUserPasswordMutation'
+		],
+		// ...
 	]
+]
 
 ```
 
@@ -455,12 +455,14 @@ You then add the muation to the `config/graphql.php` configuration file
 You should then be able to use the following query on your endpoint to do the mutation.
 
 ```
-    mutation users {
-        updateUserPassword(id: "1", password: "newpassword") {
-            id
-            email
-        }
+
+mutation users {
+    updateUserPassword(id: "1", password: "newpassword") {
+        id
+        email
     }
+}
+
 ```
 
 if you use homestead:
