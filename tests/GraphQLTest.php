@@ -91,10 +91,10 @@ class GraphQLTest extends TestCase
      * Test schema with wrong name
      *
      * @test
+     * @expectedException \Folklore\GraphQL\Exception\SchemaNotFound
      */
     public function testSchemaWithWrongName()
     {
-        $this->expectException(\Folklore\GraphQL\Exception\SchemaNotFound::class);
         $schema = GraphQL::schema('wrong');
     }
     
@@ -113,8 +113,16 @@ class GraphQLTest extends TestCase
         
         $typeOther = GraphQL::type('Example', true);
         $this->assertFalse($type === $typeOther);
-        
-        $this->expectException(\Folklore\GraphQL\Exception\TypeNotFound::class);
+    }
+    
+    /**
+     * Test wrong type
+     *
+     * @test
+     * @expectedException \Folklore\GraphQL\Exception\TypeNotFound
+     */
+    public function testWrongType()
+    {
         $typeWrong = GraphQL::type('ExampleWrong');
     }
     
