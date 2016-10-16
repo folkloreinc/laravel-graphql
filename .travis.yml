@@ -11,15 +11,13 @@ env:
   - LARAVEL=5.3
 
 matrix:
-  allow_failures:
-    - env: LARAVEL=dev-master
-    - env: LARAVEL=dev-v1
   exclude:
     - php: 5.5
       env: LARAVEL=5.3
 
 before_script:
   - curl -s http://getcomposer.org/installer | php
+  - php -n -d extension=json.so composer.phar global require hirak/prestissimo --update-no-dev
   - php -n -d extension=json.so composer.phar require "illuminate/support" $LARAVEL -vvv
   - php -n -d extension=json.so composer.phar install --dev
 
