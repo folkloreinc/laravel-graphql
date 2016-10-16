@@ -478,55 +478,55 @@ When creating a mutation, you can add a method to define the validation rules th
 
 ```php
 
-	namespace App\GraphQL\Mutation;
+namespace App\GraphQL\Mutation;
 
-	use GraphQL;
-	use GraphQL\Type\Definition\Type;
-	use Folklore\GraphQL\Support\Mutation;
-	use App\User;
+use GraphQL;
+use GraphQL\Type\Definition\Type;
+use Folklore\GraphQL\Support\Mutation;
+use App\User;
 
-	class UpdateUserEmailMutation extends Mutation {
+class UpdateUserEmailMutation extends Mutation {
 
-		protected $attributes = [
-			'name' => 'UpdateUserEmail'
-		];
+	protected $attributes = [
+		'name' => 'UpdateUserEmail'
+	];
 
-		public function type()
-		{
-			return GraphQL::type('user');
-		}
-
-		public function args()
-		{
-			return [
-				'id' => ['name' => 'id', 'type' => Type::string()],
-				'email' => ['name' => 'password', 'type' => Type::string()]
-			];
-		}
-
-		public function rules()
-		{
-			return [
-				'id' => ['required'],
-				'email' => ['required', 'email']
-			];
-		}
-
-		public function resolve($root, $args)
-		{
-			$user = User::find($args['id']);
-			if(!$user)
-			{
-				return null;
-			}
-
-			$user->email = $args['email'];
-			$user->save();
-
-			return $user;
-		}
-
+	public function type()
+	{
+		return GraphQL::type('user');
 	}
+
+	public function args()
+	{
+		return [
+			'id' => ['name' => 'id', 'type' => Type::string()],
+			'email' => ['name' => 'password', 'type' => Type::string()]
+		];
+	}
+
+	public function rules()
+	{
+		return [
+			'id' => ['required'],
+			'email' => ['required', 'email']
+		];
+	}
+
+	public function resolve($root, $args)
+	{
+		$user = User::find($args['id']);
+		if(!$user)
+		{
+			return null;
+		}
+
+		$user->email = $args['email'];
+		$user->save();
+
+		return $user;
+	}
+
+}
 
 ```
 
@@ -534,56 +534,56 @@ Alternatively you can define rules with each args
 
 ```php
 
-	class UpdateUserEmailMutation extends Mutation {
+class UpdateUserEmailMutation extends Mutation {
 
-		//...
+	//...
 
-		public function args()
-		{
-			return [
-				'id' => [
-					'name' => 'id',
-					'type' => Type::string(),
-					'rules' => ['required']
-				],
-				'email' => [
-					'name' => 'password',
-					'type' => Type::string(),
-					'rules' => ['required', 'email']
-				]
-			];
-		}
-
-		//...
-
+	public function args()
+	{
+		return [
+			'id' => [
+				'name' => 'id',
+				'type' => Type::string(),
+				'rules' => ['required']
+			],
+			'email' => [
+				'name' => 'password',
+				'type' => Type::string(),
+				'rules' => ['required', 'email']
+			]
+		];
 	}
+
+	//...
+
+}
 
 ```
 
 When you execute a mutation, it will returns the validation errors. Since GraphQL specifications define a certain format for errors, the validation errors messages are added to the error object as a extra `validation` attribute. To find the validation error, you should check for the error with a `message` equals to `'validation'`, then the `validation` attribute will contain the normal errors messages returned by the Laravel Validator.
 
 ```json
-	{
-		"data": {
-			"updateUserEmail": null
-		},
-		"errors": [
-			{
-				"message": "validation",
-				"locations": [
-					{
-						"line": 1,
-						"column": 20
-					}
-				],
-				"validation": {
-					"email": [
-						"The email is invalid."
-					]
+{
+	"data": {
+		"updateUserEmail": null
+	},
+	"errors": [
+		{
+			"message": "validation",
+			"locations": [
+				{
+					"line": 1,
+					"column": 20
 				}
+			],
+			"validation": {
+				"email": [
+					"The email is invalid."
+				]
 			}
-		]
-	}
+		}
+	]
+}
 ```
 
 ## Advanced usage
@@ -593,12 +593,12 @@ When you execute a mutation, it will returns the validation errors. Since GraphQ
 GraphQL offer you the possibility to use variables in your query so you don't need to "hardcode" value. This is done like that:
 
 ```
-    query FetchUserByID($id: String) {
-        user(id: $id) {
-            id
-            email
-        }
+query FetchUserByID($id: String) {
+    user(id: $id) {
+        id
+        email
     }
+}
 ```
 
 When you query the GraphQL endpoint, you can pass a `params` parameter.
@@ -698,53 +698,53 @@ The third argument passed to a query's resolve method is an instance of `GraphQL
 Your Query would look like
 
 ```php
-	namespace App\GraphQL\Query;
+namespace App\GraphQL\Query;
 
-	use GraphQL;
-	use GraphQL\Type\Definition\Type;
-	use GraphQL\Type\Definition\ResolveInfo;
-	use Folklore\GraphQL\Support\Query;
+use GraphQL;
+use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\ResolveInfo;
+use Folklore\GraphQL\Support\Query;
 
-	use App\User;
+use App\User;
 
-	class UsersQuery extends Query
+class UsersQuery extends Query
+{
+	protected $attributes = [
+		'name' => 'Users query'
+	];
+
+	public function type()
 	{
-		protected $attributes = [
-			'name' => 'Users query'
+		return Type::listOf(GraphQL::type('user'));
+	}
+
+	public function args()
+	{
+		return [
+			'id' => ['name' => 'id', 'type' => Type::string()],
+			'email' => ['name' => 'email', 'type' => Type::string()]
 		];
+	}
 
-		public function type()
-		{
-			return Type::listOf(GraphQL::type('user'));
-		}
+	public function resolve($root, $args, $context, ResolveInfo $info)
+	{
+		$fields = $info->getFieldSelection($depth = 3);
 
-		public function args()
-		{
-			return [
-				'id' => ['name' => 'id', 'type' => Type::string()],
-				'email' => ['name' => 'email', 'type' => Type::string()]
-			];
-		}
+		$users = User::query();
 
-		public function resolve($root, $args, $context, ResolveInfo $info)
-		{
-			$fields = $info->getFieldSelection($depth = 3);
-
-			$users = User::query();
-
-			foreach ($fields as $field => $keys) {
-				if ($field === 'profile') {
-					$users->with('profile');
-				}
-
-				if ($field === 'posts') {
-					$users->with('posts');
-				}
+		foreach ($fields as $field => $keys) {
+			if ($field === 'profile') {
+				$users->with('profile');
 			}
 
-			return $users->get();
+			if ($field === 'posts') {
+				$users->with('posts');
+			}
 		}
+
+		return $users->get();
 	}
+}
 ```
 
 Your Type for User would look like
