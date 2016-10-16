@@ -68,13 +68,12 @@ class MutationTest extends FieldTest
      * Test resolve throw validation error
      *
      * @test
+     * @expectedException \Folklore\GraphQL\Error\ValidationError
      */
     public function testResolveThrowValidationError()
     {
         $class = $this->getFieldClass();
         $field = new $class();
-        
-        $this->expectException(\Folklore\GraphQL\Error\ValidationError::class);
         
         $attributes = $field->getAttributes();
         $attributes['resolve'](null, [], [], null);
