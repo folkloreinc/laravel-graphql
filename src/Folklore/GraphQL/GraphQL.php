@@ -50,12 +50,12 @@ class GraphQL
         //Get the types either from the schema, or the global types.
         $types = [];
         if (sizeof($schemaTypes)) {
-            foreach ($schemaTypes as $type) {
-                if (is_string($type) && isset($this->types[$type])) {
-                    $types[] = $this->type($name);
-                } else {
-                    $types[] = $this->buildObjectTypeFromClass($type);
-                }
+            foreach ($schemaTypes as $name => $type) {
+                $objectType = $this->objectType($type, is_numeric($name) ? []:[
+                    'name' => $name
+                ]);
+                $this->typesInstances[$name] = $objectType;
+                $types[] = $objectType;
             }
         } else {
             foreach ($this->types as $name => $type) {
@@ -148,6 +148,13 @@ class GraphQL
         $schema = $this->schema($schemaName);
         $result = GraphQLBase::executeAndReturnResult($schema, $query, $root, $context, $params);
         return $result;
+    }
+    
+    public function addTypes($types)
+    {
+        foreach ($types as $name => $type) {
+            $this->addType($type, is_numeric($name) ? null:$name);
+        }
     }
     
     public function addType($class, $name = null)
