@@ -607,7 +607,7 @@ Your Query would look like
 			];
 		}
 
-		public function resolve($root, $args, ResolveInfo $info)
+		public function resolve($root, $args, $context, ResolveInfo $info)
 		{
 			$fields = $info->getFieldSelection($depth = 3);
 
