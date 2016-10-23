@@ -90,9 +90,9 @@ class GraphQL {
         ], $opts));
     }
 
-    public function query($query, $params = [], $schema = null)
+    public function query($query, $params = [], $schema = null, $variables = null, $operationName = null)
     {
-        $executionResult = $this->queryAndReturnResult($query, $params, $schema);
+        $executionResult = $this->queryAndReturnResult($query, $params, $schema, $variables, $operationName);
 
         if (!empty($executionResult->errors))
         {
@@ -111,10 +111,10 @@ class GraphQL {
         }
     }
 
-    public function queryAndReturnResult($query, $params = [], $schema = null)
+    public function queryAndReturnResult($query, $params = [], $schema = null, $variables = null, $operationName = null)
     {
         $schema = $this->schema($schema);
-        $result = GraphQLBase::executeAndReturnResult($schema, $query, null, $params);
+        $result = GraphQLBase::executeAndReturnResult($schema, $query, null, $params, $variables, $operationName);
         return $result;
     }
 
