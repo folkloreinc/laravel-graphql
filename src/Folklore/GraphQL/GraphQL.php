@@ -145,8 +145,12 @@ class GraphQL
         $root = array_get($opts, 'root', null);
         $context = array_get($opts, 'context', null);
         $schemaName = array_get($opts, 'schema', null);
+        $operationName = array_get($opts, 'operationName', null);
+        
         $schema = $this->schema($schemaName);
-        $result = GraphQLBase::executeAndReturnResult($schema, $query, $root, $context, $params);
+        
+        $result = GraphQLBase::executeAndReturnResult($schema, $query, $root, $context, $params, $operationName);
+        
         return $result;
     }
     

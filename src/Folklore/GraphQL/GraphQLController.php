@@ -13,6 +13,7 @@ class GraphQLController extends Controller
         
         $query = $request->get('query');
         $params = $request->get('params');
+        $operationName = $request->get('operationName', null);
         
         if (is_string($params)) {
             $params = json_decode($params, true);
@@ -22,7 +23,8 @@ class GraphQLController extends Controller
         
         return app('graphql')->query($query, $params, [
             'context' => $context,
-            'schema' => $schema
+            'schema' => $schema,
+            'operationName' => $operationName
         ]);
     }
     
