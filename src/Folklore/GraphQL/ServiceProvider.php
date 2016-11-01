@@ -1,5 +1,6 @@
 <?php namespace Folklore\GraphQL;
 
+use GraphQL\Validator\DocumentValidator;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 class ServiceProvider extends BaseServiceProvider
@@ -13,7 +14,7 @@ class ServiceProvider extends BaseServiceProvider
     {
         return $this->app['router'];
     }
-    
+
     /**
      * Bootstrap any application services.
      *
@@ -22,19 +23,21 @@ class ServiceProvider extends BaseServiceProvider
     public function boot()
     {
         $this->bootEvents();
-        
+
         $this->bootPublishes();
-        
+
         $this->bootTypes();
-        
+
         $this->bootSchemas();
-        
+
+        $this->bootSecurity();
+
         if (config('graphql.routes')) {
             $router = $this->getRouter();
             include __DIR__.'/routes.php';
         }
     }
-    
+
     /**
      * Bootstrap events
      *
@@ -48,7 +51,7 @@ class ServiceProvider extends BaseServiceProvider
             $this->getRouter()->pattern('graphql_schema', '('.implode('|', $schemaNames).')');
         });
     }
-    
+
     /**
      * Bootstrap publishes
      *
@@ -57,14 +60,14 @@ class ServiceProvider extends BaseServiceProvider
     protected function bootPublishes()
     {
         $configPath = __DIR__.'/../../config';
-        
+
         $this->mergeConfigFrom($configPath.'/config.php', 'graphql');
-        
+
         $this->publishes([
             $configPath.'/config.php' => config_path('graphql.php'),
         ], 'config');
     }
-    
+
     /**
      * Add types from config
      *
@@ -81,7 +84,7 @@ class ServiceProvider extends BaseServiceProvider
             }
         }
     }
-    
+
     /**
      * Add schemas from config
      *
@@ -96,6 +99,25 @@ class ServiceProvider extends BaseServiceProvider
     }
 
     /**
+     * Configure security from config
+     * @return void
+     */
+    protected function bootSecurity()
+    {
+        $maxQueryComplexity = config('graphql.security.query_max_complexity');
+        if ($maxQueryComplexity !== null) {
+            $queryComplexity = DocumentValidator::getRule('QueryComplexity');
+            $queryComplexity->setMaxQueryComplexity($maxQueryComplexity);
+        }
+
+        $maxQueryDepth = config('graphql.security.query_max_depth');
+        if ($maxQueryDepth !== null) {
+            $queryDepth = DocumentValidator::getRule('QueryDepth');
+            $queryDepth->setMaxQueryDepth($maxQueryDepth);
+        }
+    }
+
+    /**
      * Register any application services.
      *
      * @return void
@@ -103,10 +125,10 @@ class ServiceProvider extends BaseServiceProvider
     public function register()
     {
         $this->registerGraphQL();
-        
+
         $this->registerConsole();
     }
-    
+
     /**
      * Register GraphQL facade
      *
@@ -118,7 +140,7 @@ class ServiceProvider extends BaseServiceProvider
             return new GraphQL($app);
         });
     }
-    
+
     /**
      * Register console commands
      *
@@ -130,8 +152,8 @@ class ServiceProvider extends BaseServiceProvider
         $this->commands(\Folklore\GraphQL\Console\QueryMakeCommand::class);
         $this->commands(\Folklore\GraphQL\Console\MutationMakeCommand::class);
     }
-    
-    
+
+
     /**
      * Get the services provided by the provider.
      *

@@ -2,10 +2,10 @@
 
 
 return [
-    
+
     // The prefix for routes
     'prefix' => 'graphql',
-    
+
     // The routes to make GraphQL request. Either a string that will apply
     // to both query and mutation or an array containing the key 'query' and/or
     // 'mutation' with the according Route
@@ -28,7 +28,7 @@ return [
     // 'routes' => null,
     //
     'routes' => '{graphql_schema?}',
-    
+
     // The controller to use in GraphQL request. Either a string that will apply
     // to both query and mutation or an array containing the key 'query' and/or
     // 'mutation' with the according Controller and method
@@ -44,12 +44,12 @@ return [
 
     // Any middleware for the graphql route group
     'middleware' => [],
-    
+
     // The name of the default schema used when no argument is provided
     // to GraphQL::schema() or when the route is used without the graphql_schema
     // parameter.
     'schema' => 'default',
-    
+
     // The schemas for query and/or mutation. It expects an array to provide
     // both the 'query' fields and the 'mutation' fields. You can also
     // provide directly an object GraphQL\Schema
@@ -76,14 +76,14 @@ return [
     'schemas' => [
         'default' => [
             'query' => [
-                
+
             ],
             'mutation' => [
-                
+
             ]
         ]
     ],
-    
+
     // The types available in the application. You can then access it from the
     // facade like this: GraphQL::type('user')
     //
@@ -100,9 +100,9 @@ return [
     // ]
     //
     'types' => [
-        
+
     ],
-    
+
     // This callable will received every Error objects for each errors GraphQL catch.
     // The method should return an array representing the error.
     //
@@ -112,6 +112,13 @@ return [
     //     'locations' => []
     // ]
     //
-    'error_formatter' => ['\Folklore\GraphQL\GraphQL', 'formatError']
-    
+    'error_formatter' => ['\Folklore\GraphQL\GraphQL', 'formatError'],
+
+    // Options to limit the query complexity and depth. See the doc
+    // @ https://github.com/webonyx/graphql-php#security
+    // for details. Disabled by default.
+    'security' => [
+        'query_max_complexity' => null,
+        'query_max_depth' => null,
+    ],
 ];
