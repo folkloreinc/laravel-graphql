@@ -41,6 +41,12 @@ return [
     // ]
     //
     'controllers' => '\Folklore\GraphQL\GraphQLController@query',
+    
+    // The name of the input that contain variables when you query the endpoint.
+    // Some library use "variables", you can change it here. "params" will stay
+    // the default for now but will be changed to "variables" in the next major
+    // release.
+    'variables_input_name' => 'params',
 
     // Any middleware for the graphql route group
     'middleware' => [],

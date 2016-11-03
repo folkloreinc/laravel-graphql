@@ -12,9 +12,11 @@ class ConfigTest extends TestCase
             'prefix' => 'graphql_test',
             
             'routes' => [
-                'query' => 'query',
-                'mutation' => 'mutation'
+                'query' => 'query/{graphql_schema?}',
+                'mutation' => 'mutation/{graphql_schema?}'
             ],
+            
+            'variables_input_name' => 'variables',
             
             'schema' => 'custom',
             
@@ -71,6 +73,13 @@ class ConfigTest extends TestCase
         $this->assertArrayHasKey('data', $content);
     }
     
+    public function testTypes()
+    {
+        $types = GraphQL::getTypes();
+        $this->assertArrayHasKey('Example', $types);
+        $this->assertArrayHasKey('CustomExample', $types);
+    }
+    
     public function testSchema()
     {
         $schema = GraphQL::schema();
@@ -87,11 +96,24 @@ class ConfigTest extends TestCase
         $this->assertArrayHasKey('custom', $schemas);
     }
     
-    public function testTypes()
+    public function testVariablesInputName()
     {
-        $types = GraphQL::getTypes();
-        $this->assertArrayHasKey('Example', $types);
-        $this->assertArrayHasKey('CustomExample', $types);
+        $response = $this->call('GET', '/graphql_test/query/default', [
+            'query' => $this->queries['examplesWithParams'],
+            'variables' => [
+                'index' => 0
+            ]
+        ]);
+
+        $this->assertEquals($response->getStatusCode(), 200);
+
+        $content = $response->getOriginalContent();
+        $this->assertArrayHasKey('data', $content);
+        $this->assertEquals($content['data'], [
+            'examples' => [
+                $this->data[0]
+            ]
+        ]);
     }
     
     public function testErrorFormatter()
