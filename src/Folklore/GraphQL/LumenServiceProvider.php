@@ -15,6 +15,22 @@ class LumenServiceProvider extends ServiceProvider
     }
     
     /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        $this->bootPublishes();
+        
+        $this->bootTypes();
+        
+        $this->bootSchemas();
+        
+        $this->bootRouter();
+    }
+    
+    /**
      * Bootstrap publishes
      *
      * @return void

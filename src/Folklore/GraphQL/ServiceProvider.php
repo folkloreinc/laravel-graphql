@@ -29,6 +29,16 @@ class ServiceProvider extends BaseServiceProvider
         
         $this->bootSchemas();
         
+        $this->bootRouter();
+    }
+    
+    /**
+     * Bootstrap router
+     *
+     * @return void
+     */
+    protected function bootRouter()
+    {
         if (config('graphql.routes')) {
             $router = $this->getRouter();
             include __DIR__.'/routes.php';
