@@ -47,6 +47,6 @@ class LumenServiceProvider extends ServiceProvider
     {
         parent::registerConsole();
         
-        $this->command(\Folklore\GraphQL\Console\PublishCommand::class);
+        $this->commands(\Folklore\GraphQL\Console\PublishCommand::class);
     }
 }
