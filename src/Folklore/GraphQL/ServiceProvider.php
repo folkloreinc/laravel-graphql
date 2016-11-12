@@ -80,7 +80,7 @@ class ServiceProvider extends BaseServiceProvider
         ], 'config');
 
         $this->publishes([
-            $viewsPath => resource_path('views/vendor/graphql'),
+            $viewsPath => base_path('resources/views/vendor/graphql'),
         ], 'views');
     }
 
