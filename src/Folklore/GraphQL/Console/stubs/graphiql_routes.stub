@@ -1,4 +1,0 @@
-
-Route::get('graphiql', function () {
-    return view('graphiql');
-});

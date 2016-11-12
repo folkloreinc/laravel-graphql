@@ -30,6 +30,8 @@ class ServiceProvider extends BaseServiceProvider
         $this->bootSchemas();
 
         $this->bootRouter();
+
+        $this->bootViews();
     }
 
     /**
@@ -67,12 +69,19 @@ class ServiceProvider extends BaseServiceProvider
     protected function bootPublishes()
     {
         $configPath = __DIR__.'/../../config';
+        $viewsPath = __DIR__.'/../../resources/views';
 
         $this->mergeConfigFrom($configPath.'/config.php', 'graphql');
+        
+        $this->loadViewsFrom($viewsPath, 'graphql');
 
         $this->publishes([
             $configPath.'/config.php' => config_path('graphql.php'),
         ], 'config');
+
+        $this->publishes([
+            $viewsPath => resource_path('views/vendor/graphql'),
+        ], 'views');
     }
 
     /**
@@ -102,6 +111,20 @@ class ServiceProvider extends BaseServiceProvider
         $configSchemas = config('graphql.schemas');
         foreach ($configSchemas as $name => $schema) {
             $this->app['graphql']->addSchema($name, $schema);
+        }
+    }
+
+    /**
+     * Bootstrap Views
+     *
+     * @return void
+     */
+    protected function bootViews()
+    {
+        $graphiQL = config('graphql.graphiql', true);
+        if ($graphiQL) {
+            $view = config('graphql.graphiql.view', 'graphql::graphiql');
+            app('view')->composer($view, \Folklore\GraphQL\View\GraphiQLComposer::class);
         }
     }
 
@@ -139,7 +162,6 @@ class ServiceProvider extends BaseServiceProvider
         $this->commands(\Folklore\GraphQL\Console\TypeMakeCommand::class);
         $this->commands(\Folklore\GraphQL\Console\QueryMakeCommand::class);
         $this->commands(\Folklore\GraphQL\Console\MutationMakeCommand::class);
-        $this->commands(\Folklore\GraphQL\Console\GraphiQLMakeCommand::class);
     }
 
 

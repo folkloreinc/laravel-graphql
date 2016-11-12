@@ -20,7 +20,8 @@ return [
     //
     // 'routes' => [
     //     'query' => 'query/{graphql_schema?}',
-    //     'mutation' => 'mutation/{graphql_schema?}'
+    //     'mutation' => 'mutation/{graphql_schema?}',
+    //     'mutation' => 'graphiql'
     // ]
     //
     // you can also disable routes by setting routes to null
@@ -40,7 +41,7 @@ return [
     //     'mutation' => '\Folklore\GraphQL\GraphQLController@mutation'
     // ]
     //
-    'controllers' => '\Folklore\GraphQL\GraphQLController@query',
+    'controllers' => \Folklore\GraphQL\GraphQLController::class.'@query',
     
     // The name of the input that contain variables when you query the endpoint.
     // Some library use "variables", you can change it here. "params" will stay
@@ -50,6 +51,14 @@ return [
 
     // Any middleware for the graphql route group
     'middleware' => [],
+    
+    // Config for GraphiQL (https://github.com/graphql/graphiql).
+    // To disable GraphiQL, set this to null.
+    'graphiql' => [
+        'routes' => '/graphiql',
+        'middleware' => [],
+        'view' => 'graphql::graphiql'
+    ],
     
     // The name of the default schema used when no argument is provided
     // to GraphQL::schema() or when the route is used without the graphql_schema
@@ -118,6 +127,6 @@ return [
     //     'locations' => []
     // ]
     //
-    'error_formatter' => ['\Folklore\GraphQL\GraphQL', 'formatError']
+    'error_formatter' => [\Folklore\GraphQL\GraphQL::class, 'formatError']
     
 ];

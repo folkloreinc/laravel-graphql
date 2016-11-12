@@ -28,6 +28,8 @@ class LumenServiceProvider extends ServiceProvider
         $this->bootSchemas();
         
         $this->bootRouter();
+        
+        $this->bootViews();
     }
     
     /**

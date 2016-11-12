@@ -33,7 +33,7 @@ $router->group(array(
     
     //Query
     if ($queryRoute) {
-        $router->get($queryRoute, array(
+        $router->match(['post', 'get'], $queryRoute, array(
             'as' => 'graphql.query',
             'uses' => $queryController
         ));
@@ -47,3 +47,15 @@ $router->group(array(
         ));
     }
 });
+
+//GraphiQL
+$graphiQL = config('graphql.graphiql', true);
+if ($graphiQL) {
+    $router->get(config('graphql.graphiql.routes', 'graphiql'), [
+        'as' => 'graphql.graphiql',
+        'middleware' => config('graphql.graphiql.middleware', []),
+        function () {
+            return view(config('graphql.graphiql.view', 'graphql::graphiql'));
+        }
+    ]);
+}
