@@ -33,7 +33,7 @@ $router->group(array(
     
     //Query
     if ($queryRoute) {
-        $router->match(['post', 'get'], $queryRoute, array(
+        $router->get($queryRoute, array(
             'as' => 'graphql.query',
             'uses' => $queryController
         ));
