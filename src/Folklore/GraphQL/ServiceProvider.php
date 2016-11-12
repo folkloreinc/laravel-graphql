@@ -13,7 +13,7 @@ class ServiceProvider extends BaseServiceProvider
     {
         return $this->app['router'];
     }
-    
+
     /**
      * Bootstrap any application services.
      *
@@ -22,16 +22,16 @@ class ServiceProvider extends BaseServiceProvider
     public function boot()
     {
         $this->bootEvents();
-        
+
         $this->bootPublishes();
-        
+
         $this->bootTypes();
-        
+
         $this->bootSchemas();
-        
+
         $this->bootRouter();
     }
-    
+
     /**
      * Bootstrap router
      *
@@ -44,7 +44,7 @@ class ServiceProvider extends BaseServiceProvider
             include __DIR__.'/routes.php';
         }
     }
-    
+
     /**
      * Bootstrap events
      *
@@ -58,7 +58,7 @@ class ServiceProvider extends BaseServiceProvider
             $this->getRouter()->pattern('graphql_schema', '('.implode('|', $schemaNames).')');
         });
     }
-    
+
     /**
      * Bootstrap publishes
      *
@@ -67,14 +67,14 @@ class ServiceProvider extends BaseServiceProvider
     protected function bootPublishes()
     {
         $configPath = __DIR__.'/../../config';
-        
+
         $this->mergeConfigFrom($configPath.'/config.php', 'graphql');
-        
+
         $this->publishes([
             $configPath.'/config.php' => config_path('graphql.php'),
         ], 'config');
     }
-    
+
     /**
      * Add types from config
      *
@@ -91,7 +91,7 @@ class ServiceProvider extends BaseServiceProvider
             }
         }
     }
-    
+
     /**
      * Add schemas from config
      *
@@ -113,10 +113,10 @@ class ServiceProvider extends BaseServiceProvider
     public function register()
     {
         $this->registerGraphQL();
-        
+
         $this->registerConsole();
     }
-    
+
     /**
      * Register GraphQL facade
      *
@@ -128,7 +128,7 @@ class ServiceProvider extends BaseServiceProvider
             return new GraphQL($app);
         });
     }
-    
+
     /**
      * Register console commands
      *
@@ -139,9 +139,10 @@ class ServiceProvider extends BaseServiceProvider
         $this->commands(\Folklore\GraphQL\Console\TypeMakeCommand::class);
         $this->commands(\Folklore\GraphQL\Console\QueryMakeCommand::class);
         $this->commands(\Folklore\GraphQL\Console\MutationMakeCommand::class);
+        $this->commands(\Folklore\GraphQL\Console\GraphiQLMakeCommand::class);
     }
-    
-    
+
+
     /**
      * Get the services provided by the provider.
      *
