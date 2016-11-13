@@ -31,6 +31,10 @@ class GraphQLController extends Controller
     
     protected function queryContext($query, $params, $schema)
     {
-        return Auth::user();
+        try {
+            return Auth::user();
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 }

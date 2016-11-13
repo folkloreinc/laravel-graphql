@@ -31,20 +31,50 @@ $router->group(array(
         $mutationController = $controllers;
     }
     
+    $schemaParameterPattern = '/\{\s*graphql\_schema\s*\?\s*\}/';
+    
     //Query
     if ($queryRoute) {
-        $router->get($queryRoute, array(
-            'as' => 'graphql.query',
-            'uses' => $queryController
-        ));
+        // Remove optional parameter in Lumen. Instead, creates two routes.
+        if (!$router instanceof \Illuminate\Routing\Router &&
+            preg_match($schemaParameterPattern, $queryRoute)
+        ) {
+            $router->post(preg_replace($schemaParameterPattern, '', $queryRoute), array(
+                'as' => 'graphql.query',
+                'uses' => $queryController
+            ));
+            $router->post(preg_replace($schemaParameterPattern, '{graphql_schema}', $queryRoute), array(
+                'as' => 'graphql.query.with_schema',
+                'uses' => $queryController
+            ));
+        } else {
+            $router->get($queryRoute, array(
+                'as' => 'graphql.query',
+                'uses' => $queryController
+            ));
+        }
     }
     
     //Mutation
     if ($mutationRoute) {
-        $router->post($mutationRoute, array(
-            'as' => 'graphql.mutation',
-            'uses' => $mutationController
-        ));
+        // Remove optional parameter in Lumen. Instead, creates two routes.
+        if (!$router instanceof \Illuminate\Routing\Router &&
+            preg_match($schemaParameterPattern, $mutationRoute)
+        ) {
+            $router->post(preg_replace($schemaParameterPattern, '', $mutationRoute), array(
+                'as' => 'graphql.mutation',
+                'uses' => $mutationController
+            ));
+            $router->post(preg_replace($schemaParameterPattern, '{graphql_schema}', $mutationRoute), array(
+                'as' => 'graphql.mutation.with_schema',
+                'uses' => $mutationController
+            ));
+        } else {
+            $router->post($mutationRoute, array(
+                'as' => 'graphql.mutation',
+                'uses' => $mutationController
+            ));
+        }
     }
 });
 
