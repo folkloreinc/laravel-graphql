@@ -4,6 +4,7 @@ namespace DummyNamespace;
 
 use Folklore\GraphQL\Support\Mutation;
 use GraphQL\Type\Definition\ResolveInfo;
+use GraphQL\Type\Definition\Type;
 
 class DummyClass extends Mutation
 {
