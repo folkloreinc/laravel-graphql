@@ -100,12 +100,21 @@ $app->register(Folklore\GraphQL\LumenServiceProvider::class)
 config/graphql.php
 ```
 
+## Documentation
+
+- [Upgrade to 1.0](docs/upgrade.md)
+
 ## Usage
 
 - [Schemas](#schemas)
 - [Creating a query](#creating-a-query)
 - [Creating a mutation](#creating-a-mutation)
 - [Adding validation to mutation](#adding-validation-to-mutation)
+
+#### Advanced Usage
+- [Query variables](docs/advanced.md#query-variables)
+- [Custom field](docs/advanced.md#custom-field)
+- [Eager loading relationships](docs/advanced.md#eager-loading-relationships)
 
 ### Schemas
 Starting from version 1.0, you can define multiple schemas. Having multiple schemas can be useful if, for example, you want an endpoint that is public and another one that needs authentication.
@@ -531,12 +540,3 @@ When you execute a mutation, it will returns the validation errors. Since GraphQ
 	]
 }
 ```
-
-## Documentation
-
-- [Upgrade to 1.0](docs/upgrade.md)
-
-#### Advanced Usage
-- [Query variables](docs/advanced.md#query-variables)
-- [Custom field](docs/advanced.md#custom-field)
-- [Eager loading relationships](docs/advanced.md#eager-loading-relationships)
