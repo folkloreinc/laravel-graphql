@@ -273,7 +273,7 @@ class UsersQuery extends Query {
 
 	public function type()
 	{
-		return Type::listOf(GraphQL::type('user'));
+		return Type::listOf(GraphQL::type('User'));
 	}
 
 	public function args()
@@ -360,7 +360,7 @@ class UpdateUserPasswordMutation extends Mutation {
 
 	public function type()
 	{
-		return GraphQL::type('user');
+		return GraphQL::type('User');
 	}
 
 	public function args()
