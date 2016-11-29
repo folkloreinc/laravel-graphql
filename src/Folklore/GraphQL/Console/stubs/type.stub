@@ -2,9 +2,11 @@
 
 namespace DummyNamespace;
 
-use Folklore\GraphQL\Support\Type;
+use GraphQL\Type\Definition\Type;
+use Folklore\GraphQL\Support\Type as BaseType;
+use GraphQL;
 
-class DummyClass extends Type
+class DummyClass extends BaseType
 {
     protected $attributes = [
         'name' => 'DummyType',
