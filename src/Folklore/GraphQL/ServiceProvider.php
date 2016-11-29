@@ -1,5 +1,6 @@
 <?php namespace Folklore\GraphQL;
 
+use GraphQL\Validator\DocumentValidator;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 class ServiceProvider extends BaseServiceProvider
@@ -32,6 +33,8 @@ class ServiceProvider extends BaseServiceProvider
         $this->bootRouter();
 
         $this->bootViews();
+        
+        $this->bootSecurity();
     }
 
     /**
@@ -125,6 +128,25 @@ class ServiceProvider extends BaseServiceProvider
         if ($graphiQL) {
             $view = config('graphql.graphiql.view', 'graphql::graphiql');
             app('view')->composer($view, \Folklore\GraphQL\View\GraphiQLComposer::class);
+        }
+    }
+    
+    /**
+     * Configure security from config
+     * @return void
+     */
+    protected function bootSecurity()
+    {
+        $maxQueryComplexity = config('graphql.security.query_max_complexity');
+        if ($maxQueryComplexity !== null) {
+            $queryComplexity = DocumentValidator::getRule('QueryComplexity');
+            $queryComplexity->setMaxQueryComplexity($maxQueryComplexity);
+        }
+
+        $maxQueryDepth = config('graphql.security.query_max_depth');
+        if ($maxQueryDepth !== null) {
+            $queryDepth = DocumentValidator::getRule('QueryDepth');
+            $queryDepth->setMaxQueryDepth($maxQueryDepth);
         }
     }
 
