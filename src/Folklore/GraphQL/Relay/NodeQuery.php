@@ -1,0 +1,53 @@
+<?php
+
+namespace Folklore\GraphQL\Relay;
+
+use Folklore\GraphQL\Support\Query;
+use GraphQL\Type\Definition\ResolveInfo;
+use GraphQL\Type\Definition\Type;
+use GraphQL;
+use Panneau;
+use Exception;
+
+class NodeQuery extends Query
+{
+    protected $attributes = [
+        'name' => 'NodeQuery',
+        'description' => 'A query'
+    ];
+
+    public function type()
+    {
+        return GraphQL::type('Node');
+    }
+
+    public function args()
+    {
+        return [
+            'id' => [
+                'name' => 'id',
+                'type' => Type::nonNull(Type::id())
+            ]
+        ];
+    }
+
+    public function resolve($root, $args, $context, ResolveInfo $info)
+    {
+        list($typeName, $id) = NodeIdField::fromGlobalId($args['id']);
+        $types = GraphQL::getTypes();
+        $typeClass = array_get($types, $typeName);
+        $type = app($typeClass);
+        
+        if (!$type instanceof NodeContract) {
+            throw new \Exception('Type "'.$typeName.'" doesn\'t implement the NodeContract interface.');
+        }
+        
+        $node = $type->resolveById($id);
+        
+        $response = new NodeResponse();
+        $response->setNode($node);
+        $response->setType(GraphQL::type($typeName));
+        
+        return $response;
+    }
+}
