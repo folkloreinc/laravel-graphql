@@ -5,14 +5,11 @@ namespace Folklore\GraphQL\Support;
 use Illuminate\Support\Fluent;
 
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 
 class Type extends Fluent
 {
     protected static $instances = [];
-    
-    protected $inputObject = false;
     
     public function attributes()
     {
@@ -101,9 +98,6 @@ class Type extends Fluent
     
     public function toType()
     {
-        if ($this->inputObject) {
-            return new InputObjectType($this->toArray());
-        }
         return new ObjectType($this->toArray());
     }
 
