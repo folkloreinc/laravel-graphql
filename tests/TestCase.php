@@ -14,34 +14,34 @@ class TestCase extends BaseTestCase
     {
         parent::setUp();
         
-        $this->queries = include(__DIR__.'/Objects/queries.php');
-        $this->data = include(__DIR__.'/Objects/data.php');
+        $this->queries = include(__DIR__.'/fixture/queries.php');
+        $this->data = include(__DIR__.'/fixture/data.php');
     }
     
     protected function getEnvironmentSetUp($app)
     {
         $app['config']->set('graphql.schemas.default', [
             'query' => [
-                'examples' => ExamplesQuery::class,
-                'examplesContext' => ExamplesContextQuery::class,
-                'examplesRoot' => ExamplesRootQuery::class
+                'examples' => \App\GraphQL\Query\ExamplesQuery::class,
+                'examplesContext' => \App\GraphQL\Query\ExamplesContextQuery::class,
+                'examplesRoot' => \App\GraphQL\Query\ExamplesRootQuery::class
             ],
             'mutation' => [
-                'updateExample' => UpdateExampleMutation::class
+                'updateExample' => \App\GraphQL\Mutation\UpdateExampleMutation::class
             ]
         ]);
         
         $app['config']->set('graphql.schemas.custom', [
             'query' => [
-                'examplesCustom' => ExamplesQuery::class
+                'examplesCustom' => \App\GraphQL\Query\ExamplesQuery::class
             ],
             'mutation' => [
-                'updateExampleCustom' => UpdateExampleMutation::class
+                'updateExampleCustom' => \App\GraphQL\Mutation\UpdateExampleMutation::class
             ]
         ]);
         
         $app['config']->set('graphql.types', [
-            'Example' => ExampleType::class
+            'Example' => \App\GraphQL\Type\ExampleType::class
         ]);
     }
     

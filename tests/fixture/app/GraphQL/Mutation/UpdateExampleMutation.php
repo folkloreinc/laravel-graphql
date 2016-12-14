@@ -1,7 +1,10 @@
 <?php
 
+namespace App\GraphQL\Mutation;
+
 use GraphQL\Type\Definition\Type;
 use Folklore\GraphQL\Support\Mutation;
+use GraphQL;
 
 class UpdateExampleMutation extends Mutation
 {

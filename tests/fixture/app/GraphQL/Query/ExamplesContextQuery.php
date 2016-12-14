@@ -1,13 +1,16 @@
 <?php
 
+namespace App\GraphQL\Query;
+
 use GraphQL\Type\Definition\Type;
 use Folklore\GraphQL\Support\Query;
+use GraphQL;
 
-class ExamplesRootQuery extends Query
+class ExamplesContextQuery extends Query
 {
     
     protected $attributes = [
-        'name' => 'Examples root query'
+        'name' => 'Examples context query'
     ];
     
     public function type()
@@ -17,6 +20,6 @@ class ExamplesRootQuery extends Query
 
     public function resolve($root, $args, $context)
     {
-        return $root;
+        return $context;
     }
 }

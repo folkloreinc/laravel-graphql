@@ -1,5 +1,7 @@
 <?php
 
+namespace App\GraphQL\Field;
+
 use GraphQL\Type\Definition\Type;
 use Folklore\GraphQL\Support\Field;
 

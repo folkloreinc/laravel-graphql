@@ -13,7 +13,7 @@ class TypeTest extends TestCase
      */
     public function testGetFields()
     {
-        $type = new ExampleType();
+        $type = new \App\GraphQL\Type\ExampleType();
         $fields = $type->getFields();
         
         $this->assertArrayHasKey('test', $fields);
@@ -30,7 +30,7 @@ class TypeTest extends TestCase
      */
     public function testGetAttributes()
     {
-        $type = new ExampleType();
+        $type = new \App\GraphQL\Type\ExampleType();
         $attributes = $type->getAttributes();
         
         $this->assertArrayHasKey('name', $attributes);
@@ -46,7 +46,7 @@ class TypeTest extends TestCase
      */
     public function testGetAttributesFields()
     {
-        $type = $this->getMockBuilder(ExampleType::class)
+        $type = $this->getMockBuilder(\App\GraphQL\Type\ExampleType::class)
                     ->setMethods(['getFields'])
                     ->getMock();
 
@@ -64,7 +64,7 @@ class TypeTest extends TestCase
      */
     public function testToArray()
     {
-        $type = new ExampleType();
+        $type = new \App\GraphQL\Type\ExampleType();
         $array = $type->toArray();
         
         $this->assertInternalType('array', $array);
@@ -80,7 +80,7 @@ class TypeTest extends TestCase
      */
     public function testToType()
     {
-        $type = new ExampleType();
+        $type = new \App\GraphQL\Type\ExampleType();
         $objectType = $type->toType();
         
         $this->assertInstanceOf(ObjectType::class, $objectType);

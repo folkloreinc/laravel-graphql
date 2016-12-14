@@ -8,7 +8,7 @@ class QueryTest extends FieldTest
 {
     protected function getFieldClass()
     {
-        return ExamplesQuery::class;
+        return \App\GraphQL\Query\ExamplesQuery::class;
     }
     
     protected function getEnvironmentSetUp($app)
@@ -16,7 +16,7 @@ class QueryTest extends FieldTest
         parent::getEnvironmentSetUp($app);
         
         $app['config']->set('graphql.types', [
-            'Example' => ExampleType::class
+            'Example' => \App\GraphQL\Type\ExampleType::class
         ]);
     }
 }

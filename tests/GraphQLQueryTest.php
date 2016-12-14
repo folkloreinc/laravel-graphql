@@ -112,7 +112,7 @@ class GraphQLQueryTest extends TestCase
         $result = GraphQL::queryAndReturnResult($this->queries['examplesCustom'], null, [
             'schema' => [
                 'query' => [
-                    'examplesCustom' => ExamplesQuery::class
+                    'examplesCustom' => \App\GraphQL\Query\ExamplesQuery::class
                 ]
             ]
         ]);

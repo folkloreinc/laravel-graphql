@@ -1,13 +1,15 @@
 <?php
 
+namespace App\GraphQL\Type;
+
 use GraphQL\Type\Definition\Type;
 use Folklore\GraphQL\Support\Type as GraphQLType;
 
-class ExampleType extends GraphQLType
+class CustomExampleType extends GraphQLType
 {
 
     protected $attributes = [
-        'name' => 'Example',
+        'name' => 'CustomExample',
         'description' => 'An example'
     ];
 
@@ -17,8 +19,7 @@ class ExampleType extends GraphQLType
             'test' => [
                 'type' => Type::string(),
                 'description' => 'A test field'
-            ],
-            'test_validation' => ExampleValidationField::class
+            ]
         ];
     }
 }

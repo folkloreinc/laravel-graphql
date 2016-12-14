@@ -1,5 +1,7 @@
 <?php
 
+namespace App;
+
 use GraphQL\Error;
 use Folklore\GraphQL\Error\ValidationError;
 

@@ -1,7 +1,10 @@
 <?php
 
+namespace App\GraphQL\Query;
+
 use GraphQL\Type\Definition\Type;
 use Folklore\GraphQL\Support\Query;
+use GraphQL;
 
 class ExamplesQuery extends Query
 {
@@ -24,7 +27,7 @@ class ExamplesQuery extends Query
 
     public function resolve($root, $args)
     {
-        $data = include(__DIR__.'/data.php');
+        $data = include(__DIR__.'/../../../data.php');
         
         if (isset($args['index'])) {
             return [

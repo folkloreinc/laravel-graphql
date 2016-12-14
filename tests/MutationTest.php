@@ -9,7 +9,7 @@ class MutationTest extends FieldTest
 {
     protected function getFieldClass()
     {
-        return UpdateExampleMutation::class;
+        return \App\GraphQL\Mutation\UpdateExampleMutation::class;
     }
     
     protected function getEnvironmentSetUp($app)
@@ -17,7 +17,7 @@ class MutationTest extends FieldTest
         parent::getEnvironmentSetUp($app);
         
         $app['config']->set('graphql.types', [
-            'Example' => ExampleType::class
+            'Example' => \App\GraphQL\Type\ExampleType::class
         ]);
     }
     

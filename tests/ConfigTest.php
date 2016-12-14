@@ -24,27 +24,27 @@ class ConfigTest extends TestCase
             'schemas' => [
                 'default' => [
                     'query' => [
-                        'examples' => ExamplesQuery::class,
-                        'examplesContext' => ExamplesContextQuery::class,
-                        'examplesRoot' => ExamplesRootQuery::class
+                        'examples' => \App\GraphQL\Query\ExamplesQuery::class,
+                        'examplesContext' => \App\GraphQL\Query\ExamplesContextQuery::class,
+                        'examplesRoot' => \App\GraphQL\Query\ExamplesRootQuery::class
                     ],
                     'mutation' => [
-                        'updateExample' => UpdateExampleMutation::class
+                        'updateExample' => \App\GraphQL\Mutation\UpdateExampleMutation::class
                     ]
                 ],
                 'custom' => [
                     'query' => [
-                        'examplesCustom' => ExamplesQuery::class
+                        'examplesCustom' => \App\GraphQL\Query\ExamplesQuery::class
                     ],
                     'mutation' => [
-                        'updateExampleCustom' => UpdateExampleMutation::class
+                        'updateExampleCustom' => \App\GraphQL\Mutation\UpdateExampleMutation::class
                     ]
                 ]
             ],
 
             'types' => [
-                'Example' => ExampleType::class,
-                CustomExampleType::class
+                'Example' => \App\GraphQL\Type\ExampleType::class,
+                \App\GraphQL\Type\CustomExampleType::class
             ],
 
             'security' => [
@@ -133,7 +133,7 @@ class ConfigTest extends TestCase
 
     public function testErrorFormatter()
     {
-        $error = $this->getMockBuilder(ErrorFormatter::class)
+        $error = $this->getMockBuilder(\App\ErrorFormatter::class)
                     ->setMethods(['formatError'])
                     ->getMock();
 

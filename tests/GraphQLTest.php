@@ -71,13 +71,13 @@ class GraphQLTest extends TestCase
     {
         $schema = GraphQL::schema([
             'query' => [
-                'examplesCustom' => ExamplesQuery::class
+                'examplesCustom' => \App\GraphQL\Query\ExamplesQuery::class
             ],
             'mutation' => [
-                'updateExampleCustom' => UpdateExampleMutation::class
+                'updateExampleCustom' => \App\GraphQL\Mutation\UpdateExampleMutation::class
             ],
             'types' => [
-                CustomExampleType::class
+                \App\GraphQL\Type\CustomExampleType::class
             ]
         ]);
         
@@ -164,7 +164,7 @@ class GraphQLTest extends TestCase
     
     public function testObjectTypeClass()
     {
-        $type = GraphQL::objectType(ExampleType::class, [
+        $type = GraphQL::objectType(\App\GraphQL\Type\ExampleType::class, [
             'name' => 'ExampleType'
         ]);
 
@@ -217,13 +217,13 @@ class GraphQLTest extends TestCase
     {
         $this->expectsEvents(TypeAdded::class);
         
-        GraphQL::addType(CustomExampleType::class);
+        GraphQL::addType(\App\GraphQL\Type\CustomExampleType::class);
 
         $types = GraphQL::getTypes();
         $this->assertArrayHasKey('CustomExample', $types);
 
         $type = app($types['CustomExample']);
-        $this->assertInstanceOf(CustomExampleType::class, $type);
+        $this->assertInstanceOf(\App\GraphQL\Type\CustomExampleType::class, $type);
 
         $type = GraphQL::type('CustomExample');
         $this->assertInstanceOf(\GraphQL\Type\Definition\ObjectType::class, $type);
@@ -236,13 +236,13 @@ class GraphQLTest extends TestCase
      */
     public function testAddTypeWithName()
     {
-        GraphQL::addType(ExampleType::class, 'CustomExample');
+        GraphQL::addType(\App\GraphQL\Type\ExampleType::class, 'CustomExample');
         
         $types = GraphQL::getTypes();
         $this->assertArrayHasKey('CustomExample', $types);
         
         $type = app($types['CustomExample']);
-        $this->assertInstanceOf(ExampleType::class, $type);
+        $this->assertInstanceOf(\App\GraphQL\Type\ExampleType::class, $type);
         
         $type = GraphQL::type('CustomExample');
         $this->assertInstanceOf(\GraphQL\Type\Definition\ObjectType::class, $type);
@@ -273,13 +273,13 @@ class GraphQLTest extends TestCase
         
         GraphQL::addSchema('custom_add', [
             'query' => [
-                'examplesCustom' => ExamplesQuery::class
+                'examplesCustom' => \App\GraphQL\Query\ExamplesQuery::class
             ],
             'mutation' => [
-                'updateExampleCustom' => UpdateExampleMutation::class
+                'updateExampleCustom' => \App\GraphQL\Mutation\UpdateExampleMutation::class
             ],
             'types' => [
-                CustomExampleType::class
+                \App\GraphQL\Type\CustomExampleType::class
             ]
         ]);
 

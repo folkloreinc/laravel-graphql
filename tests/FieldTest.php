@@ -8,7 +8,7 @@ class FieldTest extends TestCase
 {
     protected function getFieldClass()
     {
-        return ExampleField::class;
+        return \App\GraphQL\Field\ExampleField::class;
     }
 
     /**
