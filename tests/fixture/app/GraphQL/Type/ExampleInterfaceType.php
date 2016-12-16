@@ -21,9 +21,9 @@ class ExampleInterfaceType extends InterfaceType
     public function fields()
     {
         return [
-            'test' => [
+            'name' => [
                 'type' => Type::string(),
-                'description' => 'A test field'
+                'description' => 'The name field'
             ]
         ];
     }

@@ -16,11 +16,24 @@ class ExampleType extends GraphQLType
     public function fields()
     {
         return [
-            'test' => [
-                'type' => Type::string(),
-                'description' => 'A test field'
+            'id' => [
+                'type' => Type::id(),
+                'description' => 'The id field'
             ],
-            'test_validation' => \App\GraphQL\Field\ExampleValidationField::class
+            'name' => [
+                'type' => Type::string(),
+                'description' => 'The name field'
+            ],
+            'name_method' => [
+                'type' => Type::string(),
+                'description' => 'The name method field'
+            ],
+            'name_validation' => \App\GraphQL\Field\ExampleValidationField::class
         ];
+    }
+    
+    public function resolveNameMethodField()
+    {
+        return null;
     }
 }

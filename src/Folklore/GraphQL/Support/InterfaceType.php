@@ -6,9 +6,14 @@ use GraphQL\Type\Definition\InterfaceType as BaseInterfaceType;
 
 class InterfaceType extends Type
 {
-
+    protected $typeResolver = null;
+    
     protected function getTypeResolver()
     {
+        if ($this->typeResolver) {
+            return $this->typeResolver;
+        }
+        
         if (!method_exists($this, 'resolveType')) {
             return null;
         }
@@ -19,21 +24,19 @@ class InterfaceType extends Type
             return call_user_func_array($resolver, $args);
         };
     }
-
-    /**
-     * Get the attributes from the container.
-     *
-     * @return array
-     */
-    public function getAttributes()
+    
+    protected function setTypeResolver($typeResolver)
     {
-        $attributes = parent::getAttributes();
-        
+        $this->typeResolver = $typeResolver;
+    }
+    
+    public function toArray()
+    {
+        $attributes = parent::toArray();
         $resolver = $this->getTypeResolver();
         if (isset($resolver)) {
             $attributes['resolveType'] = $resolver;
         }
-        
         return $attributes;
     }
     

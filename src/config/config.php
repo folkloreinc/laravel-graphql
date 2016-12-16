@@ -105,7 +105,7 @@ return [
     // Some library use "variables", you can change it here. "params" will stay
     // the default for now but will be changed to "variables" in the next major
     // release.
-    'variables_input_name' => 'params',
+    'variables_input_name' => 'variables',
 
     // Any middleware for the graphql route group
     'middleware' => [],

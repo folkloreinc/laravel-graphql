@@ -37,9 +37,10 @@
     },
     "autoload-dev": {
         "classmap": [
-            "tests/"
+            "tests/",
+            "tests/Relay"
         ],
-        "psr-0": {
+        "psr-4": {
             "App\\": "tests/fixture/app/"
         }
     }

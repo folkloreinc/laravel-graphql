@@ -1,15 +1,15 @@
 <?php
 
-namespace Folklore\GraphQL\Relay\Support;
+namespace Folklore\GraphQL\Relay\Support\Traits;
 
 use GraphQL;
 use Folklore\GraphQL\Relay\NodeIdField;
 
-trait NodeTrait
+trait TypeIsNode
 {
-    public function getFieldsWithRelay()
+    public function getFieldsForObjectType()
     {
-        $currentFields = $this->getFields();
+        $currentFields = parent::getFieldsForObjectType();
         
         $idResolver = null;
         $originalResolver = array_get($currentFields, 'id.resolve');
@@ -32,27 +32,17 @@ trait NodeTrait
         return $currentFields;
     }
     
-    public function getInterfacesWithRelay()
+    public function relayInterfaces()
     {
-        $interfaces = $this->interfaces();
-        return array_merge($interfaces, [
+        return [
             GraphQL::type('Node')
-        ]);
+        ];
     }
-
-    /**
-     * Get the attributes from the container.
-     *
-     * @return array
-     */
-    public function getAttributes()
+    
+    public function getInterfaces()
     {
-        $attributes = parent::getAttributes();
-        $attributes['fields'] = function () {
-            return $this->getFieldsWithRelay();
-        };
-        $attributes['interfaces'] = $this->getInterfacesWithRelay();
-        
-        return $attributes;
+        $interfaces = parent::getInterfaces();
+        $relayInterfaces = $this->relayInterfaces();
+        return array_merge($interfaces, $relayInterfaces);
     }
 }

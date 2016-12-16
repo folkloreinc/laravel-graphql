@@ -21,7 +21,9 @@ class EndpointTest extends TestCase
         $content = $response->getOriginalContent();
         $this->assertArrayHasKey('data', $content);
         $this->assertEquals($content['data'], [
-            'examples' => $this->data
+            'examples' => array_map(function ($item) {
+                return array_only($item, ['id', 'name']);
+            }, \App\Data::get())
         ]);
     }
     
@@ -39,7 +41,9 @@ class EndpointTest extends TestCase
         $content = $response->getOriginalContent();
         $this->assertArrayHasKey('data', $content);
         $this->assertEquals($content['data'], [
-            'examplesCustom' => $this->data
+            'examplesCustom' => array_map(function ($item) {
+                return array_only($item, ['id', 'name']);
+            }, \App\Data::get())
         ]);
     }
     
@@ -52,8 +56,8 @@ class EndpointTest extends TestCase
     {
         $response = $this->call('GET', '/graphql', [
             'query' => $this->queries['examplesWithParams'],
-            'params' => [
-                'index' => 0
+            'variables' => [
+                'id' => 1
             ]
         ]);
 
@@ -63,7 +67,7 @@ class EndpointTest extends TestCase
         $this->assertArrayHasKey('data', $content);
         $this->assertEquals($content['data'], [
             'examples' => [
-                $this->data[0]
+                \App\Data::getById(1)
             ]
         ]);
     }

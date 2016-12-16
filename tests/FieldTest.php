@@ -23,12 +23,26 @@ class FieldTest extends TestCase
         $attributes = $field->getAttributes();
         
         $this->assertArrayHasKey('name', $attributes);
-        $this->assertArrayHasKey('type', $attributes);
-        $this->assertArrayHasKey('args', $attributes);
-        $this->assertArrayHasKey('resolve', $attributes);
-        $this->assertInternalType('array', $attributes['args']);
-        $this->assertInstanceOf(Closure::class, $attributes['resolve']);
-        $this->assertInstanceOf(get_class($field->type()), $attributes['type']);
+        $this->assertInternalType('array', $attributes);
+    }
+       
+    /**
+     * Test to array
+     *
+     * @test
+     */
+    public function testToArray()
+    {
+        $class = $this->getFieldClass();
+        $field = new $class();
+        $array = $field->toArray();
+        
+        $this->assertInternalType('array', $array);
+        $this->assertArrayHasKey('type', $array);
+        $this->assertArrayHasKey('args', $array);
+        $this->assertArrayHasKey('resolve', $array);
+        $this->assertInstanceOf(Closure::class, $array['resolve']);
+        $this->assertInstanceOf(get_class($field->type()), $array['type']);
     }
     
     /**
@@ -46,24 +60,7 @@ class FieldTest extends TestCase
         $field->expects($this->once())
             ->method('resolve');
         
-        $attributes = $field->getAttributes();
+        $attributes = $field->toArray();
         $attributes['resolve'](null, [], [], null);
-    }
-       
-    /**
-     * Test to array
-     *
-     * @test
-     */
-    public function testToArray()
-    {
-        $class = $this->getFieldClass();
-        $field = new $class();
-        $array = $field->toArray();
-        
-        $this->assertInternalType('array', $array);
-        
-        $attributes = $field->getAttributes();
-        $this->assertEquals($attributes, $array);
     }
 }

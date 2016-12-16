@@ -11,10 +11,8 @@ class Type extends Fluent
 {
     protected static $instances = [];
     
-    public function attributes()
-    {
-        return [];
-    }
+    protected $fields = [];
+    protected $interfaces = [];
     
     public function fields()
     {
@@ -24,6 +22,31 @@ class Type extends Fluent
     public function interfaces()
     {
         return [];
+    }
+    
+    public function attributes()
+    {
+        return [];
+    }
+    
+    public function getInterfaces()
+    {
+        return array_merge($this->interfaces, $this->interfaces());
+    }
+    
+    public function getFields()
+    {
+        return array_merge($this->fields, $this->fields());
+    }
+    
+    public function setFields($fields)
+    {
+        $this->fields = $fields;
+    }
+    
+    public function setInterfaces($interfaces)
+    {
+        $this->interfaces = $interfaces;
     }
     
     protected function getFieldResolver($name, $field)
@@ -42,9 +65,9 @@ class Type extends Fluent
         return null;
     }
     
-    public function getFields()
+    public function getFieldsForObjectType()
     {
-        $fields = $this->fields();
+        $fields = $this->getFields();
         $allFields = [];
         foreach ($fields as $name => $field) {
             if (is_string($field)) {
@@ -70,20 +93,7 @@ class Type extends Fluent
      */
     public function getAttributes()
     {
-        $attributes = $this->attributes();
-        $interfaces = $this->interfaces();
-        
-        $attributes = array_merge($this->attributes, [
-            'fields' => function () {
-                return $this->getFields();
-            }
-        ], $attributes);
-        
-        if (sizeof($interfaces)) {
-            $attributes['interfaces'] = $interfaces;
-        }
-        
-        return $attributes;
+        return array_merge($this->attributes, $this->attributes());
     }
 
     /**
@@ -93,7 +103,18 @@ class Type extends Fluent
      */
     public function toArray()
     {
-        return $this->getAttributes();
+        $attributes = $this->getAttributes();
+        
+        $attributes['fields'] = function () {
+            return $this->getFieldsForObjectType();
+        };
+        
+        $interfaces = $this->getInterfaces();
+        if (sizeof($interfaces)) {
+            $attributes['interfaces'] = $interfaces;
+        }
+        
+        return $attributes;
     }
     
     public function toType()

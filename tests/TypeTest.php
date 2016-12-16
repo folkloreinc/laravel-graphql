@@ -16,11 +16,38 @@ class TypeTest extends TestCase
         $type = new \App\GraphQL\Type\ExampleType();
         $fields = $type->getFields();
         
-        $this->assertArrayHasKey('test', $fields);
-        $this->assertEquals($fields['test'], [
+        $this->assertInternalType('array', $fields);
+        $this->assertArrayHasKey('name', $fields);
+        $this->assertEquals($fields['name'], [
             'type' => Type::string(),
-            'description' => 'A test field'
+            'description' => 'The name field'
         ]);
+        $this->assertInternalType('string', $fields['name_validation']);
+        $this->assertTrue(class_exists($fields['name_validation']));
+        $this->assertInstanceOf(\App\GraphQL\Field\ExampleValidationField::class, app($fields['name_validation']));
+    }
+    
+    /**
+     * Test getFields
+     *
+     * @test
+     */
+    public function testGetFieldsForObjectType()
+    {
+        $type = new \App\GraphQL\Type\ExampleType();
+        $fields = $type->getFieldsForObjectType();
+        
+        $field = new \App\GraphQL\Field\ExampleValidationField();
+        $field->name = 'name_validation';
+        
+        $this->assertInternalType('array', $fields);
+        $this->assertArrayHasKey('name', $fields);
+        $this->assertEquals($fields['name'], [
+            'type' => Type::string(),
+            'description' => 'The name field'
+        ]);
+        $this->assertInternalType('array', $fields['name_validation']);
+        $this->assertEquals($fields['name_validation'], $field->toArray());
     }
        
     /**
@@ -32,29 +59,8 @@ class TypeTest extends TestCase
     {
         $type = new \App\GraphQL\Type\ExampleType();
         $attributes = $type->getAttributes();
-        
         $this->assertArrayHasKey('name', $attributes);
-        $this->assertArrayHasKey('fields', $attributes);
-        $this->assertInstanceOf(Closure::class, $attributes['fields']);
-        $this->assertInternalType('array', $attributes['fields']());
-    }
-    
-    /**
-     * Test get attributes fields closure
-     *
-     * @test
-     */
-    public function testGetAttributesFields()
-    {
-        $type = $this->getMockBuilder(\App\GraphQL\Type\ExampleType::class)
-                    ->setMethods(['getFields'])
-                    ->getMock();
-
-        $type->expects($this->once())
-            ->method('getFields');
-        
-        $attributes = $type->getAttributes();
-        $attributes['fields']();
+        $this->assertInternalType('array', $attributes);
     }
        
     /**
@@ -67,10 +73,29 @@ class TypeTest extends TestCase
         $type = new \App\GraphQL\Type\ExampleType();
         $array = $type->toArray();
         
+        $this->assertArrayHasKey('name', $array);
         $this->assertInternalType('array', $array);
+        $this->assertArrayHasKey('fields', $array);
+        $this->assertInstanceOf(Closure::class, $array['fields']);
+        $this->assertInternalType('array', $array['fields']());
+    }
+    
+    /**
+     * Test fields closure
+     *
+     * @test
+     */
+    public function testToArrayFieldsClosure()
+    {
+        $type = $this->getMockBuilder(\App\GraphQL\Type\ExampleType::class)
+                    ->setMethods(['getFieldsForObjectType'])
+                    ->getMock();
+
+        $type->expects($this->once())
+            ->method('getFieldsForObjectType');
         
-        $attributes = $type->getAttributes();
-        $this->assertEquals($attributes, $array);
+        $attributes = $type->toArray();
+        $attributes['fields']();
     }
        
     /**
@@ -84,10 +109,25 @@ class TypeTest extends TestCase
         $objectType = $type->toType();
         
         $this->assertInstanceOf(ObjectType::class, $objectType);
-        
         $this->assertEquals($objectType->name, $type->name);
-        
-        $fields = $objectType->getFields();
-        $this->assertArrayHasKey('test', $fields);
+        $this->assertEquals(array_keys($objectType->getFields()), array_keys($type->getFields()));
+    }
+       
+    /**
+     * Test that resolve call the associated resolve method
+     *
+     * @test
+     */
+    public function testResolveMethod()
+    {
+        $type = $this->getMockBuilder(\App\GraphQL\Type\ExampleType::class)
+                    ->setMethods(['resolveNameMethodField'])
+                    ->getMock();
+
+        $type->expects($this->once())
+            ->method('resolveNameMethodField');
+            
+        $fields = $type->getFieldsForObjectType();
+        $fields['name_method']['resolve']();
     }
 }

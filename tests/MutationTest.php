@@ -26,19 +26,19 @@ class MutationTest extends FieldTest
      *
      * @test
      */
-    public function testGetRules()
+    public function testGetRulesForValidator()
     {
         $class = $this->getFieldClass();
         $field = new $class();
-        $rules = $field->getRules();
+        $rules = $field->getRulesForValidator();
         
         $this->assertInternalType('array', $rules);
-        $this->assertArrayHasKey('test', $rules);
-        $this->assertArrayHasKey('test_with_rules', $rules);
-        $this->assertArrayHasKey('test_with_rules_closure', $rules);
-        $this->assertEquals($rules['test'], ['required']);
-        $this->assertEquals($rules['test_with_rules'], ['required']);
-        $this->assertEquals($rules['test_with_rules_closure'], ['required']);
+        $this->assertArrayHasKey('name', $rules);
+        $this->assertArrayHasKey('name_with_rules', $rules);
+        $this->assertArrayHasKey('name_with_rules_closure', $rules);
+        $this->assertEquals($rules['name'], ['required']);
+        $this->assertEquals($rules['name_with_rules'], ['required']);
+        $this->assertEquals($rules['name_with_rules_closure'], ['required']);
     }
     
     /**
@@ -56,11 +56,11 @@ class MutationTest extends FieldTest
         $field->expects($this->once())
             ->method('resolve');
         
-        $attributes = $field->getAttributes();
+        $attributes = $field->toArray();
         $attributes['resolve'](null, [
-            'test' => 'test',
-            'test_with_rules' => 'test',
-            'test_with_rules_closure' => 'test'
+            'name' => 'name',
+            'name_with_rules' => 'name',
+            'name_with_rules_closure' => 'name'
         ], [], null);
     }
     
@@ -75,7 +75,7 @@ class MutationTest extends FieldTest
         $class = $this->getFieldClass();
         $field = new $class();
         
-        $attributes = $field->getAttributes();
+        $attributes = $field->toArray();
         $attributes['resolve'](null, [], [], null);
     }
     
@@ -89,7 +89,7 @@ class MutationTest extends FieldTest
         $class = $this->getFieldClass();
         $field = new $class();
         
-        $attributes = $field->getAttributes();
+        $attributes = $field->toArray();
         
         try {
             $attributes['resolve'](null, [], [], null);
@@ -99,9 +99,9 @@ class MutationTest extends FieldTest
             $this->assertInstanceOf(Validator::class, $validator);
             
             $messages = $e->getValidatorMessages();
-            $this->assertTrue($messages->has('test'));
-            $this->assertTrue($messages->has('test_with_rules'));
-            $this->assertTrue($messages->has('test_with_rules_closure'));
+            $this->assertTrue($messages->has('name'));
+            $this->assertTrue($messages->has('name_with_rules'));
+            $this->assertTrue($messages->has('name_with_rules_closure'));
         }
     }
 }

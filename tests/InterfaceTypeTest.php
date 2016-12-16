@@ -11,13 +11,13 @@ class InterfaceTypeTest extends TestCase
      *
      * @test
      */
-    public function testGetAttributes()
+    public function testToArray()
     {
         $type = new \App\GraphQL\Type\ExampleInterfaceType();
-        $attributes = $type->getAttributes();
+        $array = $type->toArray();
         
-        $this->assertArrayHasKey('resolveType', $attributes);
-        $this->assertInstanceOf(Closure::class, $attributes['resolveType']);
+        $this->assertArrayHasKey('resolveType', $array);
+        $this->assertInstanceOf(Closure::class, $array['resolveType']);
     }
     
     /**
@@ -25,7 +25,7 @@ class InterfaceTypeTest extends TestCase
      *
      * @test
      */
-    public function testGetAttributesResolveType()
+    public function testResolveType()
     {
         $type = $this->getMockBuilder(\App\GraphQL\Type\ExampleInterfaceType::class)
                     ->setMethods(['resolveType'])
@@ -34,8 +34,8 @@ class InterfaceTypeTest extends TestCase
         $type->expects($this->once())
             ->method('resolveType');
         
-        $attributes = $type->getAttributes();
-        $attributes['resolveType'](null);
+        $array = $type->toArray();
+        $array['resolveType'](null);
     }
        
     /**
@@ -53,6 +53,6 @@ class InterfaceTypeTest extends TestCase
         $this->assertEquals($interfaceType->name, $type->name);
         
         $fields = $interfaceType->getFields();
-        $this->assertArrayHasKey('test', $fields);
+        $this->assertArrayHasKey('name', $fields);
     }
 }

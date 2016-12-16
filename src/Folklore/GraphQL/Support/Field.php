@@ -6,15 +6,18 @@ use Illuminate\Support\Fluent;
 
 class Field extends Fluent
 {
-    
-    public function attributes()
-    {
-        return [];
-    }
+    protected $type = null;
+    protected $resolver = null;
+    protected $args = [];
     
     public function type()
     {
         return null;
+    }
+    
+    public function attributes()
+    {
+        return [];
     }
     
     public function args()
@@ -22,8 +25,33 @@ class Field extends Fluent
         return [];
     }
     
+    public function getType()
+    {
+        $type = $this->type();
+        return $type ? $type:$this->type;
+    }
+    
+    public function setType($args)
+    {
+        $this->args = $args;
+    }
+    
+    public function getArgs()
+    {
+        return array_merge($this->args, $this->args());
+    }
+    
+    public function setArgs($args)
+    {
+        $this->args = $args;
+    }
+    
     protected function getResolver()
     {
+        if ($this->resolver) {
+            return $this->resolver;
+        }
+        
         if (!method_exists($this, 'resolve')) {
             return null;
         }
@@ -34,6 +62,11 @@ class Field extends Fluent
             return call_user_func_array($resolver, $args);
         };
     }
+    
+    public function setResolver($resolver)
+    {
+        return $this->resolver;
+    }
 
     /**
      * Get the attributes from the container.
@@ -42,14 +75,24 @@ class Field extends Fluent
      */
     public function getAttributes()
     {
-        $attributes = $this->attributes();
-        $args = $this->args();
+        return array_merge($this->attributes, $this->attributes());
+    }
+
+    /**
+     * Convert the Fluent instance to an array.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        $attributes = $this->getAttributes();
         
-        $attributes = array_merge($this->attributes, [
-            'args' => $args
-        ], $attributes);
+        $args = $this->getArgs();
+        if (sizeof($args)) {
+            $attributes['args'] = $args;
+        }
         
-        $type = $this->type();
+        $type = $this->getType();
         if (isset($type)) {
             $attributes['type'] = $type;
         }
@@ -60,16 +103,6 @@ class Field extends Fluent
         }
         
         return $attributes;
-    }
-
-    /**
-     * Convert the Fluent instance to an array.
-     *
-     * @return array
-     */
-    public function toArray()
-    {
-        return $this->getAttributes();
     }
 
     /**

@@ -22,9 +22,9 @@ class ExampleValidationField extends Field
     public function args()
     {
         return [
-            'index' => [
-                'name' => 'index',
-                'type' => Type::int(),
+            'id' => [
+                'name' => 'id',
+                'type' => Type::id(),
                 'rules' => ['required']
             ]
         ];

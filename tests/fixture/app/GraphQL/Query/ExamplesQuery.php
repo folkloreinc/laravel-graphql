@@ -6,6 +6,8 @@ use GraphQL\Type\Definition\Type;
 use Folklore\GraphQL\Support\Query;
 use GraphQL;
 
+use App\Data;
+
 class ExamplesQuery extends Query
 {
     
@@ -21,20 +23,18 @@ class ExamplesQuery extends Query
     public function args()
     {
         return [
-            'index' => ['name' => 'index', 'type' => Type::int()]
+            'id' => ['name' => 'id', 'type' => Type::id()]
         ];
     }
 
     public function resolve($root, $args)
     {
-        $data = include(__DIR__.'/../../../data.php');
-        
-        if (isset($args['index'])) {
+        if (isset($args['id'])) {
             return [
-                $data[$args['index']]
+                Data::getById($args['id'])
             ];
         }
         
-        return $data;
+        return Data::get();
     }
 }

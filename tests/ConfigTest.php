@@ -17,7 +17,7 @@ class ConfigTest extends TestCase
                 'mutation' => 'mutation/{graphql_schema?}'
             ],
             
-            'variables_input_name' => 'variables',
+            'variables_input_name' => 'params',
 
             'schema' => 'custom',
 
@@ -106,8 +106,8 @@ class ConfigTest extends TestCase
     {
         $response = $this->call('GET', '/graphql_test/query/default', [
             'query' => $this->queries['examplesWithParams'],
-            'variables' => [
-                'index' => 0
+            'params' => [
+                'id' => 1
             ]
         ]);
 
@@ -117,7 +117,7 @@ class ConfigTest extends TestCase
         $this->assertArrayHasKey('data', $content);
         $this->assertEquals($content['data'], [
             'examples' => [
-                $this->data[0]
+                \App\Data::getById(1)
             ]
         ]);
     }

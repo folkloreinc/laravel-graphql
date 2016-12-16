@@ -7,7 +7,7 @@ use GraphQL\Error;
 use Folklore\GraphQL\Error\ValidationError;
 
 class GraphQLQueryTest extends TestCase
-{    
+{
     /**
      * Test query
      *
@@ -20,7 +20,9 @@ class GraphQLQueryTest extends TestCase
         $this->assertObjectHasAttribute('data', $result);
         
         $this->assertEquals($result->data, [
-            'examples' => $this->data
+            'examples' => array_map(function ($item) {
+                return array_only($item, ['id', 'name']);
+            }, \App\Data::get())
         ]);
     }
     
@@ -47,14 +49,14 @@ class GraphQLQueryTest extends TestCase
     public function testQueryAndReturnResultWithParams()
     {
         $result = GraphQL::queryAndReturnResult($this->queries['examplesWithParams'], [
-            'index' => 0
+            'id' => 1
         ]);
         
         $this->assertObjectHasAttribute('data', $result);
         $this->assertCount(0, $result->errors);
         $this->assertEquals($result->data, [
             'examples' => [
-                $this->data[0]
+                \App\Data::getById(1)
             ]
         ]);
     }
@@ -66,18 +68,19 @@ class GraphQLQueryTest extends TestCase
      */
     public function testQueryAndReturnResultWithRoot()
     {
+        $context = [
+            'id' => 1,
+            'name' => 'root'
+        ];
+        
         $result = GraphQL::queryAndReturnResult($this->queries['examplesWithRoot'], null, [
-            'root' => [
-                'test' => 'root'
-            ]
+            'root' => $context
         ]);
         
         $this->assertObjectHasAttribute('data', $result);
         $this->assertCount(0, $result->errors);
         $this->assertEquals($result->data, [
-            'examplesRoot' => [
-                'test' => 'root'
-            ]
+            'examplesRoot' => $context
         ]);
     }
     
@@ -88,17 +91,18 @@ class GraphQLQueryTest extends TestCase
      */
     public function testQueryAndReturnResultWithContext()
     {
+        $context = [
+            'id' => 1,
+            'name' => 'context'
+        ];
+        
         $result = GraphQL::queryAndReturnResult($this->queries['examplesWithContext'], null, [
-            'context' => [
-                'test' => 'context'
-            ]
+            'context' => $context
         ]);
         $this->assertObjectHasAttribute('data', $result);
         $this->assertCount(0, $result->errors);
         $this->assertEquals($result->data, [
-            'examplesContext' => [
-                'test' => 'context'
-            ]
+            'examplesContext' => $context
         ]);
     }
     
@@ -120,7 +124,9 @@ class GraphQLQueryTest extends TestCase
         $this->assertObjectHasAttribute('data', $result);
         $this->assertCount(0, $result->errors);
         $this->assertEquals($result->data, [
-            'examplesCustom' => $this->data
+            'examplesCustom' => array_map(function ($item) {
+                return array_only($item, ['id', 'name']);
+            }, \App\Data::get())
         ]);
     }
     
@@ -153,7 +159,7 @@ class GraphQLQueryTest extends TestCase
         $this->assertArrayHasKey('data', $result);
         $this->assertArrayHasKey('errors', $result);
         $this->assertArrayHasKey('validation', $result['errors'][0]);
-        $this->assertTrue($result['errors'][0]['validation']->has('index'));
+        $this->assertTrue($result['errors'][0]['validation']->has('id'));
     }
     
     /**
@@ -164,7 +170,7 @@ class GraphQLQueryTest extends TestCase
     public function testQueryWithValidation()
     {
         $result = GraphQL::query($this->queries['examplesWithValidation'], [
-            'index' => 0
+            'id' => 0
         ]);
         
         $this->assertArrayHasKey('data', $result);

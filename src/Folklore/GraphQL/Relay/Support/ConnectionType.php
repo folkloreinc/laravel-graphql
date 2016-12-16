@@ -6,18 +6,36 @@ use GraphQL\Type\Definition\Type;
 use Folklore\GraphQL\Support\Type as BaseType;
 use GraphQL;
 
-abstract class Connection extends BaseType
+use Illuminate\Pagination\AbstractPaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
+
+class ConnectionType extends BaseType
 {
-    protected $attributes = [
-        'name' => 'Connection',
-        'description' => 'A relay connection'
-    ];
+    protected $edgeType;
     
-    abstract public function edgeType();
+    public function edgeType()
+    {
+        return null;
+    }
+    
+    public function getEdgeType()
+    {
+        $edgeType = $this->edgeType();
+        return $edgeType ? $edgeType:$this->edgeType;
+    }
+    
+    public function getEdgeObjectType()
+    {
+        $edgeType = $this->getEdgeType();
+        $name = $edgeType->config['name'].'Edge';
+        GraphQL::addType(\Folklore\GraphQL\Relay\ConnectionEdgeType::class, $name);
+        return GraphQL::type($name)
+            ->withEdgeType($edgeType);
+    }
     
     public function getEdgesFromRoot($root)
     {
-        $edgeType = $this->edgeType();
+        $edgeType = $this->getEdgeType();
         $name = $edgeType->config['name'];
         $resolveId = $edgeType->getField('id')->resolveFn;
         return array_map(function ($item) use ($resolveId) {
@@ -30,30 +48,30 @@ abstract class Connection extends BaseType
     
     public function getPageInfoFromRoot($root)
     {
+        $hasPreviousPage = false;
+        $hasNextPage = false;
+        if ($root instanceof LengthAwarePaginator) {
+            $hasPreviousPage = !$root->onFirstPage();
+            $hasNextPage = $root->hasMorePages();
+        } elseif ($root instanceof AbstractPaginator) {
+            $hasPreviousPage = !$root->onFirstPage();
+        }
+        
         $edges = $this->getEdgesFromRoot($root);
         
         return [
-            'hasPreviousPage' => false,
-            'hasNextPage' => false,
+            'hasPreviousPage' => $hasPreviousPage,
+            'hasNextPage' => $hasNextPage,
             'startCursor' => array_get($edges, '0.cursor'),
             'endCursor' => array_get($edges, (sizeof($edges)-1).'.cursor')
         ];
-    }
-    
-    public function getEdgeType()
-    {
-        $edgeType = $this->edgeType();
-        $name = $edgeType->config['name'].'Edge';
-        GraphQL::addType(\App\GraphQL\Relay\ConnectionEdgeType::class, $name);
-        return GraphQL::type($name)
-            ->withEdgeType($edgeType);
     }
 
     public function fields()
     {
         return [
             'edges' => [
-                'type' => Type::listOf($this->getEdgeType()),
+                'type' => Type::listOf($this->getEdgeObjectType()),
                 'resolve' => function ($root) {
                     return $this->getEdgesFromRoot($root);
                 }

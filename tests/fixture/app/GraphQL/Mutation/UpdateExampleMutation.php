@@ -21,26 +21,26 @@ class UpdateExampleMutation extends Mutation
     public function rules()
     {
         return [
-            'test' => ['required']
+            'name' => ['required']
         ];
     }
 
     public function args()
     {
         return [
-            'test' => [
-                'name' => 'test',
+            'name' => [
+                'name' => 'name',
                 'type' => Type::string()
             ],
             
-            'test_with_rules' => [
-                'name' => 'test',
+            'name_with_rules' => [
+                'name' => 'name',
                 'type' => Type::string(),
                 'rules' => ['required']
             ],
             
-            'test_with_rules_closure' => [
-                'name' => 'test',
+            'name_with_rules_closure' => [
+                'name' => 'name',
                 'type' => Type::string(),
                 'rules' => function () {
                     return ['required'];
@@ -52,7 +52,7 @@ class UpdateExampleMutation extends Mutation
     public function resolve($root, $args)
     {
         return [
-            'test' => array_get($args, 'test')
+            'name' => array_get($args, 'name')
         ];
     }
 }

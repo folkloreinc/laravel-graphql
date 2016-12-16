@@ -2,10 +2,9 @@
 
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
-class TestCase extends BaseTestCase
+abstract class TestCase extends BaseTestCase
 {
     protected $queries;
-    protected $data;
     
     /**
      * Setup the test environment.
@@ -15,7 +14,6 @@ class TestCase extends BaseTestCase
         parent::setUp();
         
         $this->queries = include(__DIR__.'/fixture/queries.php');
-        $this->data = include(__DIR__.'/fixture/data.php');
     }
     
     protected function getEnvironmentSetUp($app)

@@ -7,7 +7,10 @@ use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use GraphQL;
 use Panneau;
-use Exception;
+use Folklore\GraphQL\Exception\TypeNotFound;
+use Folklore\GraphQL\Exception\NodeInvalid;
+
+use Folklore\GraphQL\Relay\Support\NodeContract;
 
 class NodeQuery extends Query
 {
@@ -36,10 +39,15 @@ class NodeQuery extends Query
         list($typeName, $id) = NodeIdField::fromGlobalId($args['id']);
         $types = GraphQL::getTypes();
         $typeClass = array_get($types, $typeName);
+        
+        if (!$typeClass) {
+            throw new TypeNotFound('Type "'.$typeName.'" not found.');
+        }
+        
         $type = app($typeClass);
         
         if (!$type instanceof NodeContract) {
-            throw new \Exception('Type "'.$typeName.'" doesn\'t implement the NodeContract interface.');
+            throw new NodeInvalid('Type "'.$typeName.'" doesn\'t implement the NodeContract interface.');
         }
         
         $node = $type->resolveById($id);

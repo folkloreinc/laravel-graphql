@@ -148,9 +148,9 @@ class GraphQLTest extends TestCase
     public function testObjectTypeFromFields()
     {
         $type = GraphQL::objectType([
-            'test' => [
+            'name' => [
                 'type' => Type::string(),
-                'description' => 'A test field'
+                'description' => 'The name field'
             ]
         ], [
             'name' => 'ExampleType'
@@ -159,7 +159,7 @@ class GraphQLTest extends TestCase
         $this->assertInstanceOf(\GraphQL\Type\Definition\ObjectType::class, $type);
         $this->assertEquals($type->name, 'ExampleType');
         $fields = $type->getFields();
-        $this->assertArrayHasKey('test', $fields);
+        $this->assertArrayHasKey('name', $fields);
     }
     
     public function testObjectTypeClass()
@@ -171,7 +171,7 @@ class GraphQLTest extends TestCase
         $this->assertInstanceOf(\GraphQL\Type\Definition\ObjectType::class, $type);
         $this->assertEquals($type->name, 'ExampleType');
         $fields = $type->getFields();
-        $this->assertArrayHasKey('test', $fields);
+        $this->assertArrayHasKey('name', $fields);
     }
     
     public function testFormatError()
@@ -196,7 +196,7 @@ class GraphQLTest extends TestCase
     public function testFormatValidationError()
     {
         $validator = Validator::make([], [
-            'test' => 'required'
+            'name' => 'required'
         ]);
         $validator->fails();
         $validationError = with(new ValidationError('validation'))->setValidator($validator);
@@ -205,7 +205,7 @@ class GraphQLTest extends TestCase
         
         $this->assertInternalType('array', $error);
         $this->assertArrayHasKey('validation', $error);
-        $this->assertTrue($error['validation']->has('test'));
+        $this->assertTrue($error['validation']->has('name'));
     }
     
     /**

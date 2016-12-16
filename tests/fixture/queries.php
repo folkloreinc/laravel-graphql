@@ -6,7 +6,8 @@ return [
     'examples' =>  "
         query QueryExamples {
             examples {
-                test
+                id
+                name
             }
         }
     ",
@@ -14,15 +15,17 @@ return [
     'examplesCustom' =>  "
         query QueryExamplesCustom {
             examplesCustom {
-                test
+                id
+                name
             }
         }
     ",
     
     'examplesWithParams' =>  "
-        query QueryExamplesParams(\$index: Int) {
-            examples(index: \$index) {
-                test
+        query QueryExamplesParams(\$id: ID) {
+            examples(id: \$id) {
+                id
+                name
             }
         }
     ",
@@ -30,7 +33,8 @@ return [
     'examplesWithContext' =>  "
         query QueryExamplesContext {
             examplesContext {
-                test
+                id
+                name
             }
         }
     ",
@@ -38,7 +42,8 @@ return [
     'examplesWithRoot' =>  "
         query QueryExamplesRoot {
             examplesRoot {
-                test
+                id
+                name
             }
         }
     ",
@@ -46,23 +51,81 @@ return [
     'examplesWithError' =>  "
         query QueryExamplesWithError {
             examplesQueryNotFound {
-                test
+                id
+                name
             }
         }
     ",
     
     'examplesWithValidation' =>  "
-        query QueryExamplesWithValidation(\$index: Int) {
+        query QueryExamplesWithValidation(\$id: ID) {
             examples {
-                test_validation(index: \$index)
+                id
+                name_validation(id: \$id)
             }
         }
     ",
     
     'updateExampleCustom' =>  "
-        mutation UpdateExampleCustom(\$test: String) {
-            updateExampleCustom(test: \$test) {
-                test
+        mutation UpdateExampleCustom(\$name: String) {
+            updateExampleCustom(name: \$name) {
+                id
+                name
+            }
+        }
+    ",
+    
+    'relayNode' =>  "
+        query QueryRelayNode(\$id: ID!) {
+            node(id: \$id) {
+                id
+                ... on ExampleNode {
+                    name
+                }
+            }
+        }
+    ",
+    
+    'relayExampleNode' =>  "
+        query QueryRelayExampleNode(\$id: ID!) {
+            example(id: \$id) {
+                id
+                name
+            }
+        }
+    ",
+    
+    'relayExampleNodeItemsConnection' =>  "
+        query QueryRelayExampleNodeItemsConnection(\$id: ID!) {
+            example(id: \$id) {
+                id
+                items {
+                    edges {
+                        cursor
+                        node {
+                            id
+                            name
+                        }
+                    }
+                    pageInfo {
+                        hasNextPage
+                        hasPreviousPage
+                        startCursor
+                        endCursor
+                    }
+                }
+            }
+        }
+    ",
+    
+    'relayMutation' =>  "
+        mutation UpdateName(\$input: UpdateNameInput) {
+            updateName(input: \$input) {
+                example {
+                    id
+                    name
+                }
+                clientMutationId
             }
         }
     "
