@@ -2,12 +2,12 @@
 
 namespace DummyNamespace;
 
-use Folklore\GraphQL\Support\Mutation;
+use Folklore\GraphQL\Support\Mutation as BaseMutation;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use GraphQL;
 
-class DummyClass extends Mutation
+class DummyClass extends BaseMutation
 {
     protected $attributes = [
         'name' => 'DummyMutation',
