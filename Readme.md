@@ -262,7 +262,7 @@ class AppServiceProvider extends ServiceProvider
 
 You can then query your schema by sending a GET request to /graphql with the following input:
 
-query
+*query*
 ```graphql
 query GetUser($id: ID!)
 {
@@ -274,15 +274,21 @@ query GetUser($id: ID!)
 }
 ```
 
-variables
+*variables*
 ```json
 {
     "id": "1"
 }
 ```
 
+Full url:
+```
+http://homestead.dev/graphql?variables={"id":"1"}&query=query GetUser($id: ID!) { user (id: $id) { id email } }
+```
+
 ## Documentation
 
 - [All documentation](docs/index.md)
 - [Advanced usage](docs/advanced.md)
+- [Relay](docs/relay.md)
 - [Upgrade to 1.0](docs/upgrade.md)
