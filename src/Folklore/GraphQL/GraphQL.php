@@ -13,7 +13,6 @@ use Folklore\GraphQL\Exception\SchemaNotFound;
 
 use Folklore\GraphQL\Events\SchemaAdded;
 use Folklore\GraphQL\Events\TypeAdded;
-use Event;
 
 class GraphQL
 {
@@ -252,7 +251,9 @@ class GraphQL
         $name = $this->getTypeName($class, $name);
         $this->types[$name] = $class;
         
-        Event::fire(new TypeAdded($class, $name));
+        if ($this->app['events']) {
+            $this->app['events']->fire(new TypeAdded($class, $name));
+        }
     }
     
     public function addSchemas($schemas)
@@ -266,7 +267,9 @@ class GraphQL
     {
         $this->schemas[$name] = $schema;
         
-        Event::fire(new SchemaAdded($schema, $name));
+        if ($this->app['events']) {
+            $this->app['events']->fire(new SchemaAdded($schema, $name));
+        }
     }
     
     public function clearType($name)
