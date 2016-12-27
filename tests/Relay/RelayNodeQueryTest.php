@@ -8,7 +8,7 @@ use Folklore\GraphQL\Relay\NodeIdField;
 use Folklore\GraphQL\Relay\NodeResponse;
 use GraphQL\Type\Definition\ResolveInfo;
 
-class NodeQueryTest extends RelayTestCase
+class RelayNodeQueryTest extends RelayTestCase
 {
     /**
      * Test schema default
@@ -30,7 +30,7 @@ class NodeQueryTest extends RelayTestCase
     public function testResolveReturnNodeResponse()
     {
         $info = new ResolveInfo([]);
-        $id = NodeIdField::toGlobalId('ExampleNode', 1);
+        $id = Relay::toGlobalId('ExampleNode', 1);
         
         $query = new NodeQuery();
         $response = $query->resolve(null, [
@@ -49,7 +49,7 @@ class NodeQueryTest extends RelayTestCase
     public function testResolveThrowExceptionWhenTypeIsNotFound()
     {
         $info = new ResolveInfo([]);
-        $id = NodeIdField::toGlobalId('ExampleNodeNotFound', 1);
+        $id = Relay::toGlobalId('ExampleNodeNotFound', 1);
         
         $query = new NodeQuery();
         $response = $query->resolve(null, [
@@ -63,12 +63,12 @@ class NodeQueryTest extends RelayTestCase
      * Test schema default
      *
      * @test
-     * @expectedException \Folklore\GraphQL\Exception\NodeInvalid
+     * @expectedException \Folklore\GraphQL\Relay\Exception\NodeInvalid
      */
     public function testResolveThrowExceptionWhenTypeIsInvalid()
     {
         $info = new ResolveInfo([]);
-        $id = NodeIdField::toGlobalId('Example', 1);
+        $id = Relay::toGlobalId('Example', 1);
         
         $query = new NodeQuery();
         $response = $query->resolve(null, [

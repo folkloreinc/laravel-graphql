@@ -10,14 +10,14 @@ class ConfigTest extends TestCase
     {
         $app['config']->set('graphql', [
 
-            'prefix' => 'graphql_test',
+            'routes_prefix' => 'graphql_test',
 
             'routes' => [
                 'query' => 'query/{graphql_schema?}',
                 'mutation' => 'mutation/{graphql_schema?}'
             ],
             
-            'variables_input_name' => 'params',
+            'request_variables_name' => 'params',
 
             'schema' => 'custom',
 
@@ -102,7 +102,7 @@ class ConfigTest extends TestCase
         $this->assertArrayHasKey('custom', $schemas);
     }
 
-    public function testVariablesInputName()
+    public function testRequestVariablesName()
     {
         $response = $this->call('GET', '/graphql_test/query/default', [
             'query' => $this->queries['examplesWithParams'],

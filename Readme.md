@@ -10,7 +10,7 @@ This package is compatible with Eloquent model (or any other data source). See t
 
 ## Installation
 
-Version 1.0 is released. If you are upgrading from older version, you can check [Upgrade to 1.0](docs/upgrade.md).
+Version 1.1 is released. If you are upgrading from older version, you can check the [upgrade guide](docs/upgrade.md).
 
 #### Dependencies:
 
@@ -22,7 +22,7 @@ Version 1.0 is released. If you are upgrading from older version, you can check 
 ```json
 {
 	"require": {
-		"folklore/graphql": "~1.0"
+		"folklore/graphql": "~1.1.0"
 	}
 }
 ```
@@ -260,7 +260,7 @@ class AppServiceProvider extends ServiceProvider
 
 **3-** Query your schema
 
-You can then query your schema by sending a GET request to /graphql with the following input:
+You can then query your schema by sending a GET request to `/graphql` with the following input:
 
 query
 ```graphql
@@ -284,5 +284,6 @@ variables
 ## Documentation
 
 - [All documentation](docs/index.md)
+- [Relay usage](docs/relay.md)
 - [Advanced usage](docs/advanced.md)
-- [Upgrade to 1.0](docs/upgrade.md)
+- [Upgrade guide](docs/upgrade.md)

@@ -5,7 +5,7 @@ namespace App\GraphQL\Relay\Mutation;
 use GraphQL\Type\Definition\Type;
 use Folklore\GraphQL\Relay\Support\Mutation;
 use GraphQL;
-use Folklore\GraphQL\Relay\NodeIdField;
+use Relay;
 use App\Data;
 
 class UpdateNameMutation extends Mutation
@@ -27,7 +27,7 @@ class UpdateNameMutation extends Mutation
     public function resolve($root, $args)
     {
         $globalId = array_get($args, 'input.id');
-        $id = NodeIdField::getIdFromGlobalId($globalId);
+        $id = Relay::getIdFromGlobalId($globalId);
         $node = Data::getById($id);
         $name = array_get($args, 'input.name');
         

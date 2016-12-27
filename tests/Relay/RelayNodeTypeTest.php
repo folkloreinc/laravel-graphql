@@ -8,7 +8,7 @@ use Folklore\GraphQL\Error\ValidationError;
 use Folklore\GraphQL\Events\TypeAdded;
 use Folklore\GraphQL\Events\SchemaAdded;
 
-class NodeTypeTest extends RelayTestCase
+class RelayNodeTypeTest extends RelayTestCase
 {
     /**
      * Test schema default

@@ -1,0 +1,33 @@
+<?php
+
+namespace DummyNamespace;
+
+use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\ResolveInfo;
+use Folklore\GraphQL\Support\Field as BaseField;
+use GraphQL;
+
+class DummyClass extends BaseField
+{
+    protected $attributes = [
+        'name' => 'DummyField',
+        'description' => 'A field'
+    ];
+
+    public function type()
+    {
+        return Type::string();
+    }
+
+    public function args()
+    {
+        return [
+            
+        ];
+    }
+
+    public function resolve($root, $args, $content, ResolveInfo $info)
+    {
+        return '';
+    }
+}

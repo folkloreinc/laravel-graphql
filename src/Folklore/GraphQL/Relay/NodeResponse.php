@@ -3,6 +3,7 @@
 namespace Folklore\GraphQL\Relay;
 
 use Illuminate\Support\Fluent;
+use Illuminate\Contracts\Support\Arrayable;
 
 class NodeResponse extends Fluent
 {
@@ -17,7 +18,7 @@ class NodeResponse extends Fluent
     public function setNode($node)
     {
         $this->originalNode = $node;
-        $this->attributes = $node;
+        $this->attributes = $node instanceof Arrayable ? $node->toArray():(array)$node;
     }
     
     public function setType($type)

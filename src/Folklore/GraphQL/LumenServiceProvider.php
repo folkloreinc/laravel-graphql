@@ -63,10 +63,14 @@ class LumenServiceProvider extends ServiceProvider
     /**
      * Register the helper command to publish the config file
      */
-    public function registerConsole()
+    public function registerCommands()
     {
-        parent::registerConsole();
+        parent::registerCommands();
         
-        $this->commands(\Folklore\GraphQL\Console\PublishCommand::class);
+        $this->app->singleton('command.graphql.publish', function ($app) {
+            return new \Folklore\GraphQL\Console\PublishCommand();
+        });
+        
+        $this->commands('command.graphql.publish');
     }
 }

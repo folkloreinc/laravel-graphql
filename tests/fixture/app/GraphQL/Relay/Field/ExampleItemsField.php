@@ -4,7 +4,7 @@ namespace App\GraphQL\Relay\Field;
 
 use GraphQL\Type\Definition\Type;
 use Folklore\GraphQL\Relay\Support\ConnectionField;
-use Folklore\GraphQL\Relay\NodeIdField;
+use Relay;
 use GraphQL;
 
 class ExampleItemsField extends ConnectionField
@@ -20,7 +20,7 @@ class ExampleItemsField extends ConnectionField
         
         $newItems = [];
         foreach ($items as $item) {
-            $globalId = NodeIdField::toGlobalId('ExampleItem', $item['id']);
+            $globalId = Relay::toGlobalId('ExampleItem', $item['id']);
             
             if (isset($args['after']) && $args['after'] === $globalId) {
                 $newItems = [];

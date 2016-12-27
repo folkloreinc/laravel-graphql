@@ -1,4 +1,4 @@
-<?php namespace Folklore\GraphQL\Exception;
+<?php namespace Folklore\GraphQL\Relay\Exception;
 
 use Exception;
 

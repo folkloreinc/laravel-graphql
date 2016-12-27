@@ -9,8 +9,7 @@ abstract class RelayTestCase extends TestCase
     {
         $app['config']->set('graphql.schemas.default', [
             'query' => [
-                'example' => \App\GraphQL\Relay\Query\ExampleQuery::class,
-                'node' => \Folklore\GraphQL\Relay\NodeQuery::class
+                'example' => \App\GraphQL\Relay\Query\ExampleQuery::class
             ],
             'mutation' => [
                 'updateName' => \App\GraphQL\Relay\Mutation\UpdateNameMutation::class
@@ -24,9 +23,23 @@ abstract class RelayTestCase extends TestCase
             'ExampleItemsConnection' => \App\GraphQL\Relay\Type\ExampleItemsConnectionType::class,
             'ExampleItem' => \App\GraphQL\Relay\Type\ExampleItemType::class,
             'UpdateNamePayload' => \App\GraphQL\Relay\Type\UpdateNamePayloadType::class,
-            'UpdateNameInput' => \App\GraphQL\Relay\Type\UpdateNameInputType::class,
-            'Node' => \Folklore\GraphQL\Relay\NodeInterface::class,
-            'PageInfo' => \Folklore\GraphQL\Relay\PageInfoType::class
+            'UpdateNameInput' => \App\GraphQL\Relay\Type\UpdateNameInputType::class
         ]);
+    }
+    
+    protected function getPackageProviders($app)
+    {
+        return [
+            \Folklore\GraphQL\ServiceProvider::class,
+            \Folklore\GraphQL\Relay\ServiceProvider::class
+        ];
+    }
+    
+    protected function getPackageAliases($app)
+    {
+        return [
+            'GraphQL' => \Folklore\GraphQL\Support\Facades\GraphQL::class,
+            'Relay' => \Folklore\GraphQL\Relay\Support\Facades\Relay::class
+        ];
     }
 }

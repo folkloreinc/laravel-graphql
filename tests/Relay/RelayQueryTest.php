@@ -5,7 +5,7 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Folklore\GraphQL\Relay\NodeIdField;
 
-class RelayEndpointTest extends RelayTestCase
+class RelayQueryTest extends RelayTestCase
 {
     /**
      * Test schema default
@@ -26,7 +26,7 @@ class RelayEndpointTest extends RelayTestCase
         $this->assertArrayHasKey('data', $result);
         $this->assertEquals($result['data'], [
             'example' => [
-                'id' => NodeIdField::toGlobalId('ExampleNode', $id),
+                'id' => Relay::toGlobalId('ExampleNode', $id),
                 'name' => $node['name']
             ]
         ]);
@@ -40,7 +40,7 @@ class RelayEndpointTest extends RelayTestCase
     public function testQueryNode()
     {
         $id = 1;
-        $globalId = NodeIdField::toGlobalId('ExampleNode', $id);
+        $globalId = Relay::toGlobalId('ExampleNode', $id);
         $query = $this->queries['relayNode'];
         $variables = [
             'id' => $globalId
@@ -66,7 +66,7 @@ class RelayEndpointTest extends RelayTestCase
     public function testQueryNodeConnection()
     {
         $id = 2;
-        $globalId = NodeIdField::toGlobalId('ExampleNode', $id);
+        $globalId = Relay::toGlobalId('ExampleNode', $id);
         $query = $this->queries['relayExampleNodeItemsConnection'];
         $variables = [
             'id' => $id
@@ -87,7 +87,7 @@ class RelayEndpointTest extends RelayTestCase
         $i = 0;
         foreach ($edges as $edge) {
             $this->assertEquals($edge['cursor'], $edge['node']['id']);
-            $this->assertEquals($edge['node']['id'], NodeIdField::toGlobalId('ExampleItem', $node['items'][$i]['id']));
+            $this->assertEquals($edge['node']['id'], Relay::toGlobalId('ExampleItem', $node['items'][$i]['id']));
             $this->assertEquals($edge['node']['name'], $node['items'][$i]['name']);
             $i++;
         }
@@ -101,7 +101,7 @@ class RelayEndpointTest extends RelayTestCase
     public function testMutation()
     {
         $id = 1;
-        $globalId = NodeIdField::toGlobalId('ExampleNode', $id);
+        $globalId = Relay::toGlobalId('ExampleNode', $id);
         $clientMutationId = 'TEST_MUTATION_ID';
         $newName = 'New name';
         $query = $this->queries['relayMutation'];

@@ -1,6 +1,8 @@
 <?php
 
-namespace Folklore\GraphQL\Console;
+namespace Folklore\GraphQL\Relay\Console;
+
+use Folklore\GraphQL\Console\GeneratorCommand;
 
 class MutationMakeCommand extends GeneratorCommand
 {
@@ -9,14 +11,14 @@ class MutationMakeCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'make:graphql:mutation {name}';
+    protected $signature = 'make:relay:mutation {name}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Create a new GraphQL mutation class';
+    protected $description = 'Create a new GraphQL Relay mutation class';
 
     /**
      * The type of class being generated.

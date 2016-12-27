@@ -3,8 +3,8 @@
 use GraphQL\GraphQL as GraphQLBase;
 use GraphQL\Schema;
 use GraphQL\Error;
-
 use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Validator\DocumentValidator;
 
 use Folklore\GraphQL\Error\ValidationError;
 
@@ -21,33 +21,62 @@ class GraphQL
     protected $schemas = [];
     protected $types = [];
     protected $typesInstances = [];
+    protected $schema;
+    protected $introspectionQuery;
     
     public function __construct($app)
     {
         $this->app = $app;
+        
+        // Initialize from config
+        $config = $app['config'];
+        
+        // Add schemas
+        $this->schemas = $config->get('graphql.schemas', []);
+        
+        // Add types
+        $configTypes = $config->get('graphql.types', []);
+        foreach ($configTypes as $name => $class) {
+            $name = $this->getTypeName($class, is_numeric($name) ? null:$name);
+            $this->types[$name] = $class;
+        }
+        
+        // Set default Schema
+        $this->schema = $config->get('graphql.schema', 'default');
+        
+        // Set security config
+        $maxQueryComplexity = $config->get('graphql.security.query_max_complexity');
+        $maxQueryDepth = $config->get('graphql.security.query_max_depth');
+        if ($maxQueryComplexity !== null) {
+            $this->setMaxQueryComplexity($maxQueryComplexity);
+        }
+        if ($maxQueryDepth !== null) {
+            $this->setMaxQueryDepth($maxQueryDepth);
+        }
     }
-
+    
     public function schema($schema = null)
     {
         if ($schema instanceof Schema) {
             return $schema;
         }
         
-        $this->clearTypeInstances();
-        
-        $schemaName = is_string($schema) ? $schema:config('graphql.schema', 'default');
-        
+        //Get the schema
+        $schemaName = is_string($schema) ? $schema:$this->getDefaultSchema();
         if (!is_array($schema) && !isset($this->schemas[$schemaName])) {
             throw new SchemaNotFound('Type '.$schemaName.' not found.');
         }
-        
         $schema = is_array($schema) ? $schema:$this->schemas[$schemaName];
         
+        // Get values from the schema
         $schemaQuery = array_get($schema, 'query', []);
         $schemaMutation = array_get($schema, 'mutation', []);
         $schemaTypes = array_get($schema, 'types', []);
         
-        //Get the types either from the schema, or the global types.
+        // Clear the cache of type instance
+        $this->clearTypeInstances();
+        
+        // Get the types either from the schema, or the global types.
         $types = [];
         if (sizeof($schemaTypes)) {
             foreach ($schemaTypes as $name => $type) {
@@ -63,10 +92,12 @@ class GraphQL
             }
         }
         
+        // Create the root Query object type
         $query = $this->objectType($schemaQuery, [
             'name' => 'Query'
         ]);
         
+        // Create the root Mutation object type
         $mutation = $this->objectType($schemaMutation, [
             'name' => 'Mutation'
         ]);
@@ -101,7 +132,7 @@ class GraphQL
     {
         // If it's already an ObjectType, just update properties and return it.
         // If it's an array, assume it's an array of fields and build ObjectType
-        // from it. Otherwise, build it from a string or an instance.
+        // from it. Otherwise, assume it's a class path or an instance.
         $objectType = null;
         if ($type instanceof ObjectType) {
             $objectType = $type;
@@ -154,6 +185,60 @@ class GraphQL
         return $result;
     }
     
+    public function introspection($schema = null)
+    {
+        if (!$schema) {
+            $schema = $this->getDefaultSchema();
+        }
+        
+        $query = $this->introspectionQuery();
+        
+        $queryDepth = $this->getMaxQueryDepth();
+        if ($queryDepth < 110) {
+            $this->setMaxQueryDepth(110);
+        }
+        
+        $return = $this->query($query, [], [
+            'schema' => $schema
+        ]);
+        
+        if ($queryDepth < 110) {
+            $this->setMaxQueryDepth($queryDepth);
+        }
+        
+        return $return;
+    }
+    
+    public function introspectionQuery()
+    {
+        if (!$this->introspectionQuery) {
+            $this->introspectionQuery = $this->loadIntrospectionQuery();
+        }
+        
+        return $this->introspectionQuery;
+    }
+    
+    public function setIntrospectionQuery($query)
+    {
+        $this->introspectionQuery = $query;
+    }
+
+    protected function loadIntrospectionQuery()
+    {
+        $defaultPath = base_path('resources/graphql/introspectionQuery.txt');
+        $introspectionPath = $this->app['config']->get('graphql.introspection.query', $defaultPath);
+        if (!file_exists($introspectionPath)) {
+            $introspectionPath = __DIR__.'/../../resources/graphql/introspectionQuery.txt';
+        }
+        return file_get_contents($introspectionPath);
+    }
+    
+    public function routerSchemaPattern()
+    {
+        $schemaNames = array_keys($this->getSchemas());
+        return '('.implode('|', $schemaNames).')';
+    }
+    
     public function addTypes($types)
     {
         foreach ($types as $name => $type) {
@@ -166,14 +251,25 @@ class GraphQL
         $name = $this->getTypeName($class, $name);
         $this->types[$name] = $class;
         
-        event(new TypeAdded($class, $name));
+        if ($this->app['events']) {
+            $this->app['events']->fire(new TypeAdded($class, $name));
+        }
+    }
+    
+    public function addSchemas($schemas)
+    {
+        foreach ($schemas as $name => $schema) {
+            $this->addSchema($name, $schema);
+        }
     }
     
     public function addSchema($name, $schema)
     {
         $this->schemas[$name] = $schema;
         
-        event(new SchemaAdded($schema, $name));
+        if ($this->app['events']) {
+            $this->app['events']->fire(new SchemaAdded($schema, $name));
+        }
     }
     
     public function clearType($name)
@@ -208,6 +304,42 @@ class GraphQL
     public function getSchemas()
     {
         return $this->schemas;
+    }
+    
+    public function setDefaultSchema($name)
+    {
+        $this->schema = $name;
+    }
+    
+    public function getDefaultSchema()
+    {
+        return $this->schema;
+    }
+    
+    public function setMaxQueryComplexity($value)
+    {
+        $rule = DocumentValidator::getRule('QueryComplexity');
+        $rule->setMaxQueryComplexity($value);
+        return $rule;
+    }
+    
+    public function setMaxQueryDepth($value)
+    {
+        $rule = DocumentValidator::getRule('QueryDepth');
+        $rule->setMaxQueryDepth($value);
+        return $rule;
+    }
+    
+    public function getMaxQueryComplexity()
+    {
+        $rule = DocumentValidator::getRule('QueryComplexity');
+        return $rule->getMaxQueryComplexity();
+    }
+    
+    public function getMaxQueryDepth()
+    {
+        $rule = DocumentValidator::getRule('QueryDepth');
+        return $rule->getMaxQueryDepth();
     }
     
     protected function clearTypeInstances()

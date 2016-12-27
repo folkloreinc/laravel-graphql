@@ -1,6 +1,5 @@
 <?php namespace Folklore\GraphQL;
 
-use GraphQL\Validator\DocumentValidator;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 class ServiceProvider extends BaseServiceProvider
@@ -22,46 +21,11 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function boot()
     {
-        $this->bootEvents();
-
         $this->bootPublishes();
-
-        $this->bootTypes();
-
-        $this->bootSchemas();
 
         $this->bootRouter();
 
         $this->bootViews();
-        
-        $this->bootSecurity();
-    }
-
-    /**
-     * Bootstrap router
-     *
-     * @return void
-     */
-    protected function bootRouter()
-    {
-        if (config('graphql.routes')) {
-            $router = $this->getRouter();
-            include __DIR__.'/routes.php';
-        }
-    }
-
-    /**
-     * Bootstrap events
-     *
-     * @return void
-     */
-    protected function bootEvents()
-    {
-        //Update the schema route pattern when schema is added
-        $this->app['events']->listen(\Folklore\GraphQL\Events\SchemaAdded::class, function () {
-            $schemaNames = array_keys($this->app['graphql']->getSchemas());
-            $this->getRouter()->pattern('graphql_schema', '('.implode('|', $schemaNames).')');
-        });
     }
 
     /**
@@ -73,6 +37,7 @@ class ServiceProvider extends BaseServiceProvider
     {
         $configPath = __DIR__.'/../../config';
         $viewsPath = __DIR__.'/../../resources/views';
+        $resourcesPath = __DIR__.'/../../resources/graphql';
 
         $this->mergeConfigFrom($configPath.'/config.php', 'graphql');
         
@@ -85,35 +50,31 @@ class ServiceProvider extends BaseServiceProvider
         $this->publishes([
             $viewsPath => base_path('resources/views/vendor/graphql'),
         ], 'views');
+
+        $this->publishes([
+            $resourcesPath => base_path('resources/graphql'),
+        ], 'resources');
     }
 
     /**
-     * Add types from config
+     * Bootstrap router
      *
      * @return void
      */
-    protected function bootTypes()
+    protected function bootRouter()
     {
-        $configTypes = config('graphql.types');
-        foreach ($configTypes as $name => $type) {
-            if (is_numeric($name)) {
-                $this->app['graphql']->addType($type);
-            } else {
-                $this->app['graphql']->addType($type, $name);
-            }
-        }
-    }
-
-    /**
-     * Add schemas from config
-     *
-     * @return void
-     */
-    protected function bootSchemas()
-    {
-        $configSchemas = config('graphql.schemas');
-        foreach ($configSchemas as $name => $schema) {
-            $this->app['graphql']->addSchema($name, $schema);
+        $router = $this->getRouter();
+        $graphql = $this->app['graphql'];
+        
+        //Update the schema route pattern when schema is added
+        $this->app['events']->listen(\Folklore\GraphQL\Events\SchemaAdded::class, function () use ($graphql, $router) {
+            $router->pattern('graphql_schema', $graphql->routerSchemaPattern());
+        });
+        $router->pattern('graphql_schema', $graphql->routerSchemaPattern());
+        
+        // Define routes
+        if ($this->app['config']->get('graphql.routes')) {
+            include __DIR__.'/routes.php';
         }
     }
 
@@ -124,29 +85,12 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected function bootViews()
     {
-        $graphiQL = config('graphql.graphiql', true);
+        $config = $this->app['config'];
+        $graphiQL = $config->get('graphql.graphiql', true);
         if ($graphiQL) {
-            $view = config('graphql.graphiql.view', 'graphql::graphiql');
-            app('view')->composer($view, \Folklore\GraphQL\View\GraphiQLComposer::class);
-        }
-    }
-    
-    /**
-     * Configure security from config
-     * @return void
-     */
-    protected function bootSecurity()
-    {
-        $maxQueryComplexity = config('graphql.security.query_max_complexity');
-        if ($maxQueryComplexity !== null) {
-            $queryComplexity = DocumentValidator::getRule('QueryComplexity');
-            $queryComplexity->setMaxQueryComplexity($maxQueryComplexity);
-        }
-
-        $maxQueryDepth = config('graphql.security.query_max_depth');
-        if ($maxQueryDepth !== null) {
-            $queryDepth = DocumentValidator::getRule('QueryDepth');
-            $queryDepth->setMaxQueryDepth($maxQueryDepth);
+            $view = $config->get('graphql.graphiql.view', 'graphql::graphiql');
+            $composer = $config->get('graphql.graphiql.composer', \Folklore\GraphQL\View\GraphiQLComposer::class);
+            $this->app['view']->composer($view, $composer);
         }
     }
 
@@ -159,7 +103,7 @@ class ServiceProvider extends BaseServiceProvider
     {
         $this->registerGraphQL();
 
-        $this->registerConsole();
+        $this->registerCommands();
     }
 
     /**
@@ -169,8 +113,9 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function registerGraphQL()
     {
-        $this->app->singleton('graphql', function ($app) {
-            return new GraphQL($app);
+        $this->app->singleton('graphql', function ($app, $router) {
+            $graphql = new GraphQL($app);
+            return $graphql;
         });
     }
 
@@ -179,14 +124,88 @@ class ServiceProvider extends BaseServiceProvider
      *
      * @return void
      */
-    public function registerConsole()
+    public function registerCommands()
     {
-        $this->commands(\Folklore\GraphQL\Console\TypeMakeCommand::class);
-        $this->commands(\Folklore\GraphQL\Console\QueryMakeCommand::class);
-        $this->commands(\Folklore\GraphQL\Console\MutationMakeCommand::class);
+        $commands = [
+            'MakeSchema', 'MakeType', 'MakeQuery', 'MakeMutation', 'MakeField'
+        ];
+
+        // We'll simply spin through the list of commands that are migration related
+        // and register each one of them with an application container. They will
+        // be resolved in the Artisan start file and registered on the console.
+        foreach ($commands as $command) {
+            $this->{'register'.$command.'Command'}();
+        }
+        
+        $this->commands(
+            'command.graphql.make.schema',
+            'command.graphql.make.type',
+            'command.graphql.make.query',
+            'command.graphql.make.mutation',
+            'command.graphql.make.field'
+        );
     }
-
-
+    
+    /**
+     * Register the "make:graphql:schema" migration command.
+     *
+     * @return void
+     */
+    public function registerMakeSchemaCommand()
+    {
+        $this->app->singleton('command.graphql.make.schema', function ($app) {
+            return new \Folklore\GraphQL\Console\SchemaMakeCommand($app['files']);
+        });
+    }
+    
+    /**
+     * Register the "make:graphql:type" migration command.
+     *
+     * @return void
+     */
+    public function registerMakeTypeCommand()
+    {
+        $this->app->singleton('command.graphql.make.type', function ($app) {
+            return new \Folklore\GraphQL\Console\TypeMakeCommand($app['files']);
+        });
+    }
+    
+    /**
+     * Register the "make:graphql:query" migration command.
+     *
+     * @return void
+     */
+    public function registerMakeQueryCommand()
+    {
+        $this->app->singleton('command.graphql.make.query', function ($app) {
+            return new \Folklore\GraphQL\Console\QueryMakeCommand($app['files']);
+        });
+    }
+    
+    /**
+     * Register the "make:graphql:mutation" migration command.
+     *
+     * @return void
+     */
+    public function registerMakeMutationCommand()
+    {
+        $this->app->singleton('command.graphql.make.mutation', function ($app) {
+            return new \Folklore\GraphQL\Console\MutationMakeCommand($app['files']);
+        });
+    }
+    
+    /**
+     * Register the "make:graphql:field" migration command.
+     *
+     * @return void
+     */
+    public function registerMakeFieldCommand()
+    {
+        $this->app->singleton('command.graphql.make.field', function ($app) {
+            return new \Folklore\GraphQL\Console\FieldMakeCommand($app['files']);
+        });
+    }
+    
     /**
      * Get the services provided by the provider.
      *
@@ -194,6 +213,12 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function provides()
     {
-        return ['graphql'];
+        return [
+            'graphql',
+            'command.graphql.make.type',
+            'command.graphql.make.query',
+            'command.graphql.make.mutation',
+            'command.graphql.make.field'
+        ];
     }
 }

@@ -3,9 +3,11 @@
 ## Usage
 
 - [Schemas](#schemas)
+- [Creating a type](#creating-a-type)
 - [Creating a query](#creating-a-query)
 - [Creating a mutation](#creating-a-mutation)
 - [Adding validation to mutation](#adding-validation-to-mutation)
+- [Use GraphQL with Relay](relay.md)
 
 ## Advanced Usage
 - [Query variables](docs/advanced.md#query-variables)
@@ -89,7 +91,7 @@ http://homestead.app/graphql?query=query+FetchUsers{users{id,email}}
 http://homestead.app/graphql/secret?query=query+FetchUsers{users{id,email}}
 ```
 
-### Creating a query
+### Creating a type
 
 First you need to create a type.
 
@@ -150,6 +152,8 @@ You could also add the type with the `GraphQL` Facade, in a service provider for
 GraphQL::addType('App\GraphQL\Type\UserType', 'user');
 
 ```
+
+### Creating a query
 
 Then you need to define a query that returns this type (or a list). You can also specify arguments that you can use in the resolve method.
 ```php

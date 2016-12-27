@@ -2,28 +2,28 @@
 
 namespace Folklore\GraphQL\Console;
 
-class MutationMakeCommand extends GeneratorCommand
+class FieldMakeCommand extends GeneratorCommand
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'make:graphql:mutation {name}';
+    protected $signature = 'make:graphql:field {name}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Create a new GraphQL mutation class';
+    protected $description = 'Create a new GraphQL field class';
 
     /**
      * The type of class being generated.
      *
      * @var string
      */
-    protected $type = 'Mutation';
+    protected $type = 'Field';
 
     /**
      * Get the stub file for the generator.
@@ -32,7 +32,7 @@ class MutationMakeCommand extends GeneratorCommand
      */
     protected function getStub()
     {
-        return __DIR__.'/stubs/mutation.stub';
+        return __DIR__.'/stubs/field.stub';
     }
 
     /**
@@ -43,7 +43,7 @@ class MutationMakeCommand extends GeneratorCommand
      */
     protected function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace.'\GraphQL\Mutation';
+        return $rootNamespace.'\GraphQL\Field';
     }
 
     /**
@@ -70,7 +70,7 @@ class MutationMakeCommand extends GeneratorCommand
     {
         preg_match('/([^\\\]+)$/', $name, $matches);
         $stub = str_replace(
-            'DummyMutation',
+            'DummyField',
             $matches[1],
             $stub
         );

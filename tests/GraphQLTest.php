@@ -30,7 +30,7 @@ class GraphQLTest extends TestCase
      *
      * @test
      */
-    public function testSchemaWithSchemaObject()
+    public function testSchemaFromSchemaObject()
     {
         $schemaObject = new Schema([
             'query' => new ObjectType([
@@ -96,6 +96,20 @@ class GraphQLTest extends TestCase
     public function testSchemaWithWrongName()
     {
         $schema = GraphQL::schema('wrong');
+    }
+    
+    /**
+     * Test the router schema patter
+     *
+     * @test
+     */
+    public function testRouterSchemaPattern()
+    {
+        $schemas = array_keys(GraphQL::getSchemas());
+        $schemaPattern = GraphQL::routerSchemaPattern();
+        
+        $this->assertEquals($schemaPattern, '('.implode('|', $schemas).')');
+        $this->assertRegExp('/'.$schemaPattern.'/', $schemas[0]);
     }
     
     /**
@@ -171,6 +185,7 @@ class GraphQLTest extends TestCase
         $this->assertInstanceOf(\GraphQL\Type\Definition\ObjectType::class, $type);
         $this->assertEquals($type->name, 'ExampleType');
         $fields = $type->getFields();
+        $this->assertInternalType('array', $fields);
         $this->assertArrayHasKey('name', $fields);
     }
     
@@ -298,5 +313,80 @@ class GraphQLTest extends TestCase
         $this->assertArrayHasKey('default', $schemas);
         $this->assertArrayHasKey('custom', $schemas);
         $this->assertInternalType('array', $schemas['default']);
+    }
+    
+    /**
+     * Test max query depth
+     *
+     * @test
+     */
+    public function testMaxQueryDepth()
+    {
+        $initialValue = GraphQL::getMaxQueryDepth();
+        $value = 121;
+        GraphQL::setMaxQueryDepth($value);
+        $this->assertEquals($value, GraphQL::getMaxQueryDepth());
+        GraphQL::setMaxQueryDepth($initialValue);
+    }
+    
+    /**
+     * Test max query complexity
+     *
+     * @test
+     */
+    public function testMaxQueryComplexity()
+    {
+        $initialValue = GraphQL::getMaxQueryComplexity();
+        $value = 121;
+        GraphQL::setMaxQueryComplexity($value);
+        $this->assertEquals($value, GraphQL::getMaxQueryComplexity());
+        GraphQL::setMaxQueryComplexity($initialValue);
+    }
+    
+    /**
+     * Test introspection query
+     *
+     * @test
+     */
+    public function testIntrospectionQuery()
+    {
+        $query = GraphQL::introspectionQuery();
+        $queryFromFile = file_get_contents(__DIR__.'/../src/resources/graphql/introspectionQuery.txt');
+        $this->assertEquals($queryFromFile, $query);
+    }
+    
+    /**
+     * Test introspection
+     *
+     * @test
+     */
+    public function testIntrospection()
+    {
+        $return = GraphQL::introspection();
+        $this->assertArrayNotHasKey('errors', $return);
+        $this->assertArrayHasKey('data', $return);
+        
+        //Assert that all type exists
+        $schema = GraphQL::schema();
+        $schemaTypes = array_get($return, 'data.__schema.types');
+        $schemaTypesNames = array_pluck($schemaTypes, 'name');
+        $typesNames = array_keys(GraphQL::getTypes());
+        foreach ($typesNames as $typeName) {
+            $this->assertContains($typeName, $schemaTypesNames);
+        }
+        
+        //Assert that all query and mutation exist
+        $types = ['Query', 'Mutation'];
+        foreach ($types as $type) {
+            $this->assertContains($type, $schemaTypesNames);
+            $schemaType = array_first($schemaTypes, function ($item) use ($type) {
+                return $item['name'] === $type;
+            });
+            $typeFieldsNames = array_keys($schema->getType($type)->getFields());
+            $schemaTypeFieldsNames = array_pluck($schemaType['fields'], 'name');
+            foreach ($typeFieldsNames as $fieldname) {
+                $this->assertContains($fieldname, $schemaTypeFieldsNames);
+            }
+        }
     }
 }

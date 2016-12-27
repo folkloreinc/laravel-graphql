@@ -33,14 +33,18 @@ class ConnectionType extends BaseType
             ->withEdgeType($edgeType);
     }
     
-    public function getEdgesFromRoot($root)
+    public function getCursorFromEdge($edge)
     {
         $edgeType = $this->getEdgeType();
-        $name = $edgeType->config['name'];
         $resolveId = $edgeType->getField('id')->resolveFn;
-        return array_map(function ($item) use ($resolveId) {
+        return $resolveId($edge);
+    }
+    
+    public function getEdgesFromRoot($root)
+    {
+        return array_map(function ($item) {
             return [
-                'cursor' => $resolveId($item),
+                'cursor' => $this->getCursorFromEdge($item),
                 'node' => $item
             ];
         }, $root);

@@ -2,9 +2,6 @@
 
 namespace Folklore\GraphQL\Console;
 
-use Illuminate\Console\GeneratorCommand;
-use Symfony\Component\Console\Input\InputOption;
-
 class TypeMakeCommand extends GeneratorCommand
 {
     /**
@@ -12,7 +9,7 @@ class TypeMakeCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'make:graphql:type {name}';
+    protected $signature = 'make:graphql:type {name} {--input}';
 
     /**
      * The console command description.
@@ -35,6 +32,9 @@ class TypeMakeCommand extends GeneratorCommand
      */
     protected function getStub()
     {
+        if ($this->option('input')) {
+            return __DIR__.'/stubs/input.stub';
+        }
         return __DIR__.'/stubs/type.stub';
     }
 
@@ -58,8 +58,9 @@ class TypeMakeCommand extends GeneratorCommand
     protected function buildClass($name)
     {
         $stub = parent::buildClass($name);
+        $stub = $this->replaceType($stub, $name);
 
-        return $this->replaceType($stub, $name);
+        return $stub;
     }
 
     /**
