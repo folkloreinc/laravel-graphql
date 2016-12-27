@@ -6,7 +6,7 @@ use Folklore\GraphQL\Support\Query;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use GraphQL;
-use Relay;
+use Relay as RelayFacade;
 use Folklore\GraphQL\Exception\TypeNotFound;
 use Folklore\GraphQL\Relay\Exception\NodeInvalid;
 
@@ -36,7 +36,7 @@ class NodeQuery extends Query
 
     public function resolve($root, $args, $context, ResolveInfo $info)
     {
-        list($typeName, $id) = Relay::fromGlobalId($args['id']);
+        list($typeName, $id) = RelayFacade::fromGlobalId($args['id']);
         $types = GraphQL::getTypes();
         $typeClass = array_get($types, $typeName);
         
