@@ -90,7 +90,7 @@ class ServiceProvider extends BaseServiceProvider
     public function registerCommands()
     {
         $commands = [
-            'MakeNode', 'MakeInput', 'MakePayload', 'MakeConnection'
+            'MakeNode', 'MakeMutation', 'MakeInput', 'MakePayload', 'MakeConnection'
         ];
 
         // We'll simply spin through the list of commands that are migration related
@@ -102,6 +102,7 @@ class ServiceProvider extends BaseServiceProvider
         
         $this->commands(
             'command.relay.make.node',
+            'command.relay.make.mutation',
             'command.relay.make.input',
             'command.relay.make.payload',
             'command.relay.make.connection'
@@ -117,6 +118,18 @@ class ServiceProvider extends BaseServiceProvider
     {
         $this->app->singleton('command.relay.make.node', function ($app) {
             return new \Folklore\GraphQL\Relay\Console\NodeMakeCommand($app['files']);
+        });
+    }
+    
+    /**
+     * Register the "make:graphql:mutation" migration command.
+     *
+     * @return void
+     */
+    public function registerMakeMutationCommand()
+    {
+        $this->app->singleton('command.relay.make.mutation', function ($app) {
+            return new \Folklore\GraphQL\Relay\Console\MutationMakeCommand($app['files']);
         });
     }
     

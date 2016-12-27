@@ -3,12 +3,12 @@
 namespace App\GraphQL\Relay\Type;
 
 use GraphQL\Type\Definition\Type;
-use Folklore\GraphQL\Relay\Support\Type as NodeType;
+use Folklore\GraphQL\Relay\Support\NodeType as BaseNodeType;
 use GraphQL;
 
 use App\Data;
 
-class ExampleNodeType extends NodeType
+class ExampleNodeType extends BaseNodeType
 {
     protected $attributes = [
         'name' => 'ExampleNode',

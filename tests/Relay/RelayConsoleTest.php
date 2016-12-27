@@ -11,8 +11,10 @@ class RelayConsoleTest extends RelayTestCase
         'GraphQL/Type/ConsoleNode.php',
         'GraphQL/Type/ConsoleInput.php',
         'GraphQL/Type/ConsolePayload.php',
+        'GraphQL/Mutation/ConsoleMutation.php',
         'resources/graphql/',
-        'GraphQL/Type/'
+        'GraphQL/Type/',
+        'GraphQL/Mutation/'
     ];
     
     public function tearDown()
@@ -57,7 +59,7 @@ class RelayConsoleTest extends RelayTestCase
         ]);
         
         $path = app_path('GraphQL/Type/ConsoleNode.php');
-        $this->assertGeneratorCommand($path, '\App\GraphQL\Type\ConsoleNode', 'BaseType');
+        $this->assertGeneratorCommand($path, '\App\GraphQL\Type\ConsoleNode', 'BaseNodeType');
     }
     
     public function testInputMake()
@@ -93,10 +95,10 @@ class RelayConsoleTest extends RelayTestCase
     public function testMutationMake()
     {
         $exitCode = Artisan::call('make:relay:mutation', [
-            'name' => 'ConsoleMutation'
+            'name' => 'ConsoleRelayMutation'
         ]);
         
-        $path = app_path('GraphQL/Type/ConsoleMutation.php');
-        $this->assertGeneratorCommand($path, '\App\GraphQL\Mutation\ConsoleMutation', 'BaseMutation');
+        $path = app_path('GraphQL/Mutation/ConsoleRelayMutation.php');
+        $this->assertGeneratorCommand($path, '\App\GraphQL\Mutation\ConsoleRelayMutation', 'BaseMutation');
     }
 }

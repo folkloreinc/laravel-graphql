@@ -126,12 +126,12 @@ Here is an example with a User node:
 namespace App\GraphQL\Type;
 
 use GraphQL\Type\Definition\Type;
-use Folklore\GraphQL\Relay\Support\Type as NodeType;
+use Folklore\GraphQL\Relay\Support\NodeType as BaseNodeType;
 use GraphQL;
 
 use App\User;
 
-class UserNodeType extends NodeType
+class UserNodeType extends BaseNodeType
 {
     protected $attributes = [
         'name' => 'User',
