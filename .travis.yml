@@ -13,7 +13,7 @@ env:
 matrix:
   exclude:
     - php: 5.5
-      env: TESTBENCH_VERSION=5.3.* ILLUMINATE_VERSION=5.3.*
+      env: TESTBENCH_VERSION=3.3.* ILLUMINATE_VERSION=5.3.*
 
 before_install:
   - composer require "illuminate/support:${ILLUMINATE_VERSION}" --no-update
