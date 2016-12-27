@@ -33,7 +33,7 @@ class ExampleNodeTraitType extends BaseType implements NodeContract
         ];
     }
     
-    public function resolveById(string $id)
+    public function resolveById($id)
     {
         return Data::getById($id);
     }

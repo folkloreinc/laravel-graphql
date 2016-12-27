@@ -4,5 +4,5 @@ namespace Folklore\GraphQL\Relay\Support;
 
 interface NodeContract
 {
-    public function resolveById(string $id);
+    public function resolveById($id);
 }

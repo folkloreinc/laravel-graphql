@@ -163,7 +163,7 @@ class UserNodeType extends NodeType
     }
     
     // We get the eloquent model from the id
-    public function resolveById(string $id)
+    public function resolveById($id)
     {
         return User::find($id);
     }
@@ -246,7 +246,7 @@ class UserNodeType extends NodeType
         ];
     }
     
-    public function resolveById(string $id)
+    public function resolveById($id)
     {
         return User::find($id);
     }

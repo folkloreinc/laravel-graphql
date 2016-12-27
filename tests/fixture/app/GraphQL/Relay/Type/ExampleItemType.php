@@ -29,7 +29,7 @@ class ExampleItemType extends NodeType
         ];
     }
     
-    public function resolveById(string $id)
+    public function resolveById($id)
     {
         return Data::getById($id);
     }

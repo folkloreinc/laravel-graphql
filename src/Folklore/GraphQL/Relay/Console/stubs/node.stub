@@ -22,7 +22,7 @@ class DummyClass extends BaseType
         ];
     }
     
-    public function resolveById(string $id)
+    public function resolveById($id)
     {
         // Get a node from an id
     }
