@@ -6,20 +6,20 @@ php:
   - 7.0
 
 env:
-  - LARAVEL=5.1
-  - LARAVEL=5.2
-  - LARAVEL=5.3
+  - TESTBENCH_VERSION=3.1.* ILLUMINATE_VERSION=5.1.*
+  - TESTBENCH_VERSION=3.2.* ILLUMINATE_VERSION=5.2.*
+  - TESTBENCH_VERSION=3.3.* ILLUMINATE_VERSION=5.3.*
 
 matrix:
   exclude:
     - php: 5.5
-      env: LARAVEL=5.3
+      env: TESTBENCH_VERSION=5.3.* ILLUMINATE_VERSION=5.3.*
 
-before_script:
-  - curl -s http://getcomposer.org/installer | php
-#  - php -n -d extension=json.so composer.phar global require hirak/prestissimo --update-no-dev
-  - php -n -d extension=json.so composer.phar require "illuminate/support" $LARAVEL -vvv
-  - php -n -d extension=json.so composer.phar install --dev
+before_install:
+  - composer require "illuminate/support:${ILLUMINATE_VERSION}" --no-update
+  - composer require "orchestra/testbench:${TESTBENCH_VERSION}" --no-update
+
+install: composer update --prefer-source --no-interaction --dev
 
 script: phpunit
 
