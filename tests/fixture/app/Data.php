@@ -42,8 +42,11 @@ class Data
     public static function getById($id)
     {
         $items = self::get();
-        return array_first($items, function ($item) use ($id) {
-            return (string)$item['id'] === (string)$id;
-        });
+        foreach ($items as $item) {
+            if ((string)$item['id'] === (string)$id) {
+                return $item;
+            }
+        }
+        return null;
     }
 }

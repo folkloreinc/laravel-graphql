@@ -379,9 +379,13 @@ class GraphQLTest extends TestCase
         $types = ['Query', 'Mutation'];
         foreach ($types as $type) {
             $this->assertContains($type, $schemaTypesNames);
-            $schemaType = array_first($schemaTypes, function ($item) use ($type) {
-                return $item['name'] === $type;
-            });
+            $schemaType = null;
+            foreach ($schemaTypes as $item) {
+                if ($item['name'] === $type) {
+                    $schemaType = $item;
+                    break;
+                }
+            }
             $typeFieldsNames = array_keys($schema->getType($type)->getFields());
             $schemaTypeFieldsNames = array_pluck($schemaType['fields'], 'name');
             foreach ($typeFieldsNames as $fieldname) {
