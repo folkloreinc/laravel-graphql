@@ -29,8 +29,9 @@ class ConnectionType extends BaseType
         $edgeType = $this->getEdgeType();
         $name = $edgeType->config['name'].'Edge';
         GraphQL::addType(\Folklore\GraphQL\Relay\ConnectionEdgeType::class, $name);
-        return GraphQL::type($name)
-            ->withEdgeType($edgeType);
+        $type = GraphQL::type($name);
+        $type->setEdgeType($edgeType);
+        return $type;
     }
     
     public function getCursorFromEdge($edge)

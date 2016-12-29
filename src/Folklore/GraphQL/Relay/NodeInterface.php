@@ -4,6 +4,7 @@ namespace Folklore\GraphQL\Relay;
 
 use GraphQL\Type\Definition\Type;
 use Folklore\GraphQL\Support\InterfaceType as BaseInterfaceType;
+use Folklore\GraphQL\Relay\Exception\NodeRootInvalid;
 
 class NodeInterface extends BaseInterfaceType
 {
@@ -23,9 +24,9 @@ class NodeInterface extends BaseInterfaceType
     
     public function resolveType($root)
     {
-        if ($root instanceof NodeResponse) {
-            return $root->getType();
+        if (!$root instanceof NodeResponse) {
+            throw new NodeRootInvalid('$root is not a NodeResponse');
         }
-        return Type::null();
+        return $root->getType();
     }
 }

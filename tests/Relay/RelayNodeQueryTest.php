@@ -27,6 +27,18 @@ class RelayNodeQueryTest extends RelayTestCase
      *
      * @test
      */
+    public function testTypeIsNode()
+    {
+        $query = new NodeQuery();
+        $queryArray = $query->toArray();
+        $this->assertEquals(GraphQL::type('Node'), $queryArray['type']);
+    }
+    
+    /**
+     * Test schema default
+     *
+     * @test
+     */
     public function testResolveReturnNodeResponse()
     {
         $info = new ResolveInfo([]);
