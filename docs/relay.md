@@ -3,11 +3,11 @@
 This documentation file won't go into details on how to use Relay, you can read about it here: https://facebook.github.io/relay/.
 
 ## Usage
-1. [Installation](#installation)
-2. [Create a node](#create-a-node)
-3. [Global ID](#global-id)
-4. [Connections](#connections)
-5. [Mutations](#mutations)
+1. [Installation](#1-installation)
+2. [Create a node](#2-create-a-node)
+3. [Global ID](#3-global-id)
+4. [Connections](#4-connections)
+5. [Mutations](#5-mutations)
 
 ### 1. Installation
 

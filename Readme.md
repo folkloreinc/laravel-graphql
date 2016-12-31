@@ -288,7 +288,7 @@ http://homestead.dev/graphql?variables={"id":"1"}&query=query GetUser($id: ID!) 
 
 ## Documentation
 
-- [All documentation](docs/index.md)
+- [All documentation](docs/readme.md)
 - [Relay usage](docs/relay.md)
 - [Advanced usage](docs/advanced.md)
 - [Upgrade guide](docs/upgrade.md)
