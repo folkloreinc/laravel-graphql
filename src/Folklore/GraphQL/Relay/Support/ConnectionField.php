@@ -8,7 +8,7 @@ use GraphQL;
 
 class ConnectionField extends BaseField
 {
-    public function args()
+    protected function args()
     {
         return [
             'first' => [

@@ -15,7 +15,7 @@ class ExampleItemsConnectionType extends ConnectionType
         'description' => 'An example items connection'
     ];
     
-    public function edgeType()
+    protected function edgeType()
     {
         return GraphQL::type('ExampleItem');
     }

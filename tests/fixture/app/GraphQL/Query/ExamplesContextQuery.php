@@ -13,7 +13,7 @@ class ExamplesContextQuery extends Query
         'name' => 'Examples context query'
     ];
     
-    public function type()
+    protected function type()
     {
         return GraphQL::type('Example');
     }

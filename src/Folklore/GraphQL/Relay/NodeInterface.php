@@ -13,7 +13,7 @@ class NodeInterface extends BaseInterfaceType
         'description' => 'The relay node interface'
     ];
 
-    public function fields()
+    protected function fields()
     {
         return [
             'id' => [
@@ -22,7 +22,7 @@ class NodeInterface extends BaseInterfaceType
         ];
     }
     
-    public function resolveType($root)
+    protected function resolveType($root)
     {
         if (!$root instanceof NodeResponse) {
             throw new NodeRootInvalid('$root is not a NodeResponse');

@@ -14,12 +14,12 @@ class ExampleValidationField extends Field
         'name' => 'example_validation'
     ];
     
-    public function type()
+    protected function type()
     {
         return Type::listOf(Type::string());
     }
 
-    public function args()
+    protected function args()
     {
         return [
             'id' => [

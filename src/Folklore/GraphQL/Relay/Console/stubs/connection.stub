@@ -13,7 +13,7 @@ class DummyClass extends BaseConnectionType
         'description' => 'A relay connection type'
     ];
 
-    public function edgeType()
+    protected function edgeType()
     {
         return null;
     }

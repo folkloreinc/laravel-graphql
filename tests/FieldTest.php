@@ -42,7 +42,7 @@ class FieldTest extends TestCase
         $this->assertArrayHasKey('args', $array);
         $this->assertArrayHasKey('resolve', $array);
         $this->assertInstanceOf(Closure::class, $array['resolve']);
-        $this->assertInstanceOf(get_class($field->type()), $array['type']);
+        $this->assertInstanceOf(get_class($field->getType()), $array['type']);
     }
     
     /**

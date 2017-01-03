@@ -13,7 +13,7 @@ class CustomExampleType extends GraphQLType
         'description' => 'An example'
     ];
 
-    public function fields()
+    protected function fields()
     {
         return [
             'name' => [

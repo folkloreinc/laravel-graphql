@@ -8,7 +8,7 @@ use GraphQL;
 
 class ConnectionEdgeType extends BaseType
 {
-    public function fields()
+    protected function fields()
     {
         return [
             'cursor' => [

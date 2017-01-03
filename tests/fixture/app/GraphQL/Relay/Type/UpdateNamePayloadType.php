@@ -13,7 +13,7 @@ class UpdateNamePayloadType extends PayloadType
         'description' => 'An example relay mutation payload'
     ];
 
-    public function fields()
+    protected function fields()
     {
         return [
             'example' => [

@@ -13,9 +13,27 @@ class ConnectionType extends BaseType
 {
     protected $edgeType;
     
-    public function edgeType()
+    protected function edgeType()
     {
         return null;
+    }
+
+    protected function fields()
+    {
+        return [
+            'edges' => [
+                'type' => Type::listOf($this->getEdgeObjectType()),
+                'resolve' => function ($root) {
+                    return $this->getEdgesFromRoot($root);
+                }
+            ],
+            'pageInfo' => [
+                'type' => GraphQL::type('PageInfo'),
+                'resolve' => function ($root) {
+                    return $this->getPageInfoFromRoot($root);
+                }
+            ]
+        ];
     }
     
     public function getEdgeType()
@@ -24,7 +42,13 @@ class ConnectionType extends BaseType
         return $edgeType ? $edgeType:$this->edgeType;
     }
     
-    public function getEdgeObjectType()
+    public function setEdgeType($edgeType)
+    {
+        $this->edgeType = $edgeType;
+        return $this;
+    }
+    
+    protected function getEdgeObjectType()
     {
         $edgeType = $this->getEdgeType();
         $name = $edgeType->config['name'].'Edge';
@@ -34,14 +58,14 @@ class ConnectionType extends BaseType
         return $type;
     }
     
-    public function getCursorFromEdge($edge)
+    protected function getCursorFromEdge($edge)
     {
         $edgeType = $this->getEdgeType();
         $resolveId = $edgeType->getField('id')->resolveFn;
         return $resolveId($edge);
     }
     
-    public function getEdgesFromRoot($root)
+    protected function getEdgesFromRoot($root)
     {
         return array_map(function ($item) {
             return [
@@ -51,7 +75,7 @@ class ConnectionType extends BaseType
         }, $root);
     }
     
-    public function getPageInfoFromRoot($root)
+    protected function getPageInfoFromRoot($root)
     {
         $hasPreviousPage = false;
         $hasNextPage = false;
@@ -69,24 +93,6 @@ class ConnectionType extends BaseType
             'hasNextPage' => $hasNextPage,
             'startCursor' => array_get($edges, '0.cursor'),
             'endCursor' => array_get($edges, (sizeof($edges)-1).'.cursor')
-        ];
-    }
-
-    public function fields()
-    {
-        return [
-            'edges' => [
-                'type' => Type::listOf($this->getEdgeObjectType()),
-                'resolve' => function ($root) {
-                    return $this->getEdgesFromRoot($root);
-                }
-            ],
-            'pageInfo' => [
-                'type' => GraphQL::type('PageInfo'),
-                'resolve' => function ($root) {
-                    return $this->getPageInfoFromRoot($root);
-                }
-            ]
         ];
     }
 }

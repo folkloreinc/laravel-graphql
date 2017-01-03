@@ -13,7 +13,7 @@ class PageInfoType extends BaseType
         'description' => 'The relay node interface'
     ];
 
-    public function fields()
+    protected function fields()
     {
         return [
             'hasNextPage' => [

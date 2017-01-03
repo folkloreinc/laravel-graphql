@@ -13,7 +13,7 @@ class DummyClass extends BaseType
         'description' => 'A type'
     ];
 
-    public function fields()
+    protected function fields()
     {
         return [
             

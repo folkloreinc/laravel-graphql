@@ -14,12 +14,12 @@ class ExampleQuery extends Query
         'name' => 'example'
     ];
     
-    public function type()
+    protected function type()
     {
         return GraphQL::type('ExampleNode');
     }
 
-    public function args()
+    protected function args()
     {
         return [
             'id' => [

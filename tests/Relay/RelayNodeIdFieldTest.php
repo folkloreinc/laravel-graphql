@@ -25,7 +25,7 @@ class RelayNodeIdFieldTest extends RelayTestCase
     public function testTypeIsId()
     {
         $field = new NodeIdField();
-        $this->assertEquals(Type::nonNull(Type::id()), $field->type());
+        $this->assertEquals(Type::nonNull(Type::id()), $field['type']);
     }
     
     /**

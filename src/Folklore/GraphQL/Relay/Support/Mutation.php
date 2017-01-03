@@ -9,7 +9,7 @@ class Mutation extends BaseMutation
 {
     protected $inputType;
     
-    public function inputType()
+    protected function inputType()
     {
         return null;
     }
@@ -25,7 +25,7 @@ class Mutation extends BaseMutation
         $this->inputType = $inputType;
     }
     
-    public function args()
+    protected function args()
     {
         return [
             'input' => [
@@ -44,7 +44,7 @@ class Mutation extends BaseMutation
         return $mutationResponse;
     }
     
-    protected function getResolver()
+    public function getResolver()
     {
         $resolver = parent::getResolver();
         

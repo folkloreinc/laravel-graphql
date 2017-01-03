@@ -9,7 +9,7 @@ use GraphQL;
 
 class ExampleItemsField extends ConnectionField
 {
-    public function type()
+    protected function type()
     {
         return GraphQL::type('ExampleItemsConnection');
     }

@@ -13,12 +13,12 @@ class DummyClass extends BaseMutation
         'description' => 'A relay mutation'
     ];
 
-    public function inputType()
+    protected function inputType()
     {
         return null;
     }
     
-    public function type()
+    protected function type()
     {
         return null;
     }

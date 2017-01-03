@@ -19,7 +19,7 @@ class ExampleNodeTraitType extends BaseType implements NodeContract
         'description' => 'An example relay node using the trait'
     ];
 
-    public function fields()
+    protected function fields()
     {
         return [
             'id' => [

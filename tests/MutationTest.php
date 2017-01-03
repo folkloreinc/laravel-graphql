@@ -22,26 +22,6 @@ class MutationTest extends FieldTest
     }
     
     /**
-     * Test get rules
-     *
-     * @test
-     */
-    public function testGetRulesForValidator()
-    {
-        $class = $this->getFieldClass();
-        $field = new $class();
-        $rules = $field->getRulesForValidator();
-        
-        $this->assertInternalType('array', $rules);
-        $this->assertArrayHasKey('name', $rules);
-        $this->assertArrayHasKey('name_with_rules', $rules);
-        $this->assertArrayHasKey('name_with_rules_closure', $rules);
-        $this->assertEquals($rules['name'], ['required']);
-        $this->assertEquals($rules['name_with_rules'], ['required']);
-        $this->assertEquals($rules['name_with_rules_closure'], ['required']);
-    }
-    
-    /**
      * Test resolve
      *
      * @test

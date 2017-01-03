@@ -21,4 +21,9 @@ class EdgeObjectType extends ObjectType
         
         return $this;
     }
+    
+    public function getEdgeType()
+    {
+        return array_get($this->getField('node'), 'type');
+    }
 }

@@ -10,17 +10,16 @@ use App\Data;
 
 class ExamplesQuery extends Query
 {
-    
     protected $attributes = [
         'name' => 'examples'
     ];
     
-    public function type()
+    protected function type()
     {
         return Type::listOf(GraphQL::type('Example'));
     }
 
-    public function args()
+    protected function args()
     {
         return [
             'id' => ['name' => 'id', 'type' => Type::id()]

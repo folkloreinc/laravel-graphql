@@ -45,7 +45,7 @@ class RelayNodeInterfaceTest extends RelayTestCase
         $response->setType($type);
         
         $interface = new NodeInterface();
-        $this->assertEquals($interface->resolveType($response), $type);
+        $this->assertEquals($interface['resolveType']($response), $type);
     }
     
     /**
@@ -57,6 +57,6 @@ class RelayNodeInterfaceTest extends RelayTestCase
     public function testResolveTypeFromOther()
     {
         $interface = new NodeInterface();
-        $interface->resolveType('root');
+        $interface['resolveType']('root');
     }
 }

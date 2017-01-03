@@ -14,12 +14,12 @@ class DummyClass extends BaseField
         'description' => 'A field'
     ];
 
-    public function type()
+    protected function type()
     {
         return Type::string();
     }
 
-    public function args()
+    protected function args()
     {
         return [
             

@@ -4,9 +4,44 @@ use GraphQL\Schema;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Folklore\GraphQL\Relay\NodeIdField;
+use Folklore\GraphQL\Relay\Support\ConnectionField;
+use Folklore\GraphQL\Relay\Support\ConnectionType;
 
 class RelayTest extends RelayTestCase
 {
+    /**
+     * Test connectionField method
+     *
+     * @test
+     */
+    public function testConnectionField()
+    {
+        $field = Relay::connectionField([
+            'name' => 'TestConnectionField'
+        ]);
+        $this->assertInstanceOf(ConnectionField::class, $field);
+    }
+    
+    /**
+     * Test connectionFieldFromEdgeType method
+     *
+     * @test
+     */
+    public function testConnectionFieldFromEdgeType()
+    {
+        $edgeType = GraphQL::type('ExampleNode');
+        $field = Relay::connectionFieldFromEdgeType($edgeType);
+        $this->assertInstanceOf(ConnectionField::class, $field);
+        $type = $field->getType();
+        $this->assertInstanceOf(ObjectType::class, $type);
+        
+        $typeName = $type->config['name'];
+        $types = GraphQL::getTypes();
+        $this->assertArrayHasKey($typeName, $types);
+        $this->assertInstanceOf(ConnectionType::class, $types[$typeName]);
+        $this->assertEquals($edgeType, $types[$typeName]->getEdgeType());
+    }
+    
     /**
      * Test toGlobalId method
      *

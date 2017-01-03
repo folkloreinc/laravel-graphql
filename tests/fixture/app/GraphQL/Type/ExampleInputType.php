@@ -12,7 +12,7 @@ class ExampleInputType extends BaseInputType
         'description' => 'An example'
     ];
 
-    public function fields()
+    protected function fields()
     {
         return [
             'name' => [

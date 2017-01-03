@@ -44,7 +44,7 @@ trait TypeIsNode
         return $idResolver;
     }
     
-    public function relayInterfaces()
+    protected function relayInterfaces()
     {
         return [
             GraphQL::type('Node')

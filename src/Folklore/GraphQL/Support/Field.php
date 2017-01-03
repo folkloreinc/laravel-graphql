@@ -6,21 +6,17 @@ use Illuminate\Support\Fluent;
 
 class Field extends Fluent
 {
-    protected $type = null;
-    protected $resolver = null;
-    protected $args = [];
-    
-    public function type()
+    protected function type()
     {
         return null;
     }
     
-    public function attributes()
+    protected function attributes()
     {
         return [];
     }
     
-    public function args()
+    protected function args()
     {
         return [];
     }
@@ -28,44 +24,61 @@ class Field extends Fluent
     public function getType()
     {
         $type = $this->type();
-        return $type ? $type:$this->type;
+        return $type ? $type:array_get($this->attributes, 'type');
     }
     
-    public function setType($args)
+    public function setType($type)
     {
-        $this->args = $args;
+        $this->attributes['type'] = $type;
+        return $this;
     }
     
     public function getArgs()
     {
-        return array_merge($this->args, $this->args());
+        $args = array_get($this->attributes, 'args');
+        return $args ? $args:$this->args();
     }
     
     public function setArgs($args)
     {
-        $this->args = $args;
+        $this->attributes['args'] = $args;
+        return $this;
     }
     
-    protected function getResolver()
+    /**
+     * Get the resolver of this field. If a resolver was set with the setResolver
+     * method, it will be used, otherwise it will use the resolve method (if present).
+     * This method wraps the resolver in a closure.
+     *
+     * @return Closure
+     */
+    public function getResolver()
     {
-        if ($this->resolver) {
-            return $this->resolver;
+        $resolver = array_get($this->attributes, 'resolver');
+        if (!$resolver && method_exists($this, 'resolve')) {
+            $resolver = array($this, 'resolve');
         }
         
-        if (!method_exists($this, 'resolve')) {
+        if (!$resolver) {
             return null;
         }
         
-        $resolver = array($this, 'resolve');
         return function () use ($resolver) {
             $args = func_get_args();
             return call_user_func_array($resolver, $args);
         };
     }
     
+    /**
+     * Set the resolver that will be used to resolve this field.
+     *
+     * @param callable|null $resolver The callable that will be called on resolve
+     * @return $this
+     */
     public function setResolver($resolver)
     {
-        return $this->resolver;
+        $this->_resolver = $resolver;
+        return $this;
     }
 
     /**
@@ -113,7 +126,7 @@ class Field extends Fluent
      */
     public function __get($key)
     {
-        $attributes = $this->getAttributes();
+        $attributes = $this->toArray();
         return isset($attributes[$key]) ? $attributes[$key]:null;
     }
 
@@ -125,7 +138,7 @@ class Field extends Fluent
      */
     public function __isset($key)
     {
-        $attributes = $this->getAttributes();
+        $attributes = $this->toArray();
         return isset($attributes[$key]);
     }
 }

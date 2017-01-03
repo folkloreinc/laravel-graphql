@@ -40,11 +40,11 @@ class PictureField extends Field {
 		'description' => 'A picture'
 	];
 
-	public function type(){
+	protected function type(){
 		return Type::string();
 	}
 
-	public function args()
+	protected function args()
 	{
 		return [
 			'width' => [
@@ -58,7 +58,7 @@ class PictureField extends Field {
 		];
 	}
 
-	protected function resolve($root, $args)
+	public function resolve($root, $args)
 	{
 		$width = isset($args['width']) ? $args['width']:100;
 		$height = isset($args['height']) ? $args['height']:100;
@@ -87,7 +87,7 @@ class UserType extends GraphQLType {
 		'description' => 'A user'
 	];
 
-	public function fields()
+	protected function fields()
 	{
 		return [
 			'id' => [
@@ -129,12 +129,12 @@ class UsersQuery extends Query
 		'name' => 'Users query'
 	];
 
-	public function type()
+	protected function type()
 	{
 		return Type::listOf(GraphQL::type('user'));
 	}
 
-	public function args()
+	protected function args()
 	{
 		return [
 			'id' => ['name' => 'id', 'type' => Type::string()],
@@ -187,7 +187,7 @@ class UserType extends GraphQLType
     /**
      * @return array
      */
-    public function fields()
+    protected function fields()
     {
         return [
             'uuid' => [
@@ -222,7 +222,7 @@ class ProfileType extends GraphQLType
         'description' => 'A user profile',
     ];
 
-    public function fields()
+    protected function fields()
     {
         return [
             'name' => [
@@ -242,7 +242,7 @@ class PostType extends GraphQLType
         'description' => 'A post',
     ];
 
-    public function fields()
+    protected function fields()
     {
         return [
             'title' => [

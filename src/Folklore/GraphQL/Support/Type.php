@@ -4,6 +4,8 @@ namespace Folklore\GraphQL\Support;
 
 use Illuminate\Support\Fluent;
 
+use Folklore\GraphQL\Support\Field;
+
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 
@@ -11,10 +13,12 @@ class Type extends Fluent
 {
     protected static $instances = [];
     
-    protected $fields = [];
-    protected $interfaces = [];
+    protected function attributes()
+    {
+        return [];
+    }
     
-    public function fields()
+    protected function fields()
     {
         return [];
     }
@@ -24,29 +28,49 @@ class Type extends Fluent
         return [];
     }
     
-    public function attributes()
-    {
-        return [];
-    }
-    
     public function getInterfaces()
     {
-        return array_merge($this->interfaces, $this->interfaces());
+        $interfaces = array_get($this->attributes, 'interfaces');
+        return $interfaces ? $interfaces:$this->interfaces();
     }
     
     public function getFields()
     {
-        return array_merge($this->fields, $this->fields());
+        $fields = array_get($this->attributes, 'fields');
+        return $fields ? $fields:$this->fields();
     }
     
     public function setFields($fields)
     {
-        $this->fields = $fields;
+        $this->attributes['fields'] = $fields;
+        return $this;
     }
     
     public function setInterfaces($interfaces)
     {
-        $this->interfaces = $interfaces;
+        $this->attributes['interfaces'] = $interfaces;
+        return $this;
+    }
+    
+    public function getFieldsForObjectType()
+    {
+        $fields = $this->getFields();
+        $allFields = [];
+        foreach ($fields as $name => $field) {
+            if (is_string($field) || $field instanceof Field) {
+                $field = is_string($field) ? app($field):$field;
+                $field->name = $name;
+                $allFields[$name] = $field->toArray();
+            } else {
+                $resolver = $this->getFieldResolver($name, $field);
+                if ($resolver) {
+                    $field['resolve'] = $resolver;
+                }
+                $allFields[$name] = $field;
+            }
+        }
+        
+        return $allFields;
     }
     
     protected function getFieldResolver($name, $field)
@@ -63,27 +87,6 @@ class Type extends Fluent
         }
         
         return null;
-    }
-    
-    public function getFieldsForObjectType()
-    {
-        $fields = $this->getFields();
-        $allFields = [];
-        foreach ($fields as $name => $field) {
-            if (is_string($field)) {
-                $field = app($field);
-                $field->name = $name;
-                $allFields[$name] = $field->toArray();
-            } else {
-                $resolver = $this->getFieldResolver($name, $field);
-                if ($resolver) {
-                    $field['resolve'] = $resolver;
-                }
-                $allFields[$name] = $field;
-            }
-        }
-        
-        return $allFields;
     }
 
     /**
@@ -130,7 +133,7 @@ class Type extends Fluent
      */
     public function __get($key)
     {
-        $attributes = $this->getAttributes();
+        $attributes = $this->toArray();
         return isset($attributes[$key]) ? $attributes[$key]:null;
     }
 
@@ -142,7 +145,7 @@ class Type extends Fluent
      */
     public function __isset($key)
     {
-        $attributes = $this->getAttributes();
+        $attributes = $this->toArray();
         return isset($attributes[$key]);
     }
 }

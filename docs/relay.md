@@ -138,7 +138,7 @@ class UserNodeType extends BaseNodeType
         'description' => 'An user relay node'
     ];
 
-    public function fields()
+    protected function fields()
     {
         return [
             // The id field here, will be automatically wrapped in the NodeIdField
@@ -197,7 +197,7 @@ class PhotosConnection extends BaseConnectionType
         'description' => 'A relay photos connection'
     ];
 
-    public function edgeType()
+    protected function edgeType()
     {
         // Add the edge type here
         return GraphQL::type('Photo');
@@ -226,7 +226,7 @@ class UserNodeType extends NodeType
         'description' => 'An user relay node'
     ];
 
-    public function fields()
+    protected function fields()
     {
         return [
             'id' => [
@@ -319,7 +319,7 @@ class UpdateUserEmailInput extends BaseInputType
         'description' => 'An input to update the user email'
     ];
 
-    public function fields()
+    protected function fields()
     {
         return [
             'id' => [
@@ -354,7 +354,7 @@ class UpdateUserEmailPayload extends BasePayloadType
         'description' => 'The payload for updating user'
     ];
 
-    public function fields()
+    protected function fields()
     {
         return [
             'user' => [
@@ -389,12 +389,12 @@ class UpdateUserEmailMutation extends BaseMutation
         'description' => 'The mutation to update a user email'
     ];
 
-    public function inputType()
+    protected function inputType()
     {
         return GraphQL::type('UpdateUserEmailInput');
     }
 
-    public function type()
+    protected function type()
     {
         return GraphQL::type('UpdateUserEmailPayload');
     }

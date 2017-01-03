@@ -15,7 +15,7 @@ class ExampleItemType extends BaseNodeType
         'description' => 'An example item'
     ];
 
-    public function fields()
+    protected function fields()
     {
         return [
             'id' => [

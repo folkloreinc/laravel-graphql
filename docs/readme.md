@@ -109,7 +109,7 @@ class UserType extends GraphQLType {
 		'description' => 'A user'
 	];
 
-	public function fields()
+	protected function fields()
 	{
 		return [
 			'id' => [
@@ -171,12 +171,12 @@ class UsersQuery extends Query {
 		'name' => 'users'
 	];
 
-	public function type()
+	protected function type()
 	{
 		return Type::listOf(GraphQL::type('User'));
 	}
 
-	public function args()
+	protected function args()
 	{
 		return [
 			'id' => ['name' => 'id', 'type' => Type::string()],
@@ -258,12 +258,12 @@ class UpdateUserPasswordMutation extends Mutation {
 		'name' => 'updateUserPassword'
 	];
 
-	public function type()
+	protected function type()
 	{
 		return GraphQL::type('User');
 	}
 
-	public function args()
+	protected function args()
 	{
 		return [
 			'id' => ['name' => 'id', 'type' => Type::nonNull(Type::string())],
@@ -346,12 +346,12 @@ class UpdateUserEmailMutation extends Mutation {
 		'name' => 'UpdateUserEmail'
 	];
 
-	public function type()
+	protected function type()
 	{
 		return GraphQL::type('user');
 	}
 
-	public function args()
+	protected function args()
 	{
 		return [
 			'id' => ['name' => 'id', 'type' => Type::string()],
@@ -359,7 +359,7 @@ class UpdateUserEmailMutation extends Mutation {
 		];
 	}
 
-	public function rules()
+	protected function rules($root, $args, $context)
 	{
 		return [
 			'id' => ['required'],
@@ -367,7 +367,7 @@ class UpdateUserEmailMutation extends Mutation {
 		];
 	}
 
-	public function resolve($root, $args)
+	public function resolve($root, $args, $context, ResolveInfo $info)
 	{
 		$user = User::find($args['id']);
 		if(!$user)
@@ -393,7 +393,7 @@ class UpdateUserEmailMutation extends Mutation {
 
 	//...
 
-	public function args()
+	protected function args()
 	{
 		return [
 			'id' => [
@@ -401,10 +401,15 @@ class UpdateUserEmailMutation extends Mutation {
 				'type' => Type::string(),
 				'rules' => ['required']
 			],
+            
+            // You can also use a closure that will be called with the same arguments
+            // as the resolve method.
 			'email' => [
 				'name' => 'password',
 				'type' => Type::string(),
-				'rules' => ['required', 'email']
+				'rules' => function ($root, $args, $context) {
+                    return ['required', 'email'];
+                }
 			]
 		];
 	}

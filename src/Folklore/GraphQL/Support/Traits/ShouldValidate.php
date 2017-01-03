@@ -10,26 +10,28 @@ trait ShouldValidate
 {
     protected $rules = [];
     
-    protected function rules()
+    protected function rules($root, $args, $context)
     {
         return [];
     }
     
-    protected function setRules($rules)
+    public function setRules($rules)
     {
-        $this->rules = $rules;
+        $this->attributes['rules'] = $rules;
+        return $this;
     }
     
     public function getRules()
     {
-        return $this->rules;
+        return array_get($this->attributes, 'rules');
     }
     
-    public function getRulesForValidator()
+    protected function getRulesForValidator()
     {
         $arguments = func_get_args();
         
-        $rules = call_user_func_array([$this, 'rules'], $arguments);
+        $rules = array_get($this->attributes, 'rules');
+        $methodRules = $rules ? []:call_user_func_array([$this, 'rules'], $arguments);
         $argsRules = [];
         $args = $this->getArgs();
         foreach ($args as $name => $arg) {
@@ -42,7 +44,7 @@ trait ShouldValidate
             }
         }
         
-        return array_merge($this->rules, $rules, $argsRules);
+        return array_merge($rules ? $rules:$methodRules, $argsRules);
     }
     
     protected function getValidator($args, $rules)
@@ -50,7 +52,7 @@ trait ShouldValidate
         return Validator::make($args, $rules);
     }
     
-    protected function getResolver()
+    public function getResolver()
     {
         $resolver = parent::getResolver();
         if (!$resolver) {

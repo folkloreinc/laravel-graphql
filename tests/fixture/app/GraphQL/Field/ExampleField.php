@@ -11,12 +11,12 @@ class ExampleField extends Field
         'name' => 'example'
     ];
     
-    public function type()
+    protected function type()
     {
         return Type::listOf(Type::string());
     }
 
-    public function args()
+    protected function args()
     {
         return [
             'index' => [

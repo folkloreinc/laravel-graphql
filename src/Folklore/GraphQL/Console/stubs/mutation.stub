@@ -14,16 +14,21 @@ class DummyClass extends BaseMutation
         'description' => 'A mutation'
     ];
 
-    public function type()
+    protected function type()
     {
         return Type::listOf(Type::string());
     }
 
-    public function args()
+    protected function args()
     {
         return [
             
         ];
+    }
+    
+    protected function rules($root, $args, $context)
+    {
+        return [];
     }
 
     public function resolve($root, $args, $context, ResolveInfo $info)

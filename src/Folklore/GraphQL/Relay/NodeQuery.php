@@ -19,12 +19,12 @@ class NodeQuery extends Query
         'description' => 'A query'
     ];
 
-    public function type()
+    protected function type()
     {
         return GraphQL::type('Node');
     }
 
-    public function args()
+    protected function args()
     {
         return [
             'id' => [

@@ -14,12 +14,12 @@ class DummyClass extends BaseQuery
         'description' => 'A query'
     ];
 
-    public function type()
+    protected function type()
     {
         return Type::listOf(Type::string());
     }
 
-    public function args()
+    protected function args()
     {
         return [
             

@@ -14,12 +14,12 @@ class UpdateNameMutation extends Mutation
         'name' => 'updateName'
     ];
     
-    public function inputType()
+    protected function inputType()
     {
         return GraphQL::type('UpdateNameInput');
     }
     
-    public function type()
+    protected function type()
     {
         return GraphQL::type('UpdateNamePayload');
     }

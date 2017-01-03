@@ -13,7 +13,7 @@ class UpdateNameInputType extends InputType
         'description' => 'An example relay mutation input'
     ];
 
-    public function fields()
+    protected function fields()
     {
         return [
             'id' => [

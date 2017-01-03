@@ -13,7 +13,7 @@ class ExamplesRootQuery extends Query
         'name' => 'Examples root query'
     ];
     
-    public function type()
+    protected function type()
     {
         return GraphQL::type('Example');
     }

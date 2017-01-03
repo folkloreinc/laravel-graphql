@@ -13,12 +13,12 @@ class ExampleInterfaceType extends InterfaceType
         'description' => 'An example interface'
     ];
     
-    public function resolveType($root)
+    protected function resolveType($root)
     {
         return Type::string();
     }
 
-    public function fields()
+    protected function fields()
     {
         return [
             'name' => [

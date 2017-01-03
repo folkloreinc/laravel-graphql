@@ -117,7 +117,7 @@ class UserType extends BaseType
     
     //...
     
-    public function fields()
+    protected function fields()
     {
         return [
             'id' => [
@@ -186,7 +186,7 @@ class UserType extends BaseType
     
     //...
     
-    public function args()
+    protected function args()
     {
         return [
             'id' => [
@@ -197,7 +197,7 @@ class UserType extends BaseType
         ]
     }
     
-    public function type()
+    protected function type()
     {
         //This is the type we've created the step before
         return GraphQL::type('User');
