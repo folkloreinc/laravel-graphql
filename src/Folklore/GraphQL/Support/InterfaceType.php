@@ -8,7 +8,7 @@ class InterfaceType extends Type
 {
     protected $typeResolver = null;
     
-    protected function getTypeResolver()
+    public function getTypeResolver()
     {
         if ($this->typeResolver) {
             return $this->typeResolver;
@@ -25,7 +25,7 @@ class InterfaceType extends Type
         };
     }
     
-    protected function setTypeResolver($typeResolver)
+    public function setTypeResolver($typeResolver)
     {
         $this->typeResolver = $typeResolver;
     }

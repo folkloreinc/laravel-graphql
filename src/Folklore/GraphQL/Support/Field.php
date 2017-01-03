@@ -126,7 +126,7 @@ class Field extends Fluent
      */
     public function __get($key)
     {
-        $attributes = $this->toArray();
+        $attributes = $this->getAttributes();
         return isset($attributes[$key]) ? $attributes[$key]:null;
     }
 
@@ -138,7 +138,7 @@ class Field extends Fluent
      */
     public function __isset($key)
     {
-        $attributes = $this->toArray();
+        $attributes = $this->getAttributes();
         return isset($attributes[$key]);
     }
 }

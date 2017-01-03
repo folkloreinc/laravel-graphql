@@ -119,9 +119,7 @@ class ServiceProvider extends BaseServiceProvider
     protected function bootTypes()
     {
         $configTypes = $this->app['config']->get('graphql.types', []);
-        foreach ($configTypes as $name => $class) {
-            $this->app['graphql']->addType($class, is_numeric($name) ? null:$name);
-        }
+        $this->app['graphql']->addTypes($configTypes);
     }
     
     /**
