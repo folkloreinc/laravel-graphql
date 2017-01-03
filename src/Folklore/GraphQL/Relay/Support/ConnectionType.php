@@ -7,6 +7,7 @@ use GraphQL\Type\Definition\InterfaceType;
 use Folklore\GraphQL\Support\Type as BaseType;
 use GraphQL;
 
+use Folklore\GraphQL\Relay\EdgesCollection;
 use Illuminate\Pagination\AbstractPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -90,6 +91,9 @@ class ConnectionType extends BaseType
             $hasNextPage = $root->hasMorePages();
         } elseif ($root instanceof AbstractPaginator) {
             $hasPreviousPage = !$root->onFirstPage();
+        } elseif ($root instanceof EdgesCollection) {
+            $hasPreviousPage = $root->getHasPreviousPage();
+            $hasNextPage = $root->getHasNextPage();
         }
         
         $edges = $this->getEdgesFromRoot($root);
