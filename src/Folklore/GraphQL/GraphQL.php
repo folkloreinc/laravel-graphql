@@ -27,32 +27,6 @@ class GraphQL
     public function __construct($app)
     {
         $this->app = $app;
-        
-        // Initialize from config
-        $config = $app['config'];
-        
-        // Add schemas
-        $this->schemas = $config->get('graphql.schemas', []);
-        
-        // Add types
-        $configTypes = $config->get('graphql.types', []);
-        foreach ($configTypes as $name => $class) {
-            $name = $this->getTypeName($class, is_numeric($name) ? null:$name);
-            $this->types[$name] = $class;
-        }
-        
-        // Set default Schema
-        $this->schema = $config->get('graphql.schema', 'default');
-        
-        // Set security config
-        $maxQueryComplexity = $config->get('graphql.security.query_max_complexity');
-        $maxQueryDepth = $config->get('graphql.security.query_max_depth');
-        if ($maxQueryComplexity !== null) {
-            $this->setMaxQueryComplexity($maxQueryComplexity);
-        }
-        if ($maxQueryDepth !== null) {
-            $this->setMaxQueryDepth($maxQueryDepth);
-        }
     }
     
     public function schema($schema = null)

@@ -23,6 +23,12 @@ class ServiceProvider extends BaseServiceProvider
     {
         $this->bootPublishes();
 
+        $this->bootSchemas();
+
+        $this->bootTypes();
+
+        $this->bootSecurity();
+
         $this->bootRouter();
 
         $this->bootViews();
@@ -91,6 +97,48 @@ class ServiceProvider extends BaseServiceProvider
             $view = $config->get('graphql.graphiql.view', 'graphql::graphiql');
             $composer = $config->get('graphql.graphiql.composer', \Folklore\GraphQL\View\GraphiQLComposer::class);
             $this->app['view']->composer($view, $composer);
+        }
+    }
+
+    /**
+     * Add schemas to GraphQL
+     *
+     * @return void
+     */
+    protected function bootSchemas()
+    {
+        $this->app['graphql']->addSchemas($this->app['config']->get('graphql.schemas', []));
+        $this->app['graphql']->setDefaultSchema($this->app['config']->get('graphql.schema', 'default'));
+    }
+    
+    /**
+     * Add types to GraphQL
+     *
+     * @return void
+     */
+    protected function bootTypes()
+    {
+        $configTypes = $this->app['config']->get('graphql.types', []);
+        foreach ($configTypes as $name => $class) {
+            $this->app['graphql']->addType($class, is_numeric($name) ? null:$name);
+        }
+    }
+    
+    /**
+     * Set security options
+     *
+     * @return void
+     */
+    protected function bootSecurity()
+    {
+        $config = $this->app['config'];
+        $maxQueryComplexity = $config->get('graphql.security.query_max_complexity');
+        $maxQueryDepth = $config->get('graphql.security.query_max_depth');
+        if ($maxQueryComplexity !== null) {
+            $this->app['graphql']->setMaxQueryComplexity($maxQueryComplexity);
+        }
+        if ($maxQueryDepth !== null) {
+            $this->app['graphql']->setMaxQueryDepth($maxQueryDepth);
         }
     }
 
