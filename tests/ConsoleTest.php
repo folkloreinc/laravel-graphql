@@ -107,9 +107,9 @@ class ConsoleTest extends TestCase
         $this->assertGeneratorCommand($path, '\App\GraphQL\Field\ConsoleField', 'BaseField');
     }
     
-    public function testSchemaMake()
+    public function testSchema()
     {
-        $exitCode = Artisan::call('make:graphql:schema');
+        $exitCode = Artisan::call('graphql:schema');
         
         $path = base_path('resources/graphql/schema.json');
         $this->assertTrue(file_exists($path));

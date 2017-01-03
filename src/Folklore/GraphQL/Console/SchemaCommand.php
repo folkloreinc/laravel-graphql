@@ -6,14 +6,17 @@ use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use GraphQL;
 
-class SchemaMakeCommand extends Command
+class SchemaCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'make:graphql:schema {schema?} {--path=} {--output}';
+    protected $signature = 'graphql:schema
+        {schema? : The name of the schema to output. Leave empty for default.} 
+        {--path= : The path of the generated schema.json file} 
+        {--output : Output the schema instead of generating a file}';
 
     /**
      * The console command description.

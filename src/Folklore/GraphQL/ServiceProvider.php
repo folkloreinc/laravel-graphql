@@ -154,7 +154,7 @@ class ServiceProvider extends BaseServiceProvider
     public function registerMakeSchemaCommand()
     {
         $this->app->singleton('command.graphql.make.schema', function ($app) {
-            return new \Folklore\GraphQL\Console\SchemaMakeCommand($app['files']);
+            return new \Folklore\GraphQL\Console\SchemaCommand($app['files']);
         });
     }
     
