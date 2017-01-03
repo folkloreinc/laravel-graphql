@@ -56,7 +56,7 @@ class SchemaCommand extends Command
         
         if ($this->option('output')) {
             echo $json;
-            exit(0);
+            return;
         }
         
         $defaultPath = config('graphql.introspection.schema_output', base_path('resources/graphql/schema.json'));
