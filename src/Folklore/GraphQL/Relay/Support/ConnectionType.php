@@ -3,6 +3,7 @@
 namespace Folklore\GraphQL\Relay\Support;
 
 use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\InterfaceType;
 use Folklore\GraphQL\Support\Type as BaseType;
 use GraphQL;
 
@@ -61,18 +62,23 @@ class ConnectionType extends BaseType
     protected function getCursorFromEdge($edge)
     {
         $edgeType = $this->getEdgeType();
+        if ($edgeType instanceof InterfaceType) {
+            $edgeType = $edgeType->config['resolveType']($edge);
+        }
         $resolveId = $edgeType->getField('id')->resolveFn;
         return $resolveId($edge);
     }
     
     protected function getEdgesFromRoot($root)
     {
-        return array_map(function ($item) {
-            return [
+        $edges = [];
+        foreach ($root as $item) {
+            $edges[] = [
                 'cursor' => $this->getCursorFromEdge($item),
                 'node' => $item
             ];
-        }, $root);
+        }
+        return $edges;
     }
     
     protected function getPageInfoFromRoot($root)
