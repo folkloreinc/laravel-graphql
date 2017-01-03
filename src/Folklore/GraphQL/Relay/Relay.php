@@ -40,6 +40,13 @@ class Relay
         return $field;
     }
     
+    public function connectionFieldFromEdgeTypeAndQueryBuilder($edgeType, $queryBuilderResolver, $config = [])
+    {
+        $field = $this->connectionFieldFromEdgeType($edgeType, $config);
+        $field->setQueryBuilderResolver($queryBuilderResolver);
+        return $field;
+    }
+    
     public function toGlobalId($type, $id)
     {
         return base64_encode($type.':'.$id);
