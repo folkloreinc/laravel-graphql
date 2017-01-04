@@ -21,12 +21,6 @@ trait ResolvesFromQueryBuilder
         return $queryBuilderResolver;
     }
     
-    protected function getQueryBuilderFromRoot($root)
-    {
-        $queryBuilderResolver = $this->getQueryBuilderResolver($root);
-        return $queryBuilderResolver ? $queryBuilderResolver($root):null;
-    }
-    
     protected function scopeAfter($query, $id)
     {
         $query->where('id', '>=', $id);
@@ -49,7 +43,18 @@ trait ResolvesFromQueryBuilder
         $query->take($value);
     }
     
-    protected function getItemsFromQuery($query)
+    protected function resolveQueryBuilderFromRoot()
+    {
+        $queryBuilderResolver = $this->getQueryBuilderResolver();
+        if (!$queryBuilderResolver) {
+            return null;
+        }
+        
+        $args = func_get_args();
+        return call_user_func_array($queryBuilderResolver, $args);
+    }
+    
+    protected function resolveItemsFromQueryBuilder($query)
     {
         return $query->get();
     }
@@ -64,11 +69,12 @@ trait ResolvesFromQueryBuilder
     
     public function resolve($root, $args)
     {
-        $query = $this->getQueryBuilderFromRoot($root);
+        $arguments = func_get_args();
+        $query = call_user_func_array([$this, 'resolveQueryBuilderFromRoot'], $arguments);
         
+        // If there is no query builder returned, try to use the parent resolve method.
         if (!$query) {
             if (method_exists('parent', 'resolve')) {
-                $arguments = func_get_args();
                 return call_user_func_array(['parent', 'resolve'], $arguments);
             } else {
                 return null;
@@ -102,7 +108,7 @@ trait ResolvesFromQueryBuilder
             $hasPreviousPage = $queryCountBefore->count() > $args['last'];
         }
         
-        $items = $this->getItemsFromQuery($query);
+        $items = call_user_func_array([$this, 'resolveItemsFromQueryBuilder'], [$query] + $arguments);
         $collection = $this->getCollectionFromItems($items, $hasNextPage, $hasPreviousPage);
         
         return $collection;
