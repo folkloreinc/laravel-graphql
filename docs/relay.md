@@ -254,7 +254,128 @@ class UserNodeType extends NodeType
 
 ```
 
-The you should be able to query your user node like so, from the `node` query:
+If you define the field like this, you will need to define the connection arguments (`first`, `last`, `before`, `after`) yourself. To make this easier, there is some helper methods on the `Relay` facade.
+
+```php
+<?php
+
+class UserNodeType extends NodeType
+{
+    // ...
+
+    protected function fields()
+    {
+        return [
+            // ...
+            
+            // The `connectionField` instantiate the \Folklore\GraphQL\Relay\Support\ConnectionField
+            // class which includes the pagination arguments.
+            'photos' => Relay::connectionField([
+                'type' => GraphQL::type('PhotosConnection'),
+                'description' => 'The photos of the user',
+                'resolve' => function ($root, $args) {
+                    // Here you can use the $args to return the items you want
+                    // according to the connection pagination.
+                }
+            ]),
+            
+            // You can also declare a field directly with the edge type without
+            // the need to create a connection type using the method `connectionFieldFromEdgeType`
+            'photos' => Relay::connectionFieldFromEdgeType(GraphQL::type('Photo'), [
+                'description' => 'The photos of the user',
+                'resolve' => function ($root, $args) {
+                    // Here you can use the $args to return the items you want
+                    // according to the connection pagination.
+                }
+            ]),
+            
+            // And finally, if you are using eloquent, you can use
+            // the `connectionFieldFromEdgeTypeAndQueryBuilder` method to create
+            // a field from an edge type and returning a query builder for you edges.
+            'photos' => Relay::connectionFieldFromEdgeTypeAndQueryBuilder(
+                GraphQL::type('Photo'),
+                function ($root, $args) {
+                    return $user->photos();
+                    // or
+                    return Photo::query()->where('user_id', $root->id);
+                },
+                [
+                    'description' => 'The photos of the user'
+                ]
+            )
+        ];
+    }
+    
+    // ...
+}
+
+```
+
+All those helper methods, instantiate the `\Folklore\GraphQL\Relay\Support\ConnectionField` class. You can also extend this class and create your custom field.
+
+```php
+<?php
+
+use Folklore\GraphQL\Relay\Support\ConnectionField;
+
+class PhotosConnectionField extends ConnectionField
+{
+    // Here you can define additional arguments to filter you connection
+    protected function args()
+    {
+        return [
+            'size' => [
+                'name' => 'size',
+                'type' => Type::string()
+            ]
+        ];
+    }
+    
+    protected function type()
+    {
+        return GraphQL::type('PhotosConnection');
+    }
+    
+    // Resolve your connection here by using the arguments.
+    public function resolve($root, $args)
+    {
+        
+    }
+    
+    // or declare the `resolveQueryBuilder` method to return a Query Builder and
+    // let the field resolve it automatically
+    public function resolveQueryBuilder($root, $args)
+    {
+        //return $root->photos();
+    }
+}
+
+```
+
+Then you can use this field on your type:
+
+```php
+<?php
+
+class UserNodeType extends NodeType
+{
+    // ...
+
+    protected function fields()
+    {
+        return [
+            // ...
+            
+            'photos' => \App\GraphQL\Field\PhotosConnectionField::class
+        ];
+    }
+    
+    // ...
+}
+
+```
+
+After that, you should be able to query your user node like so, from the `node` query:
 
 ```graphql
 query GetUserWithPhotos($id: ID!) {

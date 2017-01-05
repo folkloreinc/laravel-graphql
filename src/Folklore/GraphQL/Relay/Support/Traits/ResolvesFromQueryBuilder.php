@@ -43,9 +43,14 @@ trait ResolvesFromQueryBuilder
         $query->take($value);
     }
     
-    protected function resolveQueryBuilderFromRoot()
+    protected function resolveQueryBuilderFromRoot($root, $args)
     {
-        $queryBuilderResolver = $this->getQueryBuilderResolver();
+        if (method_exists($this, 'resolveQueryBuilder')) {
+            $queryBuilderResolver = [$this, 'resolveQueryBuilder'];
+        } else {
+            $queryBuilderResolver = $this->getQueryBuilderResolver();
+        }
+        
         if (!$queryBuilderResolver) {
             return null;
         }
