@@ -180,7 +180,7 @@ class GraphQL
             $this->setMaxQueryDepth($queryDepth);
         }
         
-        return array_get($return, 'data');
+        return $return;
     }
     
     public function introspectionQuery()

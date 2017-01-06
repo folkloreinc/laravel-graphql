@@ -363,11 +363,13 @@ class GraphQLTest extends TestCase
     public function testIntrospection()
     {
         $return = GraphQL::introspection();
-        $this->assertArrayHasKey('__schema', $return);
+        $this->assertArrayHasKey('data', $return);
+        $data = $return['data'];
+        $this->assertArrayHasKey('__schema', $data);
         
         //Assert that all type exists
         $schema = GraphQL::schema();
-        $schemaTypes = array_get($return, '__schema.types');
+        $schemaTypes = array_get($data, '__schema.types');
         $schemaTypesNames = array_pluck($schemaTypes, 'name');
         $typesNames = array_keys(GraphQL::getTypes());
         foreach ($typesNames as $typeName) {
