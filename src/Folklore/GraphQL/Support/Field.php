@@ -88,6 +88,7 @@ class Field extends Fluent
                 if ($root === null) {
                     return null;
                 }
+                $args[0] = $root;
             }
             return call_user_func_array($resolver, $args);
         };
