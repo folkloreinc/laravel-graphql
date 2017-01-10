@@ -10,41 +10,57 @@ class Field extends Fluent
     {
         return null;
     }
-    
+
     protected function attributes()
     {
         return [];
     }
-    
+
     protected function args()
     {
         return [];
     }
-    
+
     public function getType()
     {
         $type = $this->type();
         return $type ? $type:array_get($this->attributes, 'type');
     }
-    
+
     public function setType($type)
     {
         $this->attributes['type'] = $type;
         return $this;
     }
-    
+
     public function getArgs()
     {
         $args = array_get($this->attributes, 'args');
         return $args ? $args:$this->args();
     }
-    
+
     public function setArgs($args)
     {
         $this->attributes['args'] = $args;
         return $this;
     }
-    
+
+
+    public function getRootResolver()
+    {
+        $resolver = array_get($this->attributes, 'rootResolver');
+        if (!$resolver && method_exists($this, 'resolveRoot')) {
+            $resolver = array($this, 'resolveRoot');
+        }
+        return $resolver;
+    }
+
+    public function setRootResolver($resolver)
+    {
+        $this->attributes['rootResolver'] = $resolver;
+        return $this;
+    }
+
     /**
      * Get the resolver of this field. If a resolver was set with the setResolver
      * method, it will be used, otherwise it will use the resolve method (if present).
@@ -58,17 +74,22 @@ class Field extends Fluent
         if (!$resolver && method_exists($this, 'resolve')) {
             $resolver = array($this, 'resolve');
         }
-        
+
         if (!$resolver) {
             return null;
         }
-        
-        return function () use ($resolver) {
+
+        $rootResolver = $this->getRootResolver();
+
+        return function () use ($resolver, $rootResolver) {
             $args = func_get_args();
+            if ($rootResolver) {
+                $args[0] = call_user_func_array($rootResolver, $args);
+            }
             return call_user_func_array($resolver, $args);
         };
     }
-    
+
     /**
      * Set the resolver that will be used to resolve this field.
      *
@@ -99,22 +120,22 @@ class Field extends Fluent
     public function toArray()
     {
         $attributes = $this->getAttributes();
-        
+
         $args = $this->getArgs();
         if (sizeof($args)) {
             $attributes['args'] = $args;
         }
-        
+
         $type = $this->getType();
         if (isset($type)) {
             $attributes['type'] = $type;
         }
-        
+
         $resolver = $this->getResolver();
         if (isset($resolver)) {
             $attributes['resolve'] = $resolver;
         }
-        
+
         return $attributes;
     }
 
