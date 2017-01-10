@@ -84,7 +84,10 @@ class Field extends Fluent
         return function () use ($resolver, $rootResolver) {
             $args = func_get_args();
             if ($rootResolver) {
-                $args[0] = call_user_func_array($rootResolver, $args);
+                $root = call_user_func_array($rootResolver, $args);
+                if ($root === null) {
+                    return null;
+                }
             }
             return call_user_func_array($resolver, $args);
         };
