@@ -46,7 +46,7 @@ class ServiceProvider extends BaseServiceProvider
         $resourcesPath = __DIR__.'/../../resources/graphql';
 
         $this->mergeConfigFrom($configPath.'/config.php', 'graphql');
-        
+
         $this->loadViewsFrom($viewsPath, 'graphql');
 
         $this->publishes([
@@ -71,13 +71,13 @@ class ServiceProvider extends BaseServiceProvider
     {
         $router = $this->getRouter();
         $graphql = $this->app['graphql'];
-        
+
         //Update the schema route pattern when schema is added
         $this->app['events']->listen(\Folklore\GraphQL\Events\SchemaAdded::class, function () use ($graphql, $router) {
             $router->pattern('graphql_schema', $graphql->routerSchemaPattern());
         });
         $router->pattern('graphql_schema', $graphql->routerSchemaPattern());
-        
+
         // Define routes
         if ($this->app['config']->get('graphql.routes')) {
             include __DIR__.'/routes.php';
@@ -110,7 +110,7 @@ class ServiceProvider extends BaseServiceProvider
         $this->app['graphql']->addSchemas($this->app['config']->get('graphql.schemas', []));
         $this->app['graphql']->setDefaultSchema($this->app['config']->get('graphql.schema', 'default'));
     }
-    
+
     /**
      * Add types to GraphQL
      *
@@ -121,7 +121,7 @@ class ServiceProvider extends BaseServiceProvider
         $configTypes = $this->app['config']->get('graphql.types', []);
         $this->app['graphql']->addTypes($configTypes);
     }
-    
+
     /**
      * Set security options
      *
@@ -182,7 +182,7 @@ class ServiceProvider extends BaseServiceProvider
         foreach ($commands as $command) {
             $this->{'register'.$command.'Command'}();
         }
-        
+
         $this->commands(
             'command.graphql.make.schema',
             'command.graphql.make.type',
@@ -191,7 +191,7 @@ class ServiceProvider extends BaseServiceProvider
             'command.graphql.make.field'
         );
     }
-    
+
     /**
      * Register the "make:graphql:schema" migration command.
      *
@@ -203,7 +203,7 @@ class ServiceProvider extends BaseServiceProvider
             return new \Folklore\GraphQL\Console\SchemaCommand($app['files']);
         });
     }
-    
+
     /**
      * Register the "make:graphql:type" migration command.
      *
@@ -215,7 +215,7 @@ class ServiceProvider extends BaseServiceProvider
             return new \Folklore\GraphQL\Console\TypeMakeCommand($app['files']);
         });
     }
-    
+
     /**
      * Register the "make:graphql:query" migration command.
      *
@@ -227,7 +227,7 @@ class ServiceProvider extends BaseServiceProvider
             return new \Folklore\GraphQL\Console\QueryMakeCommand($app['files']);
         });
     }
-    
+
     /**
      * Register the "make:graphql:mutation" migration command.
      *
@@ -239,7 +239,7 @@ class ServiceProvider extends BaseServiceProvider
             return new \Folklore\GraphQL\Console\MutationMakeCommand($app['files']);
         });
     }
-    
+
     /**
      * Register the "make:graphql:field" migration command.
      *
@@ -251,7 +251,7 @@ class ServiceProvider extends BaseServiceProvider
             return new \Folklore\GraphQL\Console\FieldMakeCommand($app['files']);
         });
     }
-    
+
     /**
      * Get the services provided by the provider.
      *

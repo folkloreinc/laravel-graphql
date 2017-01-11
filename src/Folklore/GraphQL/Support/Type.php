@@ -12,46 +12,43 @@ use GraphQL\Type\Definition\InterfaceType;
 class Type extends Fluent
 {
     protected static $instances = [];
-    
+
     protected function attributes()
     {
         return [];
     }
-    
+
     protected function fields()
     {
         return [];
     }
-    
-    public function interfaces()
+
+    protected function interfaces()
     {
         return [];
     }
-    
-    public function getInterfaces()
-    {
-        $interfaces = array_get($this->attributes, 'interfaces');
-        return $interfaces ? $interfaces:$this->interfaces();
-    }
-    
+
+    /**
+     * Get the fields of this type
+     * @return array The array of fields
+     */
     public function getFields()
     {
         $fields = array_get($this->attributes, 'fields');
         return $fields ? $fields:$this->fields();
     }
-    
+
+    /**
+     * Set the fields of this type
+     * @param array $fields The array of fields
+     * @return $this
+     */
     public function setFields($fields)
     {
         $this->attributes['fields'] = $fields;
         return $this;
     }
-    
-    public function setInterfaces($interfaces)
-    {
-        $this->attributes['interfaces'] = $interfaces;
-        return $this;
-    }
-    
+
     public function getFieldsForObjectType()
     {
         $fields = $this->getFields();
@@ -69,10 +66,22 @@ class Type extends Fluent
                 $allFields[$name] = $field;
             }
         }
-        
+
         return $allFields;
     }
-    
+
+    public function getInterfaces()
+    {
+        $interfaces = array_get($this->attributes, 'interfaces');
+        return $interfaces ? $interfaces:$this->interfaces();
+    }
+
+    public function setInterfaces($interfaces)
+    {
+        $this->attributes['interfaces'] = $interfaces;
+        return $this;
+    }
+
     protected function getFieldResolver($name, $field)
     {
         $resolveMethod = 'resolve'.studly_case($name).'Field';
@@ -85,7 +94,7 @@ class Type extends Fluent
                 return call_user_func_array($resolver, $args);
             };
         }
-        
+
         return null;
     }
 
@@ -107,19 +116,19 @@ class Type extends Fluent
     public function toArray()
     {
         $attributes = $this->getAttributes();
-        
+
         $attributes['fields'] = function () {
             return $this->getFieldsForObjectType();
         };
-        
+
         $interfaces = $this->getInterfaces();
         if (sizeof($interfaces)) {
             $attributes['interfaces'] = $interfaces;
         }
-        
+
         return $attributes;
     }
-    
+
     public function toType()
     {
         return new ObjectType($this->toArray());
