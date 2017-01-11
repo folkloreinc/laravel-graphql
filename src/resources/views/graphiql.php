@@ -13,7 +13,7 @@
             }
         </style>
         <link rel="stylesheet" href="https://unpkg.com/graphiql@^0.7.8/graphiql.css" />
-        <script src="https://unpkg.com/whatwg-fetch@0.11.1/fetch.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/superagent/3.3.2/superagent.min.js"></script>
         <script src="https://unpkg.com/react@^15.0/dist/react.min.js"></script>
         <script src="https://unpkg.com/react-dom@^15.0/dist/react-dom.min.js"></script>
         <script src="https://unpkg.com/graphiql@^0.7.8/graphiql.min.js"></script>
@@ -81,22 +81,14 @@
 
             // Defines a GraphQL fetcher using the fetch API.
             function graphQLFetcher(graphQLParams) {
-                return fetch('<?php echo $graphqlPath; ?>', {
-                    method: 'post',
-                    headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(graphQLParams),
-                    credentials: 'include',
-                }).then(function (response) {
-                    return response.text();
-                }).then(function (responseBody) {
-                    try {
-                        return JSON.parse(responseBody);
-                    } catch (error) {
-                        return responseBody;
-                    }
+                return new Promise(function(resolve, reject) {
+                    superagent.post('<?php echo $graphqlPath; ?>')
+                        .send(graphQLParams)
+                        .set('Accept', 'application/json')
+                        .set('Content-Type', 'application/json')
+                        .end(function(err, response) {
+                            resolve(response.body);
+                        });
                 });
             }
 
