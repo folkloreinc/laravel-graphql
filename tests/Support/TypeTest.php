@@ -79,9 +79,12 @@ class TypeTest extends TestCase
      */
     public function testGetFieldsForObjectType()
     {
-        $resolveMock = $this->createMock(ExampleFieldResolver::class);
-        $resolveMock->method('resolve')
-             ->willReturn('resolveReturn');
+        $resolveMock = $this->getMockBuilder(ExampleFieldResolver::class)
+            ->setMethods(['resolve'])
+            ->getMock();
+        $resolveMock->expects($this->once())
+            ->method('resolve')
+            ->willReturn('resolveReturn');
 
         // Configure the stub.
         $field = new \App\GraphQL\Field\ExampleField();

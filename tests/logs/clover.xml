@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1484334883">
-  <project timestamp="1484334883">
+<coverage generated="1484335811">
+  <project timestamp="1484335811">
     <package name="Folklore\GraphQL\Console">
       <file name="/Users/dmp/Code/laravel-graphql/src/Folklore/GraphQL/Console/FieldMakeCommand.php">
         <class name="FieldMakeCommand" namespace="Folklore\GraphQL\Console">
