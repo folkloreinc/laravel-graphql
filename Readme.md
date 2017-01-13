@@ -26,7 +26,7 @@ Version 1.0 is released. If you are upgrading from older version, you can check 
 ```json
 {
 	"require": {
-		"folklore/graphql": "~1.0"
+		"folklore/graphql": "~1.0.0"
 	}
 }
 ```
