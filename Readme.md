@@ -7,7 +7,7 @@ This package is compatible with Eloquent model (or any other data source). See t
 [![Latest Stable Version](https://poser.pugx.org/folklore/graphql/v/stable.svg)](https://packagist.org/packages/folklore/graphql)
 [![Build Status](https://travis-ci.org/Folkloreatelier/laravel-graphql.png?branch=master)](https://travis-ci.org/Folkloreatelier/laravel-graphql)
 [![Total Downloads](https://poser.pugx.org/folklore/graphql/downloads.svg)](https://packagist.org/packages/folklore/graphql)
-[![Coverage Status](https://coveralls.io/repos/Folkloreatelier/laravel-graphql/badge.svg?branch=feature/relay&service=github)](https://coveralls.io/github/Folkloreatelier/laravel-graphql?branch=feature/relay)
+[![Coverage Status](https://coveralls.io/repos/github/Folkloreatelier/laravel-graphql/badge.svg?branch=feature%2Frelay)](https://coveralls.io/github/Folkloreatelier/laravel-graphql?branch=feature%2Frelay)
 
 ## Installation
 
