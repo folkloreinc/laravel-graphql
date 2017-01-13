@@ -1,3 +1,5 @@
 /vendor
 *.log
 composer.lock
+/converage
+/*_backup
