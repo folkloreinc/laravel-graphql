@@ -7,6 +7,7 @@ This package is compatible with Eloquent model (or any other data source). See t
 [![Latest Stable Version](https://poser.pugx.org/folklore/graphql/v/stable.svg)](https://packagist.org/packages/folklore/graphql)
 [![Build Status](https://travis-ci.org/Folkloreatelier/laravel-graphql.png?branch=master)](https://travis-ci.org/Folkloreatelier/laravel-graphql)
 [![Total Downloads](https://poser.pugx.org/folklore/graphql/downloads.svg)](https://packagist.org/packages/folklore/graphql)
+[![Coverage Status](https://coveralls.io/repos/Folkloreatelier/laravel-graphql/badge.svg?branch=feature/relay&service=github)](https://coveralls.io/github/Folkloreatelier/laravel-graphql?branch=feature/relay)
 
 ## Installation
 
@@ -114,9 +115,9 @@ This command will create a Type Class `UserType.php` in the `app/GraphQL/Type` f
 
 class UserType extends BaseType
 {
-    
+
     //...
-    
+
     protected function fields()
     {
         return [
@@ -130,9 +131,9 @@ class UserType extends BaseType
             ]
         ]
     }
-    
+
     //...
-    
+
 }
 
 ```
@@ -143,15 +144,15 @@ Then you need to add the Type to the config in `config/graphql.php`, like so:
 <?php
 
 return [
-    
+
     //...
-    
+
     'types' => [
         \App\GraphQL\Type\UserType::class
     ]
-    
+
     //...
-    
+
 ];
 ```
 
@@ -161,12 +162,12 @@ Or use the facade in a service provider, like this:
 class AppServiceProvider extends ServiceProvider
 {
     //...
-    
+
     public function boot()
     {
         GraphQL::addType(\App\GraphQL\Type\UserType::class);
-    } 
-     
+    }
+
     //...  
 }
 ```
@@ -183,9 +184,9 @@ Review the file and add arguments, the type returned by the query and fill the r
 
 class UserType extends BaseType
 {
-    
+
     //...
-    
+
     protected function args()
     {
         return [
@@ -196,21 +197,21 @@ class UserType extends BaseType
             ]
         ]
     }
-    
+
     protected function type()
     {
         //This is the type we've created the step before
         return GraphQL::type('User');
     }
-    
+
     public function resolve($root, $args, $context, ResolveInfo $info)
     {
         //Take the arguments and get a user from an eloquent model
         $user = User::find($args['id']);
-        
+
         return $user
     }
-    
+
 }
 
 ```
@@ -221,9 +222,9 @@ The you need to add the query to the default schema in the config `config/graphq
 <?php
 
 return [
-    
+
     //...
-    
+
     'schemas' => [
         'default' => [
             'query' => [
@@ -232,9 +233,9 @@ return [
             //...
         ]
     ]
-    
+
     //...
-    
+
 ];
 ```
 
@@ -244,7 +245,7 @@ or using the facade:
 class AppServiceProvider extends ServiceProvider
 {
     //...
-    
+
     public function boot()
     {
         GraphQL::addSchema('default', [
@@ -252,8 +253,8 @@ class AppServiceProvider extends ServiceProvider
                 'user' => \App\GraphQL\Query\UserQuery::class
             ]
         ]);
-    } 
-     
+    }
+
     //...  
 }
 ```
