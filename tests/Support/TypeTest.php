@@ -180,6 +180,7 @@ class TypeTest extends TestCase
      * Test to type
      *
      * @test
+     * @covers ::toType
      */
     public function testToType()
     {

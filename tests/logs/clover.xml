@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1484335811">
-  <project timestamp="1484335811">
+<coverage generated="1484429615">
+  <project timestamp="1484429615">
     <package name="Folklore\GraphQL\Console">
       <file name="/Users/dmp/Code/laravel-graphql/src/Folklore/GraphQL/Console/FieldMakeCommand.php">
         <class name="FieldMakeCommand" namespace="Folklore\GraphQL\Console">
@@ -69,11 +69,11 @@
       </file>
       <file name="/Users/dmp/Code/laravel-graphql/src/Folklore/GraphQL/GraphQL.php">
         <class name="GraphQL" namespace="Folklore\GraphQL">
-          <metrics complexity="74" methods="33" coveredmethods="30" conditionals="0" coveredconditionals="0" statements="154" coveredstatements="139" elements="187" coveredelements="169"/>
+          <metrics complexity="74" methods="33" coveredmethods="29" conditionals="0" coveredconditionals="0" statements="154" coveredstatements="137" elements="187" coveredelements="166"/>
         </class>
-        <line num="27" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="1"/>
-        <line num="29" type="stmt" count="1"/>
-        <line num="30" type="stmt" count="1"/>
+        <line num="27" type="method" name="__construct" visibility="public" complexity="1" crap="2" count="0"/>
+        <line num="29" type="stmt" count="0"/>
+        <line num="30" type="stmt" count="0"/>
         <line num="32" type="method" name="schema" visibility="public" complexity="10" crap="10" count="5"/>
         <line num="34" type="stmt" count="5"/>
         <line num="35" type="stmt" count="1"/>
@@ -102,29 +102,29 @@
         <line num="80" type="stmt" count="3"/>
         <line num="81" type="stmt" count="3"/>
         <line num="82" type="stmt" count="3"/>
-        <line num="86" type="method" name="type" visibility="public" complexity="4" crap="4" count="3"/>
-        <line num="88" type="stmt" count="3"/>
+        <line num="86" type="method" name="type" visibility="public" complexity="4" crap="4" count="2"/>
+        <line num="88" type="stmt" count="2"/>
         <line num="89" type="stmt" count="1"/>
-        <line num="92" type="stmt" count="2"/>
-        <line num="93" type="stmt" count="2"/>
-        <line num="96" type="stmt" count="2"/>
-        <line num="97" type="stmt" count="2"/>
-        <line num="98" type="stmt" count="2"/>
-        <line num="100" type="stmt" count="2"/>
-        <line num="102" type="stmt" count="2"/>
-        <line num="105" type="method" name="objectType" visibility="public" complexity="6" crap="6" count="4"/>
-        <line num="110" type="stmt" count="4"/>
-        <line num="111" type="stmt" count="4"/>
+        <line num="92" type="stmt" count="1"/>
+        <line num="93" type="stmt" count="1"/>
+        <line num="96" type="stmt" count="1"/>
+        <line num="97" type="stmt" count="1"/>
+        <line num="98" type="stmt" count="1"/>
+        <line num="100" type="stmt" count="1"/>
+        <line num="102" type="stmt" count="1"/>
+        <line num="105" type="method" name="objectType" visibility="public" complexity="6" crap="6" count="3"/>
+        <line num="110" type="stmt" count="3"/>
+        <line num="111" type="stmt" count="3"/>
         <line num="112" type="stmt" count="1"/>
         <line num="113" type="stmt" count="1"/>
         <line num="114" type="stmt" count="1"/>
         <line num="115" type="stmt" count="1"/>
         <line num="117" type="stmt" count="1"/>
         <line num="118" type="stmt" count="1"/>
-        <line num="121" type="stmt" count="3"/>
+        <line num="121" type="stmt" count="2"/>
         <line num="122" type="stmt" count="1"/>
-        <line num="124" type="stmt" count="2"/>
-        <line num="127" type="stmt" count="4"/>
+        <line num="124" type="stmt" count="1"/>
+        <line num="127" type="stmt" count="3"/>
         <line num="130" type="method" name="query" visibility="public" complexity="2" crap="6" count="0"/>
         <line num="132" type="stmt" count="0"/>
         <line num="134" type="stmt" count="0"/>
@@ -165,28 +165,28 @@
         <line num="204" type="stmt" count="1"/>
         <line num="205" type="stmt" count="1"/>
         <line num="207" type="stmt" count="1"/>
-        <line num="210" type="method" name="routerSchemaPattern" visibility="public" complexity="1" crap="1" count="2"/>
-        <line num="212" type="stmt" count="2"/>
-        <line num="213" type="stmt" count="2"/>
-        <line num="216" type="method" name="addTypes" visibility="public" complexity="3" crap="3" count="2"/>
-        <line num="218" type="stmt" count="2"/>
-        <line num="219" type="stmt" count="2"/>
-        <line num="221" type="stmt" count="2"/>
-        <line num="223" type="method" name="addType" visibility="public" complexity="2" crap="2" count="3"/>
-        <line num="225" type="stmt" count="3"/>
-        <line num="226" type="stmt" count="3"/>
-        <line num="228" type="stmt" count="3"/>
-        <line num="229" type="stmt" count="3"/>
-        <line num="231" type="stmt" count="3"/>
-        <line num="233" type="method" name="addSchemas" visibility="public" complexity="2" crap="2" count="2"/>
-        <line num="235" type="stmt" count="2"/>
-        <line num="236" type="stmt" count="2"/>
-        <line num="238" type="stmt" count="2"/>
-        <line num="240" type="method" name="addSchema" visibility="public" complexity="2" crap="2" count="2"/>
-        <line num="242" type="stmt" count="2"/>
-        <line num="244" type="stmt" count="2"/>
-        <line num="245" type="stmt" count="2"/>
-        <line num="247" type="stmt" count="2"/>
+        <line num="210" type="method" name="routerSchemaPattern" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="212" type="stmt" count="1"/>
+        <line num="213" type="stmt" count="1"/>
+        <line num="216" type="method" name="addTypes" visibility="public" complexity="3" crap="3" count="1"/>
+        <line num="218" type="stmt" count="1"/>
+        <line num="219" type="stmt" count="1"/>
+        <line num="221" type="stmt" count="1"/>
+        <line num="223" type="method" name="addType" visibility="public" complexity="2" crap="2" count="2"/>
+        <line num="225" type="stmt" count="2"/>
+        <line num="226" type="stmt" count="2"/>
+        <line num="228" type="stmt" count="2"/>
+        <line num="229" type="stmt" count="2"/>
+        <line num="231" type="stmt" count="2"/>
+        <line num="233" type="method" name="addSchemas" visibility="public" complexity="2" crap="2" count="1"/>
+        <line num="235" type="stmt" count="1"/>
+        <line num="236" type="stmt" count="1"/>
+        <line num="238" type="stmt" count="1"/>
+        <line num="240" type="method" name="addSchema" visibility="public" complexity="2" crap="2" count="1"/>
+        <line num="242" type="stmt" count="1"/>
+        <line num="244" type="stmt" count="1"/>
+        <line num="245" type="stmt" count="1"/>
+        <line num="247" type="stmt" count="1"/>
         <line num="249" type="method" name="clearType" visibility="public" complexity="2" crap="2" count="1"/>
         <line num="251" type="stmt" count="1"/>
         <line num="252" type="stmt" count="1"/>
@@ -203,11 +203,11 @@
         <line num="271" type="stmt" count="1"/>
         <line num="273" type="method" name="getTypes" visibility="public" complexity="1" crap="1" count="1"/>
         <line num="275" type="stmt" count="1"/>
-        <line num="278" type="method" name="getSchemas" visibility="public" complexity="1" crap="1" count="2"/>
-        <line num="280" type="stmt" count="2"/>
-        <line num="283" type="method" name="setDefaultSchema" visibility="public" complexity="1" crap="1" count="2"/>
-        <line num="285" type="stmt" count="2"/>
-        <line num="286" type="stmt" count="2"/>
+        <line num="278" type="method" name="getSchemas" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="280" type="stmt" count="1"/>
+        <line num="283" type="method" name="setDefaultSchema" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="285" type="stmt" count="1"/>
+        <line num="286" type="stmt" count="1"/>
         <line num="288" type="method" name="getDefaultSchema" visibility="public" complexity="1" crap="1" count="1"/>
         <line num="290" type="stmt" count="1"/>
         <line num="293" type="method" name="setMaxQueryComplexity" visibility="public" complexity="1" crap="1" count="1"/>
@@ -227,12 +227,12 @@
         <line num="319" type="method" name="clearTypeInstances" visibility="protected" complexity="1" crap="2" count="0"/>
         <line num="321" type="stmt" count="0"/>
         <line num="322" type="stmt" count="0"/>
-        <line num="324" type="method" name="buildObjectTypeFromClass" visibility="protected" complexity="3" crap="3" count="2"/>
-        <line num="326" type="stmt" count="2"/>
-        <line num="327" type="stmt" count="2"/>
-        <line num="330" type="stmt" count="2"/>
-        <line num="331" type="stmt" count="2"/>
-        <line num="334" type="stmt" count="2"/>
+        <line num="324" type="method" name="buildObjectTypeFromClass" visibility="protected" complexity="3" crap="3" count="1"/>
+        <line num="326" type="stmt" count="1"/>
+        <line num="327" type="stmt" count="1"/>
+        <line num="330" type="stmt" count="1"/>
+        <line num="331" type="stmt" count="1"/>
+        <line num="334" type="stmt" count="1"/>
         <line num="337" type="method" name="buildObjectTypeFromFields" visibility="protected" complexity="5" crap="5" count="1"/>
         <line num="339" type="stmt" count="1"/>
         <line num="340" type="stmt" count="1"/>
@@ -246,9 +246,9 @@
         <line num="350" type="stmt" count="1"/>
         <line num="353" type="stmt" count="1"/>
         <line num="354" type="stmt" count="1"/>
-        <line num="358" type="method" name="getTypeName" visibility="protected" complexity="3" crap="3" count="2"/>
-        <line num="360" type="stmt" count="2"/>
-        <line num="361" type="stmt" count="2"/>
+        <line num="358" type="method" name="getTypeName" visibility="protected" complexity="3" crap="3" count="1"/>
+        <line num="360" type="stmt" count="1"/>
+        <line num="361" type="stmt" count="1"/>
         <line num="364" type="stmt" count="1"/>
         <line num="365" type="stmt" count="1"/>
         <line num="368" type="method" name="formatError" visibility="public" complexity="4" crap="4" count="2"/>
@@ -262,7 +262,7 @@
         <line num="382" type="stmt" count="2"/>
         <line num="383" type="stmt" count="1"/>
         <line num="386" type="stmt" count="2"/>
-        <metrics loc="388" ncloc="370" classes="1" methods="33" coveredmethods="30" conditionals="0" coveredconditionals="0" statements="158" coveredstatements="143" elements="191" coveredelements="173"/>
+        <metrics loc="388" ncloc="370" classes="1" methods="33" coveredmethods="29" conditionals="0" coveredconditionals="0" statements="158" coveredstatements="141" elements="191" coveredelements="170"/>
       </file>
       <file name="/Users/dmp/Code/laravel-graphql/src/Folklore/GraphQL/GraphQLController.php">
         <class name="GraphQLController" namespace="Folklore\GraphQL">
@@ -304,105 +304,103 @@
       </file>
       <file name="/Users/dmp/Code/laravel-graphql/src/Folklore/GraphQL/ServiceProvider.php">
         <class name="ServiceProvider" namespace="Folklore\GraphQL">
-          <metrics complexity="23" methods="17" coveredmethods="16" conditionals="0" coveredconditionals="0" statements="78" coveredstatements="77" elements="95" coveredelements="93"/>
+          <metrics complexity="23" methods="17" coveredmethods="6" conditionals="0" coveredconditionals="0" statements="76" coveredstatements="35" elements="93" coveredelements="41"/>
         </class>
-        <line num="12" type="method" name="getRouter" visibility="protected" complexity="1" crap="1" count="1"/>
-        <line num="14" type="stmt" count="1"/>
-        <line num="22" type="method" name="boot" visibility="public" complexity="1" crap="1" count="6"/>
-        <line num="24" type="stmt" count="6"/>
-        <line num="26" type="stmt" count="6"/>
-        <line num="28" type="stmt" count="6"/>
-        <line num="30" type="stmt" count="6"/>
-        <line num="32" type="stmt" count="6"/>
-        <line num="34" type="stmt" count="6"/>
-        <line num="35" type="stmt" count="6"/>
-        <line num="42" type="method" name="bootPublishes" visibility="protected" complexity="1" crap="1" count="1"/>
-        <line num="44" type="stmt" count="1"/>
-        <line num="45" type="stmt" count="1"/>
-        <line num="46" type="stmt" count="1"/>
-        <line num="48" type="stmt" count="1"/>
-        <line num="50" type="stmt" count="1"/>
-        <line num="52" type="stmt" count="1"/>
-        <line num="53" type="stmt" count="1"/>
-        <line num="54" type="stmt" count="1"/>
-        <line num="56" type="stmt" count="1"/>
-        <line num="57" type="stmt" count="1"/>
-        <line num="58" type="stmt" count="1"/>
-        <line num="60" type="stmt" count="1"/>
-        <line num="61" type="stmt" count="1"/>
-        <line num="62" type="stmt" count="1"/>
-        <line num="63" type="stmt" count="1"/>
-        <line num="70" type="method" name="bootRouter" visibility="protected" complexity="2" crap="2" count="2"/>
-        <line num="72" type="stmt" count="2"/>
-        <line num="73" type="stmt" count="2"/>
-        <line num="78" type="stmt" count="2"/>
-        <line num="79" type="stmt" count="2"/>
-        <line num="82" type="stmt" count="2"/>
-        <line num="83" type="stmt" count="2"/>
-        <line num="85" type="stmt" count="2"/>
-        <line num="92" type="method" name="bootViews" visibility="protected" complexity="2" crap="2" count="2"/>
-        <line num="94" type="stmt" count="2"/>
-        <line num="95" type="stmt" count="2"/>
-        <line num="96" type="stmt" count="2"/>
-        <line num="97" type="stmt" count="2"/>
-        <line num="98" type="stmt" count="2"/>
-        <line num="99" type="stmt" count="2"/>
-        <line num="101" type="stmt" count="2"/>
-        <line num="108" type="method" name="bootSchemas" visibility="protected" complexity="1" crap="1" count="2"/>
-        <line num="110" type="stmt" count="2"/>
-        <line num="111" type="stmt" count="2"/>
-        <line num="112" type="stmt" count="2"/>
-        <line num="119" type="method" name="bootTypes" visibility="protected" complexity="1" crap="1" count="2"/>
-        <line num="121" type="stmt" count="2"/>
-        <line num="122" type="stmt" count="2"/>
-        <line num="123" type="stmt" count="2"/>
-        <line num="130" type="method" name="bootSecurity" visibility="protected" complexity="3" crap="3" count="2"/>
-        <line num="132" type="stmt" count="2"/>
-        <line num="133" type="stmt" count="2"/>
-        <line num="134" type="stmt" count="2"/>
-        <line num="135" type="stmt" count="2"/>
+        <line num="12" type="method" name="getRouter" visibility="protected" complexity="1" crap="2" count="0"/>
+        <line num="14" type="stmt" count="0"/>
+        <line num="22" type="method" name="boot" visibility="public" complexity="1" crap="1" count="5"/>
+        <line num="24" type="stmt" count="5"/>
+        <line num="26" type="stmt" count="5"/>
+        <line num="28" type="stmt" count="5"/>
+        <line num="30" type="stmt" count="5"/>
+        <line num="32" type="stmt" count="5"/>
+        <line num="34" type="stmt" count="5"/>
+        <line num="35" type="stmt" count="5"/>
+        <line num="42" type="method" name="bootPublishes" visibility="protected" complexity="1" crap="2" count="0"/>
+        <line num="44" type="stmt" count="0"/>
+        <line num="45" type="stmt" count="0"/>
+        <line num="46" type="stmt" count="0"/>
+        <line num="48" type="stmt" count="0"/>
+        <line num="50" type="stmt" count="0"/>
+        <line num="52" type="stmt" count="0"/>
+        <line num="53" type="stmt" count="0"/>
+        <line num="54" type="stmt" count="0"/>
+        <line num="56" type="stmt" count="0"/>
+        <line num="57" type="stmt" count="0"/>
+        <line num="58" type="stmt" count="0"/>
+        <line num="60" type="stmt" count="0"/>
+        <line num="61" type="stmt" count="0"/>
+        <line num="62" type="stmt" count="0"/>
+        <line num="63" type="stmt" count="0"/>
+        <line num="70" type="method" name="bootRouter" visibility="protected" complexity="2" crap="2" count="1"/>
+        <line num="72" type="stmt" count="1"/>
+        <line num="73" type="stmt" count="1"/>
+        <line num="78" type="stmt" count="1"/>
+        <line num="79" type="stmt" count="1"/>
+        <line num="82" type="stmt" count="1"/>
+        <line num="83" type="stmt" count="1"/>
+        <line num="85" type="stmt" count="1"/>
+        <line num="92" type="method" name="bootViews" visibility="protected" complexity="2" crap="2" count="1"/>
+        <line num="94" type="stmt" count="1"/>
+        <line num="95" type="stmt" count="1"/>
+        <line num="96" type="stmt" count="1"/>
+        <line num="97" type="stmt" count="1"/>
+        <line num="98" type="stmt" count="1"/>
+        <line num="99" type="stmt" count="1"/>
+        <line num="101" type="stmt" count="1"/>
+        <line num="108" type="method" name="bootSchemas" visibility="protected" complexity="1" crap="1" count="1"/>
+        <line num="110" type="stmt" count="1"/>
+        <line num="111" type="stmt" count="1"/>
+        <line num="112" type="stmt" count="1"/>
+        <line num="119" type="method" name="bootTypes" visibility="protected" complexity="1" crap="1" count="1"/>
+        <line num="121" type="stmt" count="1"/>
+        <line num="122" type="stmt" count="1"/>
+        <line num="123" type="stmt" count="1"/>
+        <line num="130" type="method" name="bootSecurity" visibility="protected" complexity="3" crap="3" count="1"/>
+        <line num="132" type="stmt" count="1"/>
+        <line num="133" type="stmt" count="1"/>
+        <line num="134" type="stmt" count="1"/>
+        <line num="135" type="stmt" count="1"/>
         <line num="136" type="stmt" count="1"/>
-        <line num="138" type="stmt" count="2"/>
+        <line num="138" type="stmt" count="1"/>
         <line num="139" type="stmt" count="1"/>
-        <line num="141" type="stmt" count="2"/>
-        <line num="148" type="method" name="register" visibility="public" complexity="1" crap="1" count="1"/>
-        <line num="150" type="stmt" count="1"/>
-        <line num="152" type="stmt" count="1"/>
-        <line num="153" type="stmt" count="1"/>
-        <line num="160" type="method" name="registerGraphQL" visibility="public" complexity="1" crap="1" count="1"/>
-        <line num="163" type="stmt" count="1"/>
-        <line num="164" type="stmt" count="1"/>
-        <line num="165" type="stmt" count="1"/>
-        <line num="166" type="stmt" count="1"/>
-        <line num="173" type="method" name="registerCommands" visibility="public" complexity="2" crap="2" count="1"/>
-        <line num="176" type="stmt" count="1"/>
-        <line num="182" type="stmt" count="1"/>
-        <line num="183" type="stmt" count="1"/>
-        <line num="186" type="stmt" count="1"/>
-        <line num="187" type="stmt" count="1"/>
-        <line num="188" type="stmt" count="1"/>
-        <line num="189" type="stmt" count="1"/>
-        <line num="190" type="stmt" count="1"/>
-        <line num="191" type="stmt" count="1"/>
-        <line num="193" type="stmt" count="1"/>
-        <line num="200" type="method" name="registerMakeSchemaCommand" visibility="public" complexity="1" crap="1" count="1"/>
-        <line num="204" type="stmt" count="1"/>
-        <line num="205" type="stmt" count="1"/>
-        <line num="212" type="method" name="registerMakeTypeCommand" visibility="public" complexity="1" crap="1" count="1"/>
-        <line num="216" type="stmt" count="1"/>
-        <line num="217" type="stmt" count="1"/>
-        <line num="224" type="method" name="registerMakeQueryCommand" visibility="public" complexity="1" crap="1" count="1"/>
-        <line num="228" type="stmt" count="1"/>
-        <line num="229" type="stmt" count="1"/>
-        <line num="236" type="method" name="registerMakeMutationCommand" visibility="public" complexity="1" crap="1" count="1"/>
-        <line num="240" type="stmt" count="1"/>
-        <line num="241" type="stmt" count="1"/>
-        <line num="250" type="method" name="anonymous function" complexity="1" crap="1" count="1"/>
-        <line num="252" type="stmt" count="1"/>
-        <line num="253" type="stmt" count="1"/>
+        <line num="141" type="stmt" count="1"/>
+        <line num="148" type="method" name="register" visibility="public" complexity="1" crap="2" count="0"/>
+        <line num="150" type="stmt" count="0"/>
+        <line num="152" type="stmt" count="0"/>
+        <line num="153" type="stmt" count="0"/>
+        <line num="160" type="method" name="registerGraphQL" visibility="public" complexity="1" crap="2" count="0"/>
+        <line num="165" type="stmt" count="0"/>
+        <line num="166" type="stmt" count="0"/>
+        <line num="173" type="method" name="registerCommands" visibility="public" complexity="2" crap="6" count="0"/>
+        <line num="176" type="stmt" count="0"/>
+        <line num="182" type="stmt" count="0"/>
+        <line num="183" type="stmt" count="0"/>
+        <line num="186" type="stmt" count="0"/>
+        <line num="187" type="stmt" count="0"/>
+        <line num="188" type="stmt" count="0"/>
+        <line num="189" type="stmt" count="0"/>
+        <line num="190" type="stmt" count="0"/>
+        <line num="191" type="stmt" count="0"/>
+        <line num="193" type="stmt" count="0"/>
+        <line num="200" type="method" name="registerMakeSchemaCommand" visibility="public" complexity="1" crap="2" count="0"/>
+        <line num="204" type="stmt" count="0"/>
+        <line num="205" type="stmt" count="0"/>
+        <line num="212" type="method" name="registerMakeTypeCommand" visibility="public" complexity="1" crap="2" count="0"/>
+        <line num="216" type="stmt" count="0"/>
+        <line num="217" type="stmt" count="0"/>
+        <line num="224" type="method" name="registerMakeQueryCommand" visibility="public" complexity="1" crap="2" count="0"/>
+        <line num="228" type="stmt" count="0"/>
+        <line num="229" type="stmt" count="0"/>
+        <line num="236" type="method" name="registerMakeMutationCommand" visibility="public" complexity="1" crap="2" count="0"/>
+        <line num="240" type="stmt" count="0"/>
+        <line num="241" type="stmt" count="0"/>
+        <line num="250" type="method" name="anonymous function" complexity="1" crap="2" count="0"/>
+        <line num="252" type="stmt" count="0"/>
+        <line num="253" type="stmt" count="0"/>
         <line num="260" type="method" name="provides" visibility="public" complexity="1" crap="2" count="0"/>
         <line num="263" type="stmt" count="0"/>
-        <metrics loc="270" ncloc="175" classes="1" methods="17" coveredmethods="16" conditionals="0" coveredconditionals="0" statements="79" coveredstatements="78" elements="96" coveredelements="94"/>
+        <metrics loc="270" ncloc="175" classes="1" methods="17" coveredmethods="6" conditionals="0" coveredconditionals="0" statements="77" coveredstatements="35" elements="94" coveredelements="41"/>
       </file>
     </package>
     <package name="Folklore\GraphQL\Error">
@@ -423,23 +421,23 @@
     <package name="Folklore\GraphQL\Events">
       <file name="/Users/dmp/Code/laravel-graphql/src/Folklore/GraphQL/Events/SchemaAdded.php">
         <class name="SchemaAdded" namespace="Folklore\GraphQL\Events">
-          <metrics complexity="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="3" elements="4" coveredelements="4"/>
+          <metrics complexity="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="0" elements="4" coveredelements="0"/>
         </class>
-        <line num="8" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="1"/>
-        <line num="10" type="stmt" count="1"/>
-        <line num="11" type="stmt" count="1"/>
-        <line num="12" type="stmt" count="1"/>
-        <metrics loc="13" ncloc="13" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="3" elements="4" coveredelements="4"/>
+        <line num="8" type="method" name="__construct" visibility="public" complexity="1" crap="2" count="0"/>
+        <line num="10" type="stmt" count="0"/>
+        <line num="11" type="stmt" count="0"/>
+        <line num="12" type="stmt" count="0"/>
+        <metrics loc="13" ncloc="13" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="0" elements="4" coveredelements="0"/>
       </file>
       <file name="/Users/dmp/Code/laravel-graphql/src/Folklore/GraphQL/Events/TypeAdded.php">
         <class name="TypeAdded" namespace="Folklore\GraphQL\Events">
-          <metrics complexity="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="3" elements="4" coveredelements="4"/>
+          <metrics complexity="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="0" elements="4" coveredelements="0"/>
         </class>
-        <line num="8" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="1"/>
-        <line num="10" type="stmt" count="1"/>
-        <line num="11" type="stmt" count="1"/>
-        <line num="12" type="stmt" count="1"/>
-        <metrics loc="13" ncloc="13" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="3" elements="4" coveredelements="4"/>
+        <line num="8" type="method" name="__construct" visibility="public" complexity="1" crap="2" count="0"/>
+        <line num="10" type="stmt" count="0"/>
+        <line num="11" type="stmt" count="0"/>
+        <line num="12" type="stmt" count="0"/>
+        <metrics loc="13" ncloc="13" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="0" elements="4" coveredelements="0"/>
       </file>
     </package>
     <package name="Folklore\GraphQL\Exception">
@@ -519,15 +517,9 @@
       </file>
       <file name="/Users/dmp/Code/laravel-graphql/src/Folklore/GraphQL/Relay/NodeInterface.php">
         <class name="NodeInterface" namespace="Folklore\GraphQL\Relay">
-          <metrics complexity="3" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="4" coveredstatements="0" elements="6" coveredelements="0"/>
+          <metrics complexity="3" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
         </class>
-        <line num="16" type="method" name="fields" visibility="protected" complexity="1" crap="2" count="0"/>
-        <line num="20" type="stmt" count="0"/>
-        <line num="25" type="method" name="resolveType" visibility="protected" complexity="2" crap="6" count="0"/>
-        <line num="27" type="stmt" count="0"/>
-        <line num="28" type="stmt" count="0"/>
-        <line num="30" type="stmt" count="0"/>
-        <metrics loc="32" ncloc="32" classes="1" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="4" coveredstatements="0" elements="6" coveredelements="0"/>
+        <metrics loc="32" ncloc="32" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
       </file>
       <file name="/Users/dmp/Code/laravel-graphql/src/Folklore/GraphQL/Relay/NodeQuery.php">
         <class name="NodeQuery" namespace="Folklore\GraphQL\Relay">
@@ -862,70 +854,48 @@
     <package name="Folklore\GraphQL\Support\Facades">
       <file name="/Users/dmp/Code/laravel-graphql/src/Folklore/GraphQL/Support/Facades/GraphQL.php">
         <class name="GraphQL" namespace="Folklore\GraphQL\Support\Facades">
-          <metrics complexity="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="1" elements="2" coveredelements="2"/>
+          <metrics complexity="1" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
         </class>
-        <line num="12" type="method" name="getFacadeAccessor" visibility="protected" complexity="1" crap="1" count="1"/>
-        <line num="14" type="stmt" count="1"/>
-        <metrics loc="16" ncloc="11" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="1" elements="2" coveredelements="2"/>
+        <metrics loc="16" ncloc="11" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
       </file>
     </package>
     <package name="Folklore\GraphQL\Support">
       <file name="/Users/dmp/Code/laravel-graphql/src/Folklore/GraphQL/Support/Field.php">
         <class name="Field" namespace="Folklore\GraphQL\Support">
-          <metrics complexity="31" methods="8" coveredmethods="8" conditionals="0" coveredconditionals="0" statements="26" coveredstatements="26" elements="34" coveredelements="34"/>
+          <metrics complexity="31" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="4" coveredstatements="4" elements="6" coveredelements="6"/>
         </class>
-        <line num="14" type="method" name="attributes" visibility="protected" complexity="1" crap="1" count="1"/>
-        <line num="16" type="stmt" count="1"/>
         <line num="24" type="method" name="getType" visibility="public" complexity="2" crap="2" count="1"/>
         <line num="26" type="stmt" count="1"/>
         <line num="27" type="stmt" count="1"/>
-        <line num="36" type="method" name="getArgs" visibility="public" complexity="2" crap="2" count="1"/>
-        <line num="38" type="stmt" count="1"/>
-        <line num="39" type="stmt" count="1"/>
-        <line num="49" type="method" name="getRootResolver" visibility="public" complexity="3" crap="3" count="1"/>
-        <line num="51" type="stmt" count="1"/>
-        <line num="52" type="stmt" count="1"/>
-        <line num="55" type="stmt" count="1"/>
-        <line num="71" type="method" name="getResolver" visibility="public" complexity="6" crap="6" count="1"/>
-        <line num="73" type="stmt" count="1"/>
-        <line num="74" type="stmt" count="1"/>
-        <line num="75" type="stmt" count="1"/>
-        <line num="78" type="stmt" count="1"/>
-        <line num="82" type="stmt" count="1"/>
-        <line num="84" type="method" name="anonymous function" complexity="3" crap="3" count="1"/>
-        <line num="94" type="stmt" count="1"/>
-        <line num="114" type="method" name="getAttributes" visibility="public" complexity="1" crap="1" count="1"/>
-        <line num="116" type="stmt" count="1"/>
-        <line num="124" type="method" name="toArray" visibility="public" complexity="4" crap="4" count="1"/>
-        <line num="126" type="stmt" count="1"/>
-        <line num="128" type="stmt" count="1"/>
-        <line num="129" type="stmt" count="1"/>
-        <line num="130" type="stmt" count="1"/>
-        <line num="133" type="stmt" count="1"/>
-        <line num="134" type="stmt" count="1"/>
-        <line num="135" type="stmt" count="1"/>
-        <line num="138" type="stmt" count="1"/>
-        <line num="139" type="stmt" count="1"/>
-        <line num="140" type="stmt" count="1"/>
-        <line num="143" type="stmt" count="1"/>
-        <metrics loc="169" ncloc="134" classes="1" methods="8" coveredmethods="8" conditionals="0" coveredconditionals="0" statements="26" coveredstatements="26" elements="34" coveredelements="34"/>
+        <line num="30" type="method" name="setType" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="32" type="stmt" count="1"/>
+        <line num="33" type="stmt" count="1"/>
+        <metrics loc="168" ncloc="133" classes="1" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="4" coveredstatements="4" elements="6" coveredelements="6"/>
       </file>
       <file name="/Users/dmp/Code/laravel-graphql/src/Folklore/GraphQL/Support/InputType.php">
         <class name="InputType" namespace="Folklore\GraphQL\Support">
-          <metrics complexity="1" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+          <metrics complexity="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="1" elements="2" coveredelements="2"/>
         </class>
-        <metrics loc="16" ncloc="16" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+        <line num="12" type="method" name="toType" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="14" type="stmt" count="1"/>
+        <metrics loc="16" ncloc="16" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="1" elements="2" coveredelements="2"/>
       </file>
       <file name="/Users/dmp/Code/laravel-graphql/src/Folklore/GraphQL/Support/InterfaceType.php">
         <class name="InterfaceType" namespace="Folklore\GraphQL\Support">
-          <metrics complexity="8" methods="4" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="10" coveredstatements="10" elements="14" coveredelements="14"/>
+          <metrics complexity="8" methods="5" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="15" coveredstatements="15" elements="20" coveredelements="20"/>
         </class>
-        <line num="11" type="method" name="getTypeResolver" visibility="public" complexity="3" crap="3" count="1"/>
+        <line num="9" type="method" name="getTypeResolver" visibility="public" complexity="3" crap="3" count="2"/>
+        <line num="11" type="stmt" count="2"/>
+        <line num="12" type="stmt" count="2"/>
         <line num="13" type="stmt" count="1"/>
+        <line num="16" type="stmt" count="2"/>
         <line num="17" type="stmt" count="1"/>
-        <line num="21" type="stmt" count="1"/>
-        <line num="22" type="method" name="anonymous function" complexity="1" crap="1" count="1"/>
-        <line num="25" type="stmt" count="1"/>
+        <line num="20" type="stmt" count="1"/>
+        <line num="21" type="method" name="anonymous function" complexity="1" crap="1" count="1"/>
+        <line num="24" type="stmt" count="1"/>
+        <line num="27" type="method" name="setTypeResolver" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="29" type="stmt" count="1"/>
+        <line num="30" type="stmt" count="1"/>
         <line num="33" type="method" name="toArray" visibility="public" complexity="2" crap="2" count="1"/>
         <line num="35" type="stmt" count="1"/>
         <line num="36" type="stmt" count="1"/>
@@ -934,7 +904,7 @@
         <line num="40" type="stmt" count="1"/>
         <line num="43" type="method" name="toType" visibility="public" complexity="1" crap="1" count="1"/>
         <line num="45" type="stmt" count="1"/>
-        <metrics loc="47" ncloc="47" classes="1" methods="4" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="10" coveredstatements="10" elements="14" coveredelements="14"/>
+        <metrics loc="47" ncloc="47" classes="1" methods="5" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="15" coveredstatements="15" elements="20" coveredelements="20"/>
       </file>
       <file name="/Users/dmp/Code/laravel-graphql/src/Folklore/GraphQL/Support/Mutation.php">
         <class name="Mutation" namespace="Folklore\GraphQL\Support">
@@ -952,60 +922,60 @@
         <class name="Type" namespace="Folklore\GraphQL\Support">
           <metrics complexity="26" methods="13" coveredmethods="13" conditionals="0" coveredconditionals="0" statements="37" coveredstatements="37" elements="50" coveredelements="50"/>
         </class>
-        <line num="16" type="method" name="attributes" visibility="protected" complexity="1" crap="1" count="2"/>
-        <line num="18" type="stmt" count="2"/>
-        <line num="26" type="method" name="interfaces" visibility="protected" complexity="1" crap="1" count="2"/>
-        <line num="28" type="stmt" count="2"/>
-        <line num="35" type="method" name="getFields" visibility="public" complexity="2" crap="2" count="2"/>
-        <line num="37" type="stmt" count="2"/>
-        <line num="38" type="stmt" count="2"/>
+        <line num="16" type="method" name="attributes" visibility="protected" complexity="1" crap="1" count="1"/>
+        <line num="18" type="stmt" count="1"/>
+        <line num="26" type="method" name="interfaces" visibility="protected" complexity="1" crap="1" count="1"/>
+        <line num="28" type="stmt" count="1"/>
+        <line num="35" type="method" name="getFields" visibility="public" complexity="2" crap="2" count="1"/>
+        <line num="37" type="stmt" count="1"/>
+        <line num="38" type="stmt" count="1"/>
         <line num="46" type="method" name="setFields" visibility="public" complexity="1" crap="1" count="1"/>
         <line num="48" type="stmt" count="1"/>
         <line num="49" type="stmt" count="1"/>
-        <line num="52" type="method" name="getFieldsForObjectType" visibility="public" complexity="6" crap="6" count="2"/>
-        <line num="54" type="stmt" count="2"/>
-        <line num="55" type="stmt" count="2"/>
-        <line num="56" type="stmt" count="2"/>
-        <line num="57" type="stmt" count="2"/>
-        <line num="58" type="stmt" count="2"/>
-        <line num="59" type="stmt" count="2"/>
-        <line num="60" type="stmt" count="2"/>
-        <line num="62" type="stmt" count="2"/>
-        <line num="63" type="stmt" count="2"/>
-        <line num="64" type="stmt" count="2"/>
-        <line num="66" type="stmt" count="2"/>
-        <line num="70" type="stmt" count="2"/>
-        <line num="73" type="method" name="getInterfaces" visibility="public" complexity="2" crap="2" count="2"/>
-        <line num="75" type="stmt" count="2"/>
-        <line num="76" type="stmt" count="2"/>
+        <line num="52" type="method" name="getFieldsForObjectType" visibility="public" complexity="6" crap="6" count="1"/>
+        <line num="54" type="stmt" count="1"/>
+        <line num="55" type="stmt" count="1"/>
+        <line num="56" type="stmt" count="1"/>
+        <line num="57" type="stmt" count="1"/>
+        <line num="58" type="stmt" count="1"/>
+        <line num="59" type="stmt" count="1"/>
+        <line num="60" type="stmt" count="1"/>
+        <line num="62" type="stmt" count="1"/>
+        <line num="63" type="stmt" count="1"/>
+        <line num="64" type="stmt" count="1"/>
+        <line num="66" type="stmt" count="1"/>
+        <line num="70" type="stmt" count="1"/>
+        <line num="73" type="method" name="getInterfaces" visibility="public" complexity="2" crap="2" count="1"/>
+        <line num="75" type="stmt" count="1"/>
+        <line num="76" type="stmt" count="1"/>
         <line num="79" type="method" name="setInterfaces" visibility="public" complexity="1" crap="1" count="1"/>
         <line num="81" type="stmt" count="1"/>
         <line num="82" type="stmt" count="1"/>
-        <line num="85" type="method" name="getFieldResolver" visibility="protected" complexity="3" crap="3" count="2"/>
-        <line num="87" type="stmt" count="2"/>
-        <line num="88" type="stmt" count="2"/>
+        <line num="85" type="method" name="getFieldResolver" visibility="protected" complexity="3" crap="3" count="1"/>
+        <line num="87" type="stmt" count="1"/>
+        <line num="88" type="stmt" count="1"/>
         <line num="89" type="stmt" count="1"/>
-        <line num="90" type="stmt" count="2"/>
-        <line num="91" type="stmt" count="2"/>
+        <line num="90" type="stmt" count="1"/>
+        <line num="91" type="stmt" count="1"/>
         <line num="93" type="stmt" count="1"/>
         <line num="94" type="stmt" count="1"/>
-        <line num="95" type="stmt" count="2"/>
-        <line num="98" type="stmt" count="2"/>
-        <line num="106" type="method" name="getAttributes" visibility="public" complexity="1" crap="1" count="2"/>
-        <line num="108" type="stmt" count="2"/>
-        <line num="116" type="method" name="toArray" visibility="public" complexity="2" crap="2" count="2"/>
-        <line num="118" type="stmt" count="2"/>
-        <line num="120" type="method" name="anonymous function" complexity="1" crap="1" count="2"/>
-        <line num="121" type="stmt" count="2"/>
-        <line num="124" type="stmt" count="2"/>
-        <line num="125" type="stmt" count="2"/>
-        <line num="126" type="stmt" count="2"/>
-        <line num="129" type="stmt" count="2"/>
+        <line num="95" type="stmt" count="1"/>
+        <line num="98" type="stmt" count="1"/>
+        <line num="106" type="method" name="getAttributes" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="108" type="stmt" count="1"/>
+        <line num="116" type="method" name="toArray" visibility="public" complexity="2" crap="2" count="1"/>
+        <line num="118" type="stmt" count="1"/>
+        <line num="120" type="method" name="anonymous function" complexity="1" crap="1" count="1"/>
+        <line num="121" type="stmt" count="1"/>
+        <line num="124" type="stmt" count="1"/>
+        <line num="125" type="stmt" count="1"/>
+        <line num="126" type="stmt" count="1"/>
+        <line num="129" type="stmt" count="1"/>
         <line num="132" type="method" name="toType" visibility="public" complexity="1" crap="1" count="1"/>
         <line num="134" type="stmt" count="1"/>
-        <line num="143" type="method" name="__get" visibility="public" complexity="2" crap="2" count="2"/>
-        <line num="145" type="stmt" count="2"/>
-        <line num="146" type="stmt" count="2"/>
+        <line num="143" type="method" name="__get" visibility="public" complexity="2" crap="2" count="1"/>
+        <line num="145" type="stmt" count="1"/>
+        <line num="146" type="stmt" count="1"/>
         <metrics loc="160" ncloc="129" classes="1" methods="13" coveredmethods="13" conditionals="0" coveredconditionals="0" statements="41" coveredstatements="41" elements="54" coveredelements="54"/>
       </file>
     </package>
@@ -1055,6 +1025,6 @@
         <metrics loc="11" ncloc="11" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="2" coveredstatements="2" elements="3" coveredelements="3"/>
       </file>
     </package>
-    <metrics files="56" loc="3371" ncloc="2678" classes="25" methods="150" coveredmethods="75" conditionals="0" coveredconditionals="0" statements="541" coveredstatements="307" elements="691" coveredelements="382"/>
+    <metrics files="56" loc="3370" ncloc="2677" classes="24" methods="143" coveredmethods="57" conditionals="0" coveredconditionals="0" statements="518" coveredstatements="239" elements="661" coveredelements="296"/>
   </project>
 </coverage>

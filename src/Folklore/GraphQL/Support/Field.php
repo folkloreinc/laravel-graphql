@@ -23,8 +23,8 @@ class Field extends Fluent
 
     public function getType()
     {
-        $type = $this->type();
-        return $type ? $type:array_get($this->attributes, 'type');
+        $type = array_get($this->attributes, 'type');
+        return $type ? $type:$this->type();
     }
 
     public function setType($type)
@@ -44,7 +44,6 @@ class Field extends Fluent
         $this->attributes['args'] = $args;
         return $this;
     }
-
 
     public function getRootResolver()
     {
