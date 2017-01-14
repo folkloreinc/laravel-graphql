@@ -101,7 +101,7 @@ class Field extends Fluent
      */
     public function setResolver($resolver)
     {
-        $this->_resolver = $resolver;
+        $this->attributes['resolver'] = $resolver;
         return $this;
     }
 

@@ -132,7 +132,7 @@ class TypeTest extends TestCase
     }
 
     /**
-     * Test the toArray method
+     * Test the attributes method
      *
      * @test
      * @covers ::attributes
@@ -148,7 +148,7 @@ class TypeTest extends TestCase
         $this->type->name = $baseAttributes['name'];
         $attributes = $this->type->getAttributes();
         $this->assertEquals($baseAttributes, $attributes);
-        $this->assertTrue(isset($baseAttributes['name']));
+        $this->assertTrue(isset($this->type->name));
         $this->assertEquals($baseAttributes['name'], $this->type->name);
 
         $type = new ExampleType();

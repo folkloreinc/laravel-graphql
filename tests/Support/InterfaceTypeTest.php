@@ -27,7 +27,7 @@ class InterfaceTypeTest extends TestCase
      */
     public function testGetTypeResolver()
     {
-        $this->assertNull(null, $this->type->getTypeResolver());
+        $this->assertNull($this->type->getTypeResolver());
         $typeResolver = function ($root) {
             return Type::string();
         };
@@ -45,6 +45,7 @@ class InterfaceTypeTest extends TestCase
     {
         $type = new ExampleInterfaceType();
         $this->assertInstanceOf(Closure::class, $type->getTypeResolver());
+        $this->assertEquals(Type::string(), $type->resolveType());
 
         $interfaceMock = $this->getMockBuilder(ExampleInterfaceType::class)
             ->setMethods(['resolveType'])
