@@ -21,6 +21,7 @@ class FieldTest extends TestCase
      * Test get and set type
      *
      * @test
+     * @covers ::type
      * @covers ::setType
      * @covers ::getType
      */
@@ -39,6 +40,7 @@ class FieldTest extends TestCase
      * Test get and set args
      *
      * @test
+     * @covers ::args
      * @covers ::setArgs
      * @covers ::getArgs
      */
@@ -110,8 +112,9 @@ class FieldTest extends TestCase
     public function testGetRootResolverMethod()
     {
         $field = new ExampleField();
-        $this->assertEquals([$field, 'resolveRoot'], $field->getRootResolver());
-        $this->assertEquals('root', $field->resolveRoot());
+        $rootResolver = $field->getRootResolver();
+        $this->assertEquals([$field, 'resolveRoot'], $rootResolver);
+        $this->assertEquals('root', $rootResolver());
 
         $fieldMock = $this->getMockBuilder(ExampleField::class)
             ->setMethods(['resolveRoot'])
@@ -119,7 +122,90 @@ class FieldTest extends TestCase
         $fieldMock->expects($this->once())
             ->method('resolveRoot')
             ->willReturn('returnRoot');
-        $this->assertEquals('returnRoot', $fieldMock->resolveRoot());
+        $rootResolver = $fieldMock->getRootResolver();
+        $this->assertEquals('returnRoot', $rootResolver());
+    }
+
+    /**
+     * Test get and set resolver
+     *
+     * @test
+     * @covers ::getResolver
+     * @covers ::setResolver
+     */
+    public function testGetResolver()
+    {
+        $this->assertNull($this->field->getResolver());
+        $resolver = function ($root) {
+            return 'resolve';
+        };
+        $this->field->setResolver($resolver);
+        $this->assertEquals($resolver, $this->field->getResolver());
+    }
+
+    /**
+     * Test get resolver from resolve method
+     *
+     * @test
+     * @covers ::getResolver
+     */
+    public function testGetResolverMethod()
+    {
+        $field = new ExampleField();
+        $resolver = $field->getResolver();
+        $this->assertInstanceOf(Closure::class, $resolver);
+        $this->assertEquals('root+resolve', $resolver('root'));
+
+        $fieldMock = $this->getMockBuilder(ExampleField::class)
+            ->setMethods(['resolve'])
+            ->getMock();
+        $fieldMock->expects($this->once())
+            ->method('resolve')
+            ->willReturn('returnResolve');
+        $resolver = $fieldMock->getResolver();
+        $this->assertEquals('returnResolve', $resolver('root'));
+    }
+
+    /**
+     * Test resolver and root resolver
+     *
+     * @test
+     * @covers ::getResolver
+     * @covers ::setRootResolver
+     * @covers ::setResolver
+     */
+    public function testGetResolverAndRoot()
+    {
+        $rootResolver = function ($root) {
+            return 'root';
+        };
+        $resolver = function ($root) {
+            return $root.'+resolve';
+        };
+        $this->field->setRootResolver($rootResolver);
+        $this->field->setResolver($resolver);
+        $resolver = $this->field->getResolver();
+        $this->assertEquals('root+resolve', $resolver(''));
+    }
+
+    /**
+     * Test toArray method
+     *
+     * @test
+     * @covers ::toArray
+     */
+    public function testToArray()
+    {
+        $field = new ExampleField();
+        $array = $field->toArray();
+        $this->assertArrayHasKey('description', $array);
+        $this->assertArrayHasKey('type', $array);
+        $this->assertArrayHasKey('args', $array);
+        $this->assertArrayHasKey('resolve', $array);
+        $this->assertEquals($field->description, $array['description']);
+        $this->assertEquals($field->getType(), $array['type']);
+        $this->assertEquals($field->getArgs(), $array['args']);
+        $this->assertEquals($field->getResolver(), $array['resolve']);
     }
 }
 
@@ -151,5 +237,10 @@ class ExampleField extends Field
     public function resolveRoot()
     {
         return 'root';
+    }
+
+    public function resolve($root)
+    {
+        return $root.'+resolve';
     }
 }

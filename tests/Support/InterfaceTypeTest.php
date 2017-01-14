@@ -44,8 +44,9 @@ class InterfaceTypeTest extends TestCase
     public function testGetTypeResolverMethod()
     {
         $type = new ExampleInterfaceType();
-        $this->assertInstanceOf(Closure::class, $type->getTypeResolver());
-        $this->assertEquals(Type::string(), $type->resolveType());
+        $typeResolver = $type->getTypeResolver();
+        $this->assertInstanceOf(Closure::class, $typeResolver);
+        $this->assertEquals(Type::string(), $typeResolver());
 
         $interfaceMock = $this->getMockBuilder(ExampleInterfaceType::class)
             ->setMethods(['resolveType'])
@@ -53,7 +54,8 @@ class InterfaceTypeTest extends TestCase
         $interfaceMock->expects($this->once())
             ->method('resolveType')
             ->willReturn(Type::string());
-        $this->assertEquals(Type::string(), $interfaceMock->resolveType());
+        $typeResolver = $interfaceMock->getTypeResolver();
+        $this->assertEquals(Type::string(), $typeResolver());
     }
 
     /**
