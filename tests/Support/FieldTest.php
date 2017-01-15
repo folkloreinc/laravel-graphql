@@ -209,7 +209,6 @@ class FieldTest extends TestCase
     }
 }
 
-
 class ExampleField extends Field
 {
     protected function type()
