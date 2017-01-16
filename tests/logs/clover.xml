@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1484515262">
-  <project timestamp="1484515262">
+<coverage generated="1484586053">
+  <project timestamp="1484586053">
     <package name="Folklore\GraphQL\Console">
       <file name="/Users/dmp/Code/laravel-graphql/src/Folklore/GraphQL/Console/FieldMakeCommand.php">
         <class name="FieldMakeCommand" namespace="Folklore\GraphQL\Console">
@@ -73,7 +73,7 @@
       </file>
       <file name="/Users/dmp/Code/laravel-graphql/src/Folklore/GraphQL/Console/SchemaCommand.php">
         <class name="SchemaCommand" namespace="Folklore\GraphQL\Console">
-          <metrics complexity="6" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="18" coveredstatements="18" elements="20" coveredelements="20"/>
+          <metrics complexity="6" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="16" coveredstatements="16" elements="18" coveredelements="18"/>
         </class>
         <line num="35" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="6"/>
         <line num="37" type="stmt" count="6"/>
@@ -90,12 +90,10 @@
         <line num="63" type="stmt" count="1"/>
         <line num="64" type="stmt" count="1"/>
         <line num="65" type="stmt" count="1"/>
-        <line num="66" type="stmt" count="1"/>
-        <line num="67" type="stmt" count="1"/>
         <line num="70" type="stmt" count="1"/>
         <line num="71" type="stmt" count="1"/>
         <line num="72" type="stmt" count="1"/>
-        <metrics loc="73" ncloc="53" classes="1" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="18" coveredstatements="18" elements="20" coveredelements="20"/>
+        <metrics loc="73" ncloc="53" classes="1" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="16" coveredstatements="16" elements="18" coveredelements="18"/>
       </file>
       <file name="/Users/dmp/Code/laravel-graphql/src/Folklore/GraphQL/Console/TypeMakeCommand.php">
         <class name="TypeMakeCommand" namespace="Folklore\GraphQL\Console">
@@ -791,7 +789,7 @@
       </file>
       <file name="/Users/dmp/Code/laravel-graphql/src/Folklore/GraphQL/Relay/Support/Traits/ResolvesFromQueryBuilder.php">
         <class name="ResolvesFromQueryBuilder" namespace="Folklore\GraphQL\Relay\Support\Traits">
-          <metrics complexity="18" methods="10" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="52" coveredstatements="0" elements="62" coveredelements="0"/>
+          <metrics complexity="19" methods="11" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="53" coveredstatements="0" elements="64" coveredelements="0"/>
         </class>
         <line num="13" type="method" name="getQueryBuilderResolver" visibility="public" complexity="1" crap="2" count="0"/>
         <line num="15" type="stmt" count="0"/>
@@ -812,50 +810,52 @@
         <line num="42" type="stmt" count="0"/>
         <line num="43" type="stmt" count="0"/>
         <line num="44" type="stmt" count="0"/>
-        <line num="46" type="method" name="resolveQueryBuilderFromRoot" visibility="protected" complexity="3" crap="12" count="0"/>
+        <line num="46" type="method" name="getCountFromQuery" visibility="protected" complexity="1" crap="2" count="0"/>
         <line num="48" type="stmt" count="0"/>
-        <line num="49" type="stmt" count="0"/>
-        <line num="51" type="stmt" count="0"/>
+        <line num="51" type="method" name="resolveQueryBuilderFromRoot" visibility="protected" complexity="3" crap="12" count="0"/>
+        <line num="53" type="stmt" count="0"/>
         <line num="54" type="stmt" count="0"/>
-        <line num="55" type="stmt" count="0"/>
-        <line num="58" type="stmt" count="0"/>
+        <line num="56" type="stmt" count="0"/>
         <line num="59" type="stmt" count="0"/>
-        <line num="62" type="method" name="resolveItemsFromQueryBuilder" visibility="protected" complexity="1" crap="2" count="0"/>
+        <line num="60" type="stmt" count="0"/>
+        <line num="63" type="stmt" count="0"/>
         <line num="64" type="stmt" count="0"/>
-        <line num="67" type="method" name="getCollectionFromItems" visibility="protected" complexity="1" crap="2" count="0"/>
+        <line num="67" type="method" name="resolveItemsFromQueryBuilder" visibility="protected" complexity="1" crap="2" count="0"/>
         <line num="69" type="stmt" count="0"/>
-        <line num="70" type="stmt" count="0"/>
-        <line num="71" type="stmt" count="0"/>
-        <line num="72" type="stmt" count="0"/>
-        <line num="75" type="method" name="resolve" visibility="public" complexity="7" crap="56" count="0"/>
+        <line num="72" type="method" name="getCollectionFromItems" visibility="protected" complexity="1" crap="2" count="0"/>
+        <line num="74" type="stmt" count="0"/>
+        <line num="75" type="stmt" count="0"/>
+        <line num="76" type="stmt" count="0"/>
         <line num="77" type="stmt" count="0"/>
-        <line num="78" type="stmt" count="0"/>
-        <line num="81" type="stmt" count="0"/>
+        <line num="80" type="method" name="resolve" visibility="public" complexity="7" crap="56" count="0"/>
         <line num="82" type="stmt" count="0"/>
         <line num="83" type="stmt" count="0"/>
-        <line num="85" type="stmt" count="0"/>
-        <line num="89" type="stmt" count="0"/>
+        <line num="86" type="stmt" count="0"/>
+        <line num="87" type="stmt" count="0"/>
+        <line num="88" type="stmt" count="0"/>
         <line num="90" type="stmt" count="0"/>
-        <line num="92" type="stmt" count="0"/>
-        <line num="93" type="stmt" count="0"/>
         <line num="94" type="stmt" count="0"/>
         <line num="95" type="stmt" count="0"/>
+        <line num="97" type="stmt" count="0"/>
         <line num="98" type="stmt" count="0"/>
         <line num="99" type="stmt" count="0"/>
         <line num="100" type="stmt" count="0"/>
-        <line num="101" type="stmt" count="0"/>
+        <line num="103" type="stmt" count="0"/>
         <line num="104" type="stmt" count="0"/>
         <line num="105" type="stmt" count="0"/>
         <line num="106" type="stmt" count="0"/>
-        <line num="107" type="stmt" count="0"/>
-        <line num="108" type="stmt" count="0"/>
+        <line num="109" type="stmt" count="0"/>
+        <line num="110" type="stmt" count="0"/>
         <line num="111" type="stmt" count="0"/>
         <line num="112" type="stmt" count="0"/>
         <line num="113" type="stmt" count="0"/>
         <line num="116" type="stmt" count="0"/>
         <line num="117" type="stmt" count="0"/>
-        <line num="119" type="stmt" count="0"/>
-        <metrics loc="121" ncloc="119" classes="1" methods="10" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="52" coveredstatements="0" elements="62" coveredelements="0"/>
+        <line num="118" type="stmt" count="0"/>
+        <line num="121" type="stmt" count="0"/>
+        <line num="122" type="stmt" count="0"/>
+        <line num="124" type="stmt" count="0"/>
+        <metrics loc="126" ncloc="124" classes="1" methods="11" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="53" coveredstatements="0" elements="64" coveredelements="0"/>
       </file>
       <file name="/Users/dmp/Code/laravel-graphql/src/Folklore/GraphQL/Relay/Support/Traits/TypeIsNode.php">
         <class name="TypeIsNode" namespace="Folklore\GraphQL\Relay\Support\Traits">
@@ -1129,6 +1129,6 @@
         <metrics loc="11" ncloc="11" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="2" coveredstatements="2" elements="3" coveredelements="3"/>
       </file>
     </package>
-    <metrics files="55" loc="3352" ncloc="2659" classes="27" methods="161" coveredmethods="111" conditionals="0" coveredconditionals="0" statements="610" coveredstatements="440" elements="771" coveredelements="551"/>
+    <metrics files="55" loc="3357" ncloc="2664" classes="27" methods="162" coveredmethods="111" conditionals="0" coveredconditionals="0" statements="609" coveredstatements="438" elements="771" coveredelements="549"/>
   </project>
 </coverage>

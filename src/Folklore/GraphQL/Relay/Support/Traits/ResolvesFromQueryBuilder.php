@@ -43,6 +43,11 @@ trait ResolvesFromQueryBuilder
         $query->take($value);
     }
 
+    protected function getCountFromQuery($query)
+    {
+        return $query->count();
+    }
+
     protected function resolveQueryBuilderFromRoot($root, $args)
     {
         if (method_exists($this, 'resolveQueryBuilder')) {
@@ -105,12 +110,12 @@ trait ResolvesFromQueryBuilder
         $hasPreviousPage = false;
         if (isset($args['first'])) {
             $this->scopeFirst($query, $args['first']);
-            $hasNextPage = $queryCountAfter->count() > $args['first'];
+            $hasNextPage = $this->getCountFromQuery($queryCountAfter) > $args['first'];
         }
 
         if (isset($args['last'])) {
             $this->scopeLast($query, $args['last']);
-            $hasPreviousPage = $queryCountBefore->count() > $args['last'];
+            $hasPreviousPage = $this->getCountFromQuery($queryCountBefore) > $args['last'];
         }
 
         $items = call_user_func_array([$this, 'resolveItemsFromQueryBuilder'], [$query] + $arguments);
