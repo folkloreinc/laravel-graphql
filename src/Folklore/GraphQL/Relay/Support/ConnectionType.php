@@ -60,7 +60,7 @@ class ConnectionType extends BaseType
         return $type;
     }
 
-    protected function getCursorFromEdge($edge)
+    protected function getCursorFromNode($edge)
     {
         $edgeType = $this->getEdgeType();
         if ($edgeType instanceof InterfaceType) {
@@ -72,11 +72,11 @@ class ConnectionType extends BaseType
 
     protected function getEdgesFromRoot($root)
     {
-        $cursor = $root instanceof EdgesCollection ? $root->getStartCursor():null;
+        $cursor = $this->getStartCursorFromRoot($root);
         $edges = [];
         foreach ($root as $item) {
             $edges[] = [
-                'cursor' => $cursor !== null ? $cursor:$this->getCursorFromEdge($item),
+                'cursor' => $cursor !== null ? $cursor:$this->getCursorFromNode($item),
                 'node' => $item
             ];
             if ($cursor !== null) {
@@ -86,25 +86,59 @@ class ConnectionType extends BaseType
         return $edges;
     }
 
-    protected function getPageInfoFromRoot($root)
+    protected function getHasPreviousPageFromRoot($root)
     {
         $hasPreviousPage = false;
-        $hasNextPage = false;
-        $startCursor = null;
-        $endCursor = null;
         if ($root instanceof LengthAwarePaginator) {
             $hasPreviousPage = !$root->onFirstPage();
-            $hasNextPage = $root->hasMorePages();
         } elseif ($root instanceof AbstractPaginator) {
             $hasPreviousPage = !$root->onFirstPage();
         } elseif ($root instanceof EdgesCollection) {
             $hasPreviousPage = $root->getHasPreviousPage();
+        }
+
+        return $hasPreviousPage;
+    }
+
+    protected function getHasNextPageFromRoot($root)
+    {
+        $hasNextPage = false;
+        if ($root instanceof LengthAwarePaginator) {
+            $hasNextPage = $root->hasMorePages();
+        } elseif ($root instanceof EdgesCollection) {
             $hasNextPage = $root->getHasNextPage();
+        }
+
+        return $hasNextPage;
+    }
+
+    protected function getStartCursorFromRoot($root)
+    {
+        $startCursor = null;
+        if ($root instanceof EdgesCollection) {
             $startCursor = $root->getStartCursor();
+        }
+
+        return $startCursor;
+    }
+
+    protected function getEndCursorFromRoot($root)
+    {
+        $endCursor = null;
+        if ($root instanceof EdgesCollection) {
             $endCursor = $root->getEndCursor();
         }
 
-        $edges = $this->getEdgesFromRoot($root);
+        return $endCursor;
+    }
+
+    protected function getPageInfoFromRoot($root)
+    {
+        $hasPreviousPage = $this->getHasPreviousPageFromRoot($root);
+        $hasNextPage = $this->getHasNextPageFromRoot($root);
+        $startCursor = $this->getStartCursorFromRoot($root);
+        $endCursor = $this->getEndCursorFromRoot($root);
+        $edges = $startCursor === null || $endCursor === null ? $this->getEdgesFromRoot($root):null;
 
         return [
             'hasPreviousPage' => $hasPreviousPage,
