@@ -36,26 +36,28 @@ class NodeQuery extends Query
 
     public function resolve($root, $args, $context, ResolveInfo $info)
     {
-        list($typeName, $id) = RelayFacade::fromGlobalId($args['id']);
+        $globalId = RelayFacade::fromGlobalId($args['id']);
+        $typeName = $globalId['type'];
+        $id = $globalId['id'];
         $types = GraphQL::getTypes();
         $typeClass = array_get($types, $typeName);
-        
+
         if (!$typeClass) {
             throw new TypeNotFound('Type "'.$typeName.'" not found.');
         }
-        
+
         $type = app($typeClass);
-        
+
         if (!$type instanceof NodeContract) {
             throw new NodeInvalid('Type "'.$typeName.'" doesn\'t implement the NodeContract interface.');
         }
-        
+
         $node = $type->resolveById($id);
-        
+
         $response = new NodeResponse();
         $response->setNode($node);
         $response->setType(GraphQL::type($typeName));
-        
+
         return $response;
     }
 }

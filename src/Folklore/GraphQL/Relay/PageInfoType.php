@@ -10,7 +10,7 @@ class PageInfoType extends BaseType
 {
     protected $attributes = [
         'name' => 'PageInfo',
-        'description' => 'The relay node interface'
+        'description' => 'The relay pageInfo type used by connections'
     ];
 
     protected function fields()

@@ -54,18 +54,22 @@ class Relay
 
     public function fromGlobalId($globalId)
     {
-        return explode(':', base64_decode($globalId), 2);
+        $id = explode(':', base64_decode($globalId), 2);
+        return sizeof($id) === 2 ? [
+            'type' => $id[0],
+            'id' => $id[1]
+        ]:null;
     }
 
     public function getIdFromGlobalId($globalId)
     {
-        list($type, $id) = $this->fromGlobalId($globalId);
-        return $id;
+        $id = $this->fromGlobalId($globalId);
+        return $id ? $id['id']:null;
     }
 
     public function getTypeFromGlobalId($globalId)
     {
-        list($type, $id) = $this->fromGlobalId($globalId);
-        return $type;
+        $id = $this->fromGlobalId($globalId);
+        return $id ? $id['type']:null;
     }
 }
