@@ -18,12 +18,12 @@ class EdgeObjectType extends ObjectType
             return $fields;
         };
         array_set($this->config, 'fields', $fieldsResolver);
-        
+
         return $this;
     }
-    
+
     public function getEdgeType()
     {
-        return array_get($this->getField('node'), 'type');
+        return array_get($this->getField('node')->config, 'type');
     }
 }

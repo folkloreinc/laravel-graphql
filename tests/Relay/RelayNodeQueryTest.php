@@ -8,6 +8,9 @@ use Folklore\GraphQL\Relay\NodeIdField;
 use Folklore\GraphQL\Relay\NodeResponse;
 use GraphQL\Type\Definition\ResolveInfo;
 
+/**
+ * @coversDefaultClass \Folklore\GraphQL\Relay\NodeQuery
+ */
 class RelayNodeQueryTest extends RelayTestCase
 {
     protected $query;
@@ -20,9 +23,10 @@ class RelayNodeQueryTest extends RelayTestCase
     }
 
     /**
-     * Test schema default
+     * Test that there is an id args
      *
      * @test
+     * @covers ::args
      */
     public function testHasIdArgs()
     {
@@ -31,9 +35,10 @@ class RelayNodeQueryTest extends RelayTestCase
     }
 
     /**
-     * Test schema default
+     * Test that the type is Node
      *
      * @test
+     * @covers ::type
      */
     public function testTypeIsNode()
     {
@@ -42,9 +47,10 @@ class RelayNodeQueryTest extends RelayTestCase
     }
 
     /**
-     * Test schema default
+     * Test that resolve return a NodeResponse
      *
      * @test
+     * @covers ::resolve
      */
     public function testResolveReturnNodeResponse()
     {
@@ -59,9 +65,10 @@ class RelayNodeQueryTest extends RelayTestCase
     }
 
     /**
-     * Test schema default
+     * Test that resolve throw an exception when the type is not found
      *
      * @test
+     * @covers ::resolve
      * @expectedException \Folklore\GraphQL\Exception\TypeNotFound
      */
     public function testResolveThrowExceptionWhenTypeIsNotFound()
@@ -77,9 +84,10 @@ class RelayNodeQueryTest extends RelayTestCase
     }
 
     /**
-     * Test schema default
+     * Test that resolve throw an exception when the type is not a node
      *
      * @test
+     * @covers ::resolve
      * @expectedException \Folklore\GraphQL\Relay\Exception\NodeInvalid
      */
     public function testResolveThrowExceptionWhenTypeIsInvalid()

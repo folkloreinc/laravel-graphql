@@ -5,6 +5,9 @@ use Folklore\GraphQL\Relay\NodeInterface;
 use Folklore\GraphQL\Relay\NodeResponse;
 use Folklore\GraphQL\Support\InterfaceType;
 
+/**
+ * @coversDefaultClass \Folklore\GraphQL\Relay\NodeInterface
+ */
 class RelayNodeInterfaceTest extends RelayTestCase
 {
     protected $interface;
@@ -20,6 +23,7 @@ class RelayNodeInterfaceTest extends RelayTestCase
      * Test is interface type
      *
      * @test
+     * @covers ::__construct
      */
     public function testIsInterfaceType()
     {
@@ -30,6 +34,8 @@ class RelayNodeInterfaceTest extends RelayTestCase
      * Test has id field
      *
      * @test
+     * @covers ::fields
+     * @covers ::getFields
      */
     public function testHasIdField()
     {
@@ -41,9 +47,11 @@ class RelayNodeInterfaceTest extends RelayTestCase
     }
 
     /**
-     * Test has id field
+     * Test resolving a node response
      *
      * @test
+     * @covers ::resolveType
+     * @covers ::getTypeResolver
      */
     public function testResolveTypeFromNodeResponse()
     {
@@ -56,9 +64,10 @@ class RelayNodeInterfaceTest extends RelayTestCase
     }
 
     /**
-     * Test has id field
+     * Test that resolving other than a NodeResponse throw and exception
      *
      * @test
+     * @covers ::resolveType
      * @expectedException \Folklore\GraphQL\Relay\Exception\NodeRootInvalid
      */
     public function testResolveTypeFromOther()
