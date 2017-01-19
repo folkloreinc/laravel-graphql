@@ -69,9 +69,11 @@ trait ResolvesFromQueryBuilder
         return $query->get();
     }
 
-    protected function getCollectionFromItems($items, $hasPreviousPage = false, $hasNextPage = false)
+    protected function getCollectionFromItems($items, $offset, $limit, $hasPreviousPage, $hasNextPage)
     {
         $collection = new EdgesCollection($items);
+        $collection->setStartCursor($offset);
+        $collection->setEndCursor($offset + $limit - 1);
         $collection->setHasNextPage($hasNextPage);
         $collection->setHasPreviousPage($hasPreviousPage);
         return $collection;
@@ -79,6 +81,7 @@ trait ResolvesFromQueryBuilder
 
     public function resolve($root, $args)
     {
+        // Get the query builder
         $arguments = func_get_args();
         $query = call_user_func_array([$this, 'resolveQueryBuilderFromRoot'], $arguments);
 
@@ -91,35 +94,39 @@ trait ResolvesFromQueryBuilder
             }
         }
 
-        $queryCountBefore = clone $query;
-        $queryCountAfter = clone $query;
+        $after = array_get($args, 'after');
+        $before = array_get($args, 'before');
+        $first = array_get($args, 'first');
+        $last = array_get($args, 'last');
 
-        if (isset($args['after'])) {
-            $afterId = Relay::getIdFromGlobalId($args['after']);
-            $this->scopeAfter($query, $afterId);
-            $this->scopeAfter($queryCountAfter, $afterId);
+        $count = $query->count();
+
+        $offset = 0;
+        $limit = 0;
+        if ($first) {
+            $limit = $first;
         }
 
-        if (isset($args['before'])) {
-            $beforeId = Relay::getIdFromGlobalId($args['before']);
-            $this->scopeBefore($query, $beforeId);
-            $this->scopeBefore($queryCountBefore, $beforeId);
+        if ($last) {
+            $limit = $last;
         }
 
-        $hasNextPage = false;
-        $hasPreviousPage = false;
-        if (isset($args['first'])) {
-            $this->scopeFirst($query, $args['first']);
-            $hasNextPage = $this->getCountFromQuery($queryCountAfter) > $args['first'];
+        if ($after) {
+            $offset = $after;
         }
 
-        if (isset($args['last'])) {
-            $this->scopeLast($query, $args['last']);
-            $hasPreviousPage = $this->getCountFromQuery($queryCountBefore) > $args['last'];
+        if ($before) {
+            $offset = $before - $limit;
         }
 
-        $items = call_user_func_array([$this, 'resolveItemsFromQueryBuilder'], [$query] + $arguments);
-        $collection = $this->getCollectionFromItems($items, $hasPreviousPage, $hasNextPage);
+        $query->skip($offset)->take($limit);
+
+        $hasNextPage = ($offset + $limit) < $count;
+        $hasPreviousPage = $offset > 0;
+
+        $resolveItemsArguments = array_merge([$query], $arguments);
+        $items = call_user_func_array([$this, 'resolveItemsFromQueryBuilder'], $resolveItemsArguments);
+        $collection = $this->getCollectionFromItems($items, $offset, $limit, $hasPreviousPage, $hasNextPage);
 
         return $collection;
     }

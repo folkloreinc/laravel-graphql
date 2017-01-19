@@ -19,21 +19,21 @@ trait FieldIsConnection
             ],
             'after' => [
                 'name' => 'after',
-                'type' => Type::id()
+                'type' => Type::string()
             ],
             'before' => [
                 'name' => 'before',
-                'type' => Type::id()
+                'type' => Type::string()
             ]
         ];
     }
-    
+
     public function getArgs()
     {
         $args = parent::getArgs();
-        
+
         $connectionArgs = $this->connectionArgs();
-        
+
         return array_merge($connectionArgs, $args);
     }
 }
