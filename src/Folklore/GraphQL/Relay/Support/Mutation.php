@@ -44,7 +44,7 @@ class Mutation extends BaseMutation
         return $mutationResponse;
     }
 
-    protected function getClientMutationId($root, $args)
+    protected function resolveClientMutationId($root, $args)
     {
         return array_get($args, 'input.clientMutationId');
     }
@@ -56,7 +56,7 @@ class Mutation extends BaseMutation
         return function () use ($resolver) {
             $args = func_get_args();
             $response = call_user_func_array($resolver, $args);
-            $clientMutationId = call_user_func_array([$this, 'getClientMutationId'], $args);
+            $clientMutationId = call_user_func_array([$this, 'resolveClientMutationId'], $args);
             $response = $this->getMutationResponse($response, $clientMutationId);
             return $response;
         };
