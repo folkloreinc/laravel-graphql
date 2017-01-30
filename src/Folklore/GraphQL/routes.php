@@ -28,7 +28,7 @@ $router->group(array(
         if (!$router instanceof \Illuminate\Routing\Router &&
             preg_match($schemaParameterPattern, $queryRoute)
         ) {
-            foreach ($methods as $method) {
+            foreach ($queryMethods as $method) {
                 $router->$method(preg_replace($schemaParameterPattern, '', $queryRoute), array(
                     'as' => 'graphql.'.$method.'.query',
                     'uses' => $queryController
