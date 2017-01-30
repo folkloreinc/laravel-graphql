@@ -168,9 +168,9 @@ GraphQL::addSchema('secret', [
 Afterwards, you can build the schema using the facade:
 
 ```php
-    
+
 // Will return the default schema defined by 'schema' in the config
-$schema = GraphQL::schema(); 
+$schema = GraphQL::schema();
 
 // Will return the 'secret' schema
 $schema = GraphQL::schema('secret');
@@ -184,7 +184,7 @@ $schema = GraphQL::schema([
 		//'updateUserEmail' => 'App\GraphQL\Query\UpdateUserEmailMutation'
 	]
 ]);
-	
+
 ```
 
 Or you can request the endpoint for a specific schema
@@ -246,7 +246,7 @@ Add the type to the `config/graphql.php` configuration file
 ```php
 
 'types' => [
-	'user' => 'App\GraphQL\Type\UserType'
+	'User' => 'App\GraphQL\Type\UserType'
 ]
 
 ```
@@ -255,7 +255,7 @@ You could also add the type with the `GraphQL` Facade, in a service provider for
 
 ```php
 
-GraphQL::addType('App\GraphQL\Type\UserType', 'user');
+GraphQL::addType('App\GraphQL\Type\UserType', 'User');
 
 ```
 
