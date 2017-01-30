@@ -76,6 +76,7 @@ class ServiceProvider extends BaseServiceProvider
         $this->app['events']->listen(\Folklore\GraphQL\Events\SchemaAdded::class, function () use ($graphql, $router) {
             $router->pattern('graphql_schema', $graphql->routerSchemaPattern());
         });
+
         $router->pattern('graphql_schema', $graphql->routerSchemaPattern());
 
         // Define routes
@@ -159,7 +160,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function registerGraphQL()
     {
-        $this->app->singleton('graphql', function ($app, $router) {
+        $this->app->singleton('graphql', function ($app) {
             $graphql = new GraphQL($app);
             return $graphql;
         });
