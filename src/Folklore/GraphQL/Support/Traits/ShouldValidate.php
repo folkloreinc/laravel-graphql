@@ -2,7 +2,6 @@
 
 namespace Folklore\GraphQL\Support\Traits;
 
-use Validator;
 use Folklore\GraphQL\Error\ValidationError;
 use Closure;
 
@@ -43,7 +42,7 @@ trait ShouldValidate
 
     protected function getValidator($args, $rules)
     {
-        return Validator::make($args, $rules);
+        return app('validator')->make($args, $rules);
     }
 
     public function getResolver()

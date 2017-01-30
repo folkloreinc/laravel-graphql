@@ -9,6 +9,10 @@ This package is compatible with Eloquent model (or any other data source). See t
 [![Total Downloads](https://poser.pugx.org/folklore/graphql/downloads.svg)](https://packagist.org/packages/folklore/graphql)
 [![Coverage Status](https://coveralls.io/repos/github/Folkloreatelier/laravel-graphql/badge.svg?branch=feature%2Frelay)](https://coveralls.io/github/Folkloreatelier/laravel-graphql?branch=feature%2Frelay)
 
+----
+### To use laravel-graphql with Relay, check the [feature/relay](https://github.com/Folkloreatelier/laravel-graphql/tree/feature/relay) branch.
+----
+
 ## Installation
 
 Version 1.1 is released. If you are upgrading from older version, you can check the [upgrade guide](docs/upgrade.md).
@@ -23,7 +27,11 @@ Version 1.1 is released. If you are upgrading from older version, you can check 
 ```json
 {
 	"require": {
+<<<<<<< HEAD
 		"folklore/graphql": "~1.1.0"
+=======
+		"folklore/graphql": "~1.0.0"
+>>>>>>> develop
 	}
 }
 ```
@@ -116,6 +124,7 @@ This command will create a Type Class `UserType.php` in the `app/GraphQL/Type` f
 class UserType extends BaseType
 {
 
+<<<<<<< HEAD
     //...
 
     protected function fields()
@@ -131,6 +140,27 @@ class UserType extends BaseType
             ]
         ]
     }
+=======
+```php
+
+// Will return the default schema defined by 'schema' in the config
+$schema = GraphQL::schema();
+
+// Will return the 'secret' schema
+$schema = GraphQL::schema('secret');
+
+// Will build a new schema
+$schema = GraphQL::schema([
+	'query' => [
+		//'users' => 'App\GraphQL\Query\UsersQuery'
+	],
+	'mutation' => [
+		//'updateUserEmail' => 'App\GraphQL\Query\UpdateUserEmailMutation'
+	]
+]);
+
+```
+>>>>>>> develop
 
     //...
 
@@ -163,16 +193,30 @@ class AppServiceProvider extends ServiceProvider
 {
     //...
 
+<<<<<<< HEAD
     public function boot()
     {
         GraphQL::addType(\App\GraphQL\Type\UserType::class);
     }
+=======
+'types' => [
+	'User' => 'App\GraphQL\Type\UserType'
+]
+>>>>>>> develop
 
     //...  
 }
 ```
 
+<<<<<<< HEAD
 **2-** Then create a query:
+=======
+You could also add the type with the `GraphQL` Facade, in a service provider for example.
+
+```php
+
+GraphQL::addType('App\GraphQL\Type\UserType', 'User');
+>>>>>>> develop
 
 ```
 php artisan make:graphql:query UserQuery

@@ -10,10 +10,7 @@ class GraphQLController extends Controller
             $schema = config('graphql.schema');
         }
 
-        // Backward compatibility
-        $oldVariablesInputName = config('graphql.variables_input_name', 'params');
-        $variablesInputName = config('graphql.request_variables_name', $oldVariablesInputName);
-
+        $variableInputName = config('graphql.variables_input_name', 'variables');
         $query = $request->get('query');
         $params = $request->get($variablesInputName);
         $operationName = $request->get('operationName', null);
