@@ -10,29 +10,29 @@ class GraphQLController extends Controller
         if (!$schema) {
             $schema = config('graphql.schema');
         }
-        
+
         $variableInputName = config('graphql.variables_input_name', 'params');
         $query = $request->get('query');
         $params = $request->get($variableInputName);
         $operationName = $request->get('operationName', null);
-        
+
         if (is_string($params)) {
             $params = json_decode($params, true);
         }
-        
+
         $context = $this->queryContext($query, $params, $schema);
-        
+
         return app('graphql')->query($query, $params, [
             'context' => $context,
             'schema' => $schema,
             'operationName' => $operationName
         ]);
     }
-    
+
     protected function queryContext($query, $params, $schema)
     {
         try {
-            return Auth::user();
+            return app('auth')->user();
         } catch (\Exception $e) {
             return null;
         }
