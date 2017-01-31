@@ -25,8 +25,7 @@ class GraphiQLTest extends TestCase
 
         $response = $this->call('GET', route('graphql.graphiql'));
         $this->assertEquals(200, $response->status());
-        $this->assertViewHas('graphqlPath', $queryPath);
-
+        $this->assertEquals($queryPath, $response->original->graphqlPath);
         $content = $response->getContent();
         $this->assertContains($queryPath, $content);
     }
