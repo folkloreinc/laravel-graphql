@@ -33,7 +33,7 @@ before_install:
 
 install: composer update --no-interaction --prefer-dist
 
-script: phpunit
+script: vendor/bin/phpunit
 
 after_success:
   - travis_retry php vendor/bin/coveralls
