@@ -2,20 +2,14 @@
 
 Use Facebook GraphQL with Laravel 5 or Lumen. It is based on the PHP implementation [here](https://github.com/webonyx/graphql-php). You can find more information about GraphQL in the [GraphQL Introduction](http://facebook.github.io/react/blog/2015/05/01/graphql-introduction.html) on the [React](http://facebook.github.io/react) blog or you can read the [GraphQL specifications](https://facebook.github.io/graphql/). This is a work in progress.
 
-This package is compatible with Eloquent model (or any other data source). See the example below.
+This package is compatible with Eloquent model (or any other data source) and Relay. See the example below.
 
 [![Latest Stable Version](https://poser.pugx.org/folklore/graphql/v/stable.svg)](https://packagist.org/packages/folklore/graphql)
 [![Build Status](https://travis-ci.org/Folkloreatelier/laravel-graphql.png?branch=master)](https://travis-ci.org/Folkloreatelier/laravel-graphql)
 [![Total Downloads](https://poser.pugx.org/folklore/graphql/downloads.svg)](https://packagist.org/packages/folklore/graphql)
 [![Coverage Status](https://coveralls.io/repos/github/Folkloreatelier/laravel-graphql/badge.svg?branch=feature%2Frelay)](https://coveralls.io/github/Folkloreatelier/laravel-graphql?branch=feature%2Frelay)
 
-----
-### To use laravel-graphql with Relay, check the [feature/relay](https://github.com/Folkloreatelier/laravel-graphql/tree/feature/relay) branch.
-----
-
 ## Installation
-
-Version 1.1 is released. If you are upgrading from older version, you can check the [upgrade guide](docs/upgrade.md).
 
 #### Dependencies:
 
