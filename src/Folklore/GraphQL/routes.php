@@ -38,6 +38,12 @@ $router->group(array(
                     'uses' => $queryController
                 ));
             }
+            // fallback route
+            $router->$method(preg_replace($schemaParameterPattern, '{graphql_schema}', $queryRoute), array(
+                'as' => 'graphql.query',
+                'uses' => $queryController
+            ));
+
         } else {
             $router->match($queryMethods, $queryRoute, array(
                 'as' => 'graphql.query',
