@@ -27,11 +27,7 @@ Version 1.1 is released. If you are upgrading from older version, you can check 
 ```json
 {
 	"require": {
-<<<<<<< HEAD
-		"folklore/graphql": "~1.1.0"
-=======
-		"folklore/graphql": "~1.0.0"
->>>>>>> develop
+		"folklore/graphql": "dev-feature/relay"
 	}
 }
 ```
@@ -128,7 +124,6 @@ This command will create a Type Class `UserType.php` in the `app/GraphQL/Type` f
 class UserType extends BaseType
 {
 
-<<<<<<< HEAD
     //...
 
     protected function fields()
@@ -144,27 +139,6 @@ class UserType extends BaseType
             ]
         ]
     }
-=======
-```php
-
-// Will return the default schema defined by 'schema' in the config
-$schema = GraphQL::schema();
-
-// Will return the 'secret' schema
-$schema = GraphQL::schema('secret');
-
-// Will build a new schema
-$schema = GraphQL::schema([
-	'query' => [
-		//'users' => 'App\GraphQL\Query\UsersQuery'
-	],
-	'mutation' => [
-		//'updateUserEmail' => 'App\GraphQL\Query\UpdateUserEmailMutation'
-	]
-]);
-
-```
->>>>>>> develop
 
     //...
 
@@ -197,30 +171,16 @@ class AppServiceProvider extends ServiceProvider
 {
     //...
 
-<<<<<<< HEAD
     public function boot()
     {
         GraphQL::addType(\App\GraphQL\Type\UserType::class);
     }
-=======
-'types' => [
-	'User' => 'App\GraphQL\Type\UserType'
-]
->>>>>>> develop
 
     //...  
 }
 ```
 
-<<<<<<< HEAD
 **2-** Then create a query:
-=======
-You could also add the type with the `GraphQL` Facade, in a service provider for example.
-
-```php
-
-GraphQL::addType('App\GraphQL\Type\UserType', 'User');
->>>>>>> develop
 
 ```
 php artisan make:graphql:query UserQuery
