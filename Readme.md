@@ -81,10 +81,14 @@ $app->register(Folklore\GraphQL\LumenServiceProvider::class);
 
 **2-** For using the facade you have to uncomment the line `$app->withFacades();` in `bootstrap/app.php`
 
-After uncommenting this line you have the `GraphQL` facade enabled
-
 ```php
 $app->withFacades();
+```
+
+After uncommenting this line you can create the `GraphQL` alias
+
+```php
+class_alias(\Folklore\GraphQL\Support\Facades\GraphQL::class, 'GraphQL');
 ```
 
 **3-** Publish the configuration file
