@@ -136,16 +136,16 @@ class ServiceProviderTest extends TestCase
         $queryRoute = Route::getRoutes()->getByName('graphql.query');
         $this->assertNotNull($queryRoute);
         $uri = config('graphql.routes_prefix').'/'.config('graphql.routes.query');
-        $this->assertEquals($uri, $queryRoute->getUri());
+        $this->assertEquals($uri, $queryRoute->uri());
 
         $mutationRoute = Route::getRoutes()->getByName('graphql.mutation');
         $this->assertNotNull($mutationRoute);
         $uri = config('graphql.routes_prefix').'/'.config('graphql.routes.mutation');
-        $this->assertEquals($uri, $mutationRoute->getUri());
+        $this->assertEquals($uri, $mutationRoute->uri());
 
         $graphiqlRoute = Route::getRoutes()->getByName('graphql.graphiql');
         $this->assertNotNull($graphiqlRoute);
         $uri = ltrim(config('graphql.graphiql.routes'), '/');
-        $this->assertEquals($uri, $graphiqlRoute->getUri());
+        $this->assertEquals($uri, $graphiqlRoute->uri());
     }
 }
