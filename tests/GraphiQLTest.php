@@ -13,7 +13,7 @@ class GraphiQLTest extends TestCase
     {
         $this->assertTrue(app('view')->exists('graphql::graphiql'));
     }
-    
+
     /**
      * Test endpoint
      *
@@ -22,11 +22,11 @@ class GraphiQLTest extends TestCase
     public function testEndpoint()
     {
         $queryPath = route('graphql.query');
-        
+
         $response = $this->call('GET', route('graphql.graphiql'));
-        $this->assertResponseOk();
+        $this->assertEquals(200, $response->status());
         $this->assertViewHas('graphqlPath', $queryPath);
-        
+
         $content = $response->getContent();
         $this->assertContains($queryPath, $content);
     }
