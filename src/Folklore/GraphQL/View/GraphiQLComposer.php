@@ -6,6 +6,6 @@ class GraphiQLComposer
 {
     public function compose($view)
     {
-        $view->graphqlPath = route('graphql.query');
+        $view->graphqlPath = route('graphql.get.query');
     }
 }
