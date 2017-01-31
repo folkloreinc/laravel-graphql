@@ -1,26 +1,37 @@
 language: php
 
+cache:
+  directories:
+    - $COMPOSER_CACHE_DIR
+    - $HOME/.composer/cache
+    - vendor
+
 php:
   - 5.5
   - 5.6
   - 7.0
+  - 7.1
 
 env:
   - TESTBENCH_VERSION=3.1.* ILLUMINATE_VERSION=5.1.*
   - TESTBENCH_VERSION=3.2.* ILLUMINATE_VERSION=5.2.*
   - TESTBENCH_VERSION=3.3.* ILLUMINATE_VERSION=5.3.*
+  - TESTBENCH_VERSION=3.4.* ILLUMINATE_VERSION=5.4.*
 
 matrix:
   exclude:
     - php: 5.5
       env: TESTBENCH_VERSION=3.3.* ILLUMINATE_VERSION=5.3.*
+    - php: 5.5
+      env: TESTBENCH_VERSION=3.4.* ILLUMINATE_VERSION=5.4.*
 
 before_install:
   - composer global require hirak/prestissimo --update-no-dev
-  - composer require "illuminate/support:${ILLUMINATE_VERSION}" --no-update
-  - composer require "orchestra/testbench:${TESTBENCH_VERSION}" --no-update
+  - composer require "illuminate/support:${ILLUMINATE_VERSION}" --no-update --prefer-dist
+  - composer require "orchestra/database:${TESTBENCH_VERSION}" --no-update --prefer-dist
+  - composer require "orchestra/testbench:${TESTBENCH_VERSION}" --no-update --prefer-dist
 
-install: composer update --no-interaction
+install: composer update --no-interaction --prefer-dist
 
 script: phpunit
 
