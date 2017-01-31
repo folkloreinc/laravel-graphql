@@ -83,7 +83,7 @@ class LumenServiceProvider extends ServiceProvider
         parent::registerCommands();
 
         $this->app->singleton('command.graphql.publish', function ($app) {
-            return new \Folklore\GraphQL\Console\PublishCommand();
+            return new \Folklore\GraphQL\Console\PublishCommand($app['files']);
         });
 
         $this->commands('command.graphql.publish');
