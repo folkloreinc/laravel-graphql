@@ -6,21 +6,21 @@ $router->group(array(
     'prefix' => config('graphql.routes_prefix', config('graphql.prefix')),
     'middleware' => config('graphql.middleware', [])
 ), function ($router) {
-    
+
     // Get routes from config. If routes is a string, it will apply to both query
     // and mutation.
     $routes = config('graphql.routes');
     $queryRoute = array_get($routes, 'query', is_string($routes) ? $routes:null);
     $mutationRoute = array_get($routes, 'mutation', is_string($routes) ? $routes:null);
-    
+
     // Get controllers from config. If controllers is a string, it will apply to
     // both query and mutation.
     $controllers = config('graphql.controllers', '\Folklore\GraphQL\GraphQLController@query');
     $queryController = array_get($controllers, 'query', is_string($controllers) ? $controllers:null);
     $mutationController = array_get($controllers, 'mutation', is_string($controllers) ? $controllers:null);
-    
+
     $schemaParameterPattern = '/\{\s*graphql\_schema\s*\?\s*\}/';
-    
+
     //Query
     if ($queryRoute) {
         $queryMethods = ['get', 'post'];
@@ -38,12 +38,11 @@ $router->group(array(
                     'uses' => $queryController
                 ));
             }
-            // fallback route
-            $router->$method(preg_replace($schemaParameterPattern, '{graphql_schema}', $queryRoute), array(
+            // default route
+            $router->get(preg_replace($schemaParameterPattern, '', $queryRoute), array(
                 'as' => 'graphql.query',
                 'uses' => $queryController
             ));
-
         } else {
             $router->match($queryMethods, $queryRoute, array(
                 'as' => 'graphql.query',
@@ -51,7 +50,7 @@ $router->group(array(
             ));
         }
     }
-    
+
     //Mutation
     if ($mutationRoute) {
         // Remove optional parameter in Lumen. Instead, creates two routes.
