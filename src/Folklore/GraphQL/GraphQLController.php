@@ -1,7 +1,6 @@
 <?php namespace Folklore\GraphQL;
 
 use Illuminate\Http\Request;
-use Auth;
 
 class GraphQLController extends Controller
 {
