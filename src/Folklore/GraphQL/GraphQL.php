@@ -73,7 +73,7 @@ class GraphQL
         
         return new Schema([
             'query' => $query,
-            'mutation' => $mutation,
+            'mutation' => !empty($schemaMutation) ? $mutation : null,
             'types' => $types
         ]);
     }
