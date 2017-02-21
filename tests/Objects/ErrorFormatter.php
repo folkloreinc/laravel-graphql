@@ -1,6 +1,6 @@
 <?php
 
-use GraphQL\Error;
+use GraphQL\Error\Error;
 use Folklore\GraphQL\Error\ValidationError;
 
 class ErrorFormatter
