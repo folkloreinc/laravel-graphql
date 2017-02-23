@@ -417,10 +417,10 @@ php artisan make:relay:input UpdateUserEmailInput
 Then, a payload type for the response:
 
 ```shell
-php artisan make:relay:input UpdateUserEmailPayload
+php artisan make:relay:payload UpdateUserEmailPayload
 ```
 
-These types works normally except that they will auytomatically have the `clientMutationId` field added, so you don't need to think about it.
+These types work normally except that they will automatically have the `clientMutationId` field added, so you don't need to think about it.
 
 Here is the input type:
 
