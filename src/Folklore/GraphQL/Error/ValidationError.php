@@ -1,6 +1,6 @@
 <?php namespace Folklore\GraphQL\Error;
 
-use GraphQL\Error;
+use GraphQL\Error\Error;
 use GraphQL\FormattedError;
 
 class ValidationError extends Error

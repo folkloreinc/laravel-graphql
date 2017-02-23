@@ -3,7 +3,7 @@
 use GraphQL\Schema;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
-use GraphQL\Error;
+use GraphQL\Error\Error;
 use Folklore\GraphQL\Error\ValidationError;
 
 class GraphQLQueryTest extends TestCase
