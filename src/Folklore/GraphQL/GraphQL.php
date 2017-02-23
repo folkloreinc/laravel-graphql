@@ -45,6 +45,7 @@ class GraphQL
         
         $schemaQuery = array_get($schema, 'query', []);
         $schemaMutation = array_get($schema, 'mutation', []);
+        $schemaSubscription = array_get($schema, 'subscription', []);
         $schemaTypes = array_get($schema, 'types', []);
         
         //Get the types either from the schema, or the global types.
@@ -71,9 +72,14 @@ class GraphQL
             'name' => 'Mutation'
         ]);
         
+        $subscription = $this->objectType($schemaSubscription, [
+            'name' => 'Subscription'
+        ]);
+        
         return new Schema([
             'query' => $query,
             'mutation' => !empty($schemaMutation) ? $mutation : null,
+            'subscription' => !empty($schemaSubscription) ? $subscription : null,
             'types' => $types
         ]);
     }
