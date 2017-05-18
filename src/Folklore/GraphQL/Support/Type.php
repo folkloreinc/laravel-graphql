@@ -2,6 +2,7 @@
 
 namespace Folklore\GraphQL\Support;
 
+use GraphQL\Type\Definition\EnumType;
 use Illuminate\Support\Fluent;
 
 use GraphQL\Type\Definition\ObjectType;
@@ -13,6 +14,7 @@ class Type extends Fluent
     protected static $instances = [];
     
     protected $inputObject = false;
+    protected $enumObject = false;
     
     public function attributes()
     {
@@ -103,6 +105,9 @@ class Type extends Fluent
     {
         if ($this->inputObject) {
             return new InputObjectType($this->toArray());
+        }
+        if ($this->enumObject) {
+            return new EnumType($this->toArray());
         }
         return new ObjectType($this->toArray());
     }
