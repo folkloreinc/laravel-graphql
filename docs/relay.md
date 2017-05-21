@@ -254,7 +254,7 @@ class UserNodeType extends NodeType
 
 ```
 
-If you define the field like this, you will need to define the connection arguments (`first`, `last`, `before`, `after`) yourself. To make this easier, there is some helper methods on the `Relay` facade.
+If you define the field like this, you will need to define the connection arguments (`first`, `last`, `before`, `after`, `sort`) yourself. To make this easier, there is some helper methods on the `Relay` facade.
 
 ```php
 <?php
@@ -300,7 +300,14 @@ class UserNodeType extends NodeType
                     return Photo::query()->where('user_id', $root->id);
                 },
                 [
-                    'description' => 'The photos of the user'
+                    'description' => 'The photos of the user',
+                    'args' => [
+                        // set a default sort order
+                        'sort' => [
+                            'type: 'Type::string(),
+                            'defaultValue' => 'date_created'
+                        ]
+                    ]
                 ]
             )
         ];
