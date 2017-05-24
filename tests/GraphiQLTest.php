@@ -4,14 +4,6 @@ use Folklore\GraphQL\View\GraphiQLComposer;
 
 class GraphiQLTest extends TestCase
 {
-    protected function getEnvironmentSetUp($app)
-    {
-        $app['config']->set('graphql.routes', [
-            'query' => 'query/{graphql_schema?}',
-            'mutation' => 'mutation/{graphql_schema?}'
-        ]);
-    }
-
     /**
      * Test endpoint
      *

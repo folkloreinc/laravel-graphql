@@ -6,7 +6,6 @@ $router->group(array(
     'prefix' => config('graphql.prefix'),
     'middleware' => config('graphql.middleware', [])
 ), function ($router) {
-
     //Get routes from config
     $routes = config('graphql.routes');
     $queryRoute = null;
@@ -66,8 +65,8 @@ $router->group(array(
         }
     }
 
-    //Mutation
-    if ($mutationRoute) {
+    //Mutation routes (define only if different than query)
+    if ($mutationRoute && $mutationRoute !== $queryRoute) {
         // Remove optional parameter in Lumen. Instead, creates two routes.
         if (!$router instanceof \Illuminate\Routing\Router &&
             preg_match($schemaParameterPattern, $mutationRoute)
