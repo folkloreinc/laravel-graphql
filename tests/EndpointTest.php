@@ -15,16 +15,16 @@ class EndpointTest extends TestCase
         $response = $this->call('GET', '/graphql', [
             'query' => $this->queries['examples']
         ]);
-        
+
         $this->assertEquals($response->getStatusCode(), 200);
-        
+
         $content = $response->getOriginalContent();
         $this->assertArrayHasKey('data', $content);
         $this->assertEquals($content['data'], [
             'examples' => $this->data
         ]);
     }
-    
+
     /**
      * Test get with custom schema
      *
@@ -42,16 +42,16 @@ class EndpointTest extends TestCase
             'examplesCustom' => $this->data
         ]);
     }
-    
+
     /**
-     * Test get with params
+     * Test get with variables
      *
      * @test
      */
-    public function testGetWithParams()
+    public function testGetWithVariables()
     {
         $response = $this->call('GET', '/graphql', [
-            'query' => $this->queries['examplesWithParams'],
+            'query' => $this->queries['examplesWithVariables'],
             'variables' => [
                 'index' => 0
             ]
@@ -76,13 +76,13 @@ class EndpointTest extends TestCase
     public function testBatchedQueries() {
         $response = $this->call('GET', '/graphql', [
             [
-                'query' => $this->queries['examplesWithParams'],
+                'query' => $this->queries['examplesWithVariables'],
                 'variables' => [
                     'index' => 0
                 ]
             ],
             [
-                'query' => $this->queries['examplesWithParams'],
+                'query' => $this->queries['examplesWithVariables'],
                 'variables' => [
                     'index' => 0
                 ]
