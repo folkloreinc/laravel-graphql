@@ -51,6 +51,13 @@ return [
     // Any middleware for the graphql route group
     'middleware' => [],
 
+    // Any headers that will be added to the response returned by the default controller
+    'headers' => [],
+
+    // Any json encoding options when returning a response from the default controller
+    // See http://php.net/manual/function.json-encode.php for list of options
+    'json_encoding_options' => 0,
+
     // Config for GraphiQL (https://github.com/graphql/graphiql).
     // To disable GraphiQL, set this to null.
     'graphiql' => [
