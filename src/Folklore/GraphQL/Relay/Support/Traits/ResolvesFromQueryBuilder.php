@@ -99,7 +99,15 @@ trait ResolvesFromQueryBuilder
         $first = array_get($args, 'first');
         $last = array_get($args, 'last');
 
-        $count = $query->count();
+        $countQuery = clone $query;
+        if ($countQuery instanceof \Illuminate\Database\Eloquent\Relations\Relation) {
+            $countQuery->getBaseQuery()->orders = null;
+        } else if ($countQuery instanceof \Illuminate\Database\Eloquent\Builder) {
+            $countQuery->getQuery()->orders = null;
+        } else if( $q instanceof \Illuminate\Database\Query\Builder) {
+            $countQuery->orders = null;
+        }
+        $count = $countQuery->count();
 
         $offset = 0;
         $limit = 0;
