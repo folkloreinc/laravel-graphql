@@ -104,7 +104,7 @@ trait ResolvesFromQueryBuilder
             $countQuery->getBaseQuery()->orders = null;
         } else if ($countQuery instanceof \Illuminate\Database\Eloquent\Builder) {
             $countQuery->getQuery()->orders = null;
-        } else if( $q instanceof \Illuminate\Database\Query\Builder) {
+        } else if( $countQuery instanceof \Illuminate\Database\Query\Builder) {
             $countQuery->orders = null;
         }
         $count = $countQuery->count();
