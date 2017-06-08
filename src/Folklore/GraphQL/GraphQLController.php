@@ -27,6 +27,14 @@ class GraphQLController extends Controller
         return response()->json($data, 200, $headers, $options);
     }
 
+    public function graphiql(Request $request, $schema = null)
+    {
+        $view = config('graphql.graphiql.view', 'graphql::graphiql');
+        return view($view, [
+            'schema' => $schema,
+        ]);
+    }
+
     protected function executeQuery($schema, $input)
     {
         $variablesInputName = config('graphql.variables_input_name', 'variables');

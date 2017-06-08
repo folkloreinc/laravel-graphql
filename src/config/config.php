@@ -61,7 +61,8 @@ return [
     // Config for GraphiQL (https://github.com/graphql/graphiql).
     // To disable GraphiQL, set this to null.
     'graphiql' => [
-        'routes' => '/graphiql',
+        'routes' => '/graphiql/{graphql_schema?}',
+        'controller' => \Folklore\GraphQL\GraphQLController::class.'@graphiql',
         'middleware' => [],
         'view' => 'graphql::graphiql'
     ],
