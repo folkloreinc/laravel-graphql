@@ -98,6 +98,7 @@ trait ResolvesFromQueryBuilder
         $before = array_get($args, 'before');
         $first = array_get($args, 'first');
         $last = array_get($args, 'last');
+        $sort = array_get($args, 'sort');
 
         $countQuery = clone $query;
         if ($countQuery instanceof \Illuminate\Database\Eloquent\Relations\Relation) {
@@ -125,6 +126,15 @@ trait ResolvesFromQueryBuilder
 
         if ($before) {
             $offset = $before - $limit;
+        }
+
+        if ($sort) {
+            foreach(explode(',', $sort) as $item) {
+                $item = explode(' ', trim($item));
+                $column = trim($item[0]);
+                $direction = count($item) == 1 ? 'asc' : $item[1];
+                $query->orderBy($column, $direction);
+            }
         }
 
         $query->skip($offset)->take($limit);

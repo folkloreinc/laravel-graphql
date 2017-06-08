@@ -24,6 +24,10 @@ trait FieldIsConnection
             'before' => [
                 'name' => 'before',
                 'type' => Type::string()
+            ],
+            'sort' => [
+                'name' => 'sort',
+                'type' => Type::string()
             ]
         ];
     }
