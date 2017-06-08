@@ -2,10 +2,12 @@
 
 use Illuminate\Http\Request;
 
+$schemaParameterPattern = '/\{\s*graphql\_schema\s*\?\s*\}/';
+
 $router->group(array(
     'prefix' => config('graphql.prefix'),
     'middleware' => config('graphql.middleware', [])
-), function ($router) {
+), function ($router) use ($schemaParameterPattern) {
     //Get routes from config
     $routes = config('graphql.routes');
     $queryRoute = null;
@@ -30,7 +32,6 @@ $router->group(array(
         $mutationController = $controllers;
     }
 
-    $schemaParameterPattern = '/\{\s*graphql\_schema\s*\?\s*\}/';
     //Query
     if ($queryRoute) {
         // Remove optional parameter in Lumen. Instead, creates two routes.
@@ -103,11 +104,26 @@ $router->group(array(
 //GraphiQL
 $graphiQL = config('graphql.graphiql', true);
 if ($graphiQL) {
-    $router->get(config('graphql.graphiql.routes', 'graphiql'), [
-        'as' => 'graphql.graphiql',
-        'middleware' => config('graphql.graphiql.middleware', []),
-        function () {
-            return view(config('graphql.graphiql.view', 'graphql::graphiql'));
-        }
-    ]);
+    $graphiQLRoute = config('graphql.graphiql.routes', 'graphiql');
+    $graphiQLController = config('graphql.graphiql.controller', '\Folklore\GraphQL\GraphQLController@graphiql');
+    if (!$router instanceof \Illuminate\Routing\Router &&
+        preg_match($schemaParameterPattern, $graphiQLRoute)
+    ) {
+        $router->get(preg_replace($schemaParameterPattern, '', $graphiQLRoute), [
+            'as' => 'graphql.graphiql',
+            'middleware' => config('graphql.graphiql.middleware', []),
+            'uses' => $graphiQLController
+        ]);
+        $router->get(preg_replace($schemaParameterPattern, '{graphql_schema}', $graphiQLRoute), [
+            'as' => 'graphql.graphiql.with_schema',
+            'middleware' => config('graphql.graphiql.middleware', []),
+            'uses' => $graphiQLController
+        ]);
+    } else {
+        $router->get($graphiQLRoute, [
+            'as' => 'graphql.graphiql',
+            'middleware' => config('graphql.graphiql.middleware', []),
+            'uses' => $graphiQLController
+        ]);
+    }
 }

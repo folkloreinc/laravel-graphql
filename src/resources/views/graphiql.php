@@ -2,9 +2,10 @@
 <html>
     <head>
         <style>
-            body {
+            html, body {
                 height: 100%;
                 margin: 0;
+                padding: 0;
                 width: 100%;
                 overflow: hidden;
             }
@@ -12,11 +13,11 @@
                 height: 100vh;
             }
         </style>
-        <link rel="stylesheet" href="https://unpkg.com/graphiql@^0.7.8/graphiql.css" />
-        <script src="https://unpkg.com/whatwg-fetch@0.11.1/fetch.js"></script>
-        <script src="https://unpkg.com/react@^15.0/dist/react.min.js"></script>
-        <script src="https://unpkg.com/react-dom@^15.0/dist/react-dom.min.js"></script>
-        <script src="https://unpkg.com/graphiql@^0.7.8/graphiql.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/graphiql/0.10.2/graphiql.min.css" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react-dom.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/graphiql/0.10.2/graphiql.min.js"></script>
     </head>
     <body>
         <div id="graphiql">Loading...</div>
@@ -73,8 +74,7 @@
                 var newSearch = '?' + Object.keys(parameters).filter(function (key) {
                     return Boolean(parameters[key]);
                 }).map(function (key) {
-                    return encodeURIComponent(key) + '=' +
-                    encodeURIComponent(parameters[key]);
+                    return encodeURIComponent(key) + '=' + encodeURIComponent(parameters[key]);
                 }).join('&');
                 history.replaceState(null, null, newSearch);
             }
@@ -84,8 +84,8 @@
                 return fetch('<?php echo $graphqlPath; ?>', {
                     method: 'post',
                     headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
                     },
                     body: JSON.stringify(graphQLParams),
                     credentials: 'include',
