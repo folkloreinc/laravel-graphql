@@ -210,6 +210,12 @@ use Folklore\GraphQL\Support\Type as GraphQLType;
 
 class UserType extends GraphQLType {
 
+	/*
+	 * Uncomment following line to make the type input object.
+	 * http://graphql.org/learn/schema/#input-types
+	 */
+	// protected $inputObject = true;
+
     protected $attributes = [
 		'name' => 'User',
 		'description' => 'A user'
