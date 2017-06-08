@@ -458,14 +458,14 @@ class UpdateUserEmailMutation extends Mutation {
 
 	public function type()
 	{
-		return GraphQL::type('user');
+		return GraphQL::type('User');
 	}
 
 	public function args()
 	{
 		return [
 			'id' => ['name' => 'id', 'type' => Type::string()],
-			'email' => ['name' => 'password', 'type' => Type::string()]
+			'email' => ['name' => 'email', 'type' => Type::string()]
 		];
 	}
 
@@ -512,7 +512,7 @@ class UpdateUserEmailMutation extends Mutation {
 				'rules' => ['required']
 			],
 			'email' => [
-				'name' => 'password',
+				'name' => 'email',
 				'type' => Type::string(),
 				'rules' => ['required', 'email']
 			]
