@@ -214,6 +214,12 @@ class UserType extends GraphQLType {
 		'name' => 'User',
 		'description' => 'A user'
 	];
+  
+  /*
+	 * Uncomment following line to make the type input object.
+	 * http://graphql.org/learn/schema/#input-types
+	 */
+	// protected $inputObject = true;
 
 	public function fields()
 	{
