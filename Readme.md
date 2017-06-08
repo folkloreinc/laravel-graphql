@@ -210,7 +210,7 @@ use Folklore\GraphQL\Support\Type as GraphQLType;
 
 class UserType extends GraphQLType {
 
-    protected $attributes = [
+	protected $attributes = [
 		'name' => 'User',
 		'description' => 'A user'
 	];
@@ -328,10 +328,10 @@ And that's it. You should be able to query GraphQL with a request to the url `/g
 ```
 
 query FetchUsers {
-    users {
-        id
-        email
-    }
+	users {
+		id
+		email
+	}
 }
 
 ```
@@ -416,10 +416,10 @@ You should then be able to use the following query on your endpoint to do the mu
 ```
 
 mutation users {
-    updateUserPassword(id: "1", password: "newpassword") {
-        id
-        email
-    }
+	updateUserPassword(id: "1", password: "newpassword") {
+		id
+		email
+	}
 }
 
 ```
