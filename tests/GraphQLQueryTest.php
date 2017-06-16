@@ -7,7 +7,7 @@ use GraphQL\Error\Error;
 use Folklore\GraphQL\Error\ValidationError;
 
 class GraphQLQueryTest extends TestCase
-{    
+{
     /**
      * Test query
      *
@@ -16,14 +16,14 @@ class GraphQLQueryTest extends TestCase
     public function testQueryAndReturnResult()
     {
         $result = GraphQL::queryAndReturnResult($this->queries['examples']);
-        
+
         $this->assertObjectHasAttribute('data', $result);
-        
+
         $this->assertEquals($result->data, [
             'examples' => $this->data
         ]);
     }
-    
+
     /**
      * Test query methods
      *
@@ -33,23 +33,23 @@ class GraphQLQueryTest extends TestCase
     {
         $resultArray = GraphQL::query($this->queries['examples']);
         $result = GraphQL::queryAndReturnResult($this->queries['examples']);
-        
+
         $this->assertInternalType('array', $resultArray);
         $this->assertArrayHasKey('data', $resultArray);
         $this->assertEquals($resultArray['data'], $result->data);
     }
-    
+
     /**
-     * Test query with params
+     * Test query with variables
      *
      * @test
      */
-    public function testQueryAndReturnResultWithParams()
+    public function testQueryAndReturnResultWithVariables()
     {
-        $result = GraphQL::queryAndReturnResult($this->queries['examplesWithParams'], [
+        $result = GraphQL::queryAndReturnResult($this->queries['examplesWithVariables'], [
             'index' => 0
         ]);
-        
+
         $this->assertObjectHasAttribute('data', $result);
         $this->assertCount(0, $result->errors);
         $this->assertEquals($result->data, [
@@ -58,7 +58,7 @@ class GraphQLQueryTest extends TestCase
             ]
         ]);
     }
-    
+
     /**
      * Test query with initial root
      *
@@ -71,7 +71,7 @@ class GraphQLQueryTest extends TestCase
                 'test' => 'root'
             ]
         ]);
-        
+
         $this->assertObjectHasAttribute('data', $result);
         $this->assertCount(0, $result->errors);
         $this->assertEquals($result->data, [
@@ -80,7 +80,7 @@ class GraphQLQueryTest extends TestCase
             ]
         ]);
     }
-    
+
     /**
      * Test query with context
      *
@@ -101,7 +101,7 @@ class GraphQLQueryTest extends TestCase
             ]
         ]);
     }
-    
+
     /**
      * Test query with schema
      *
@@ -116,14 +116,14 @@ class GraphQLQueryTest extends TestCase
                 ]
             ]
         ]);
-        
+
         $this->assertObjectHasAttribute('data', $result);
         $this->assertCount(0, $result->errors);
         $this->assertEquals($result->data, [
             'examplesCustom' => $this->data
         ]);
     }
-    
+
     /**
      * Test query with error
      *
@@ -132,7 +132,7 @@ class GraphQLQueryTest extends TestCase
     public function testQueryWithError()
     {
         $result = GraphQL::query($this->queries['examplesWithError']);
-        
+
         $this->assertArrayHasKey('data', $result);
         $this->assertArrayHasKey('errors', $result);
         $this->assertNull($result['data']);
@@ -140,7 +140,7 @@ class GraphQLQueryTest extends TestCase
         $this->assertArrayHasKey('message', $result['errors'][0]);
         $this->assertArrayHasKey('locations', $result['errors'][0]);
     }
-    
+
     /**
      * Test query with validation error
      *
@@ -149,13 +149,13 @@ class GraphQLQueryTest extends TestCase
     public function testQueryWithValidationError()
     {
         $result = GraphQL::query($this->queries['examplesWithValidation']);
-        
+
         $this->assertArrayHasKey('data', $result);
         $this->assertArrayHasKey('errors', $result);
         $this->assertArrayHasKey('validation', $result['errors'][0]);
         $this->assertTrue($result['errors'][0]['validation']->has('index'));
     }
-    
+
     /**
      * Test query with validation without error
      *
@@ -166,7 +166,7 @@ class GraphQLQueryTest extends TestCase
         $result = GraphQL::query($this->queries['examplesWithValidation'], [
             'index' => 0
         ]);
-        
+
         $this->assertArrayHasKey('data', $result);
         $this->assertArrayNotHasKey('errors', $result);
     }

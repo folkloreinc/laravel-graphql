@@ -1,6 +1,7 @@
 # Advanced Usage
 
 - [Query variables](#query-variables)
+- [Query nested resource](#query-nested-resource)
 - [Custom field](#custom-field)
 - [Eager loading relationships](#eager-loading-relationships)
 
@@ -21,6 +22,54 @@ When you query the GraphQL endpoint, you can pass a `params` parameter.
 
 ```
 http://homestead.app/graphql?query=query+FetchUserByID($id:String){user(id:$id){id,email}}&params={"id":"1"}
+```
+
+### Query nested resource
+
+If you want to query nested resource like that :
+
+```
+query FetchUser{
+    user(id: 123456789) {
+        id
+        posts(id: 987654321) {
+            id
+        }
+    }
+}
+```
+
+you need to add post field and implement resolveField method in UserType:
+
+```
+public function fields()
+{
+    return [
+        'id' => [
+            'type'        => Type::nonNull(Type::string()),
+            'description' => 'Id of user',
+        ],
+        'posts' => [
+            'args' => [
+                'id' => [
+                    'type'        => Type::string(),
+                    'description' => 'id of the post',
+                ],
+            ],
+            'type'        => Type::listOf(GraphQL::type('Post')),
+            'description' => 'post description',
+        ],
+    ];
+}
+    
+public function resolvePostsField($root, $args)
+{
+    if (isset($args['id'])) {
+        return  $root->posts->where('id', $args['id']);
+    }
+
+    return $root->posts;
+}
 ```
 
 ### Custom field

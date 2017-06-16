@@ -42,20 +42,27 @@ return [
     // ]
     //
     'controllers' => \Folklore\GraphQL\GraphQLController::class.'@query',
-    
+
     // The name of the input that contain variables when you query the endpoint.
-    // Some library use "variables", you can change it here. "params" will stay
-    // the default for now but will be changed to "variables" in the next major
-    // release.
+    // Most library use "variables", you can change it here in case you need it.
+    // In previous versions, the default used to be "params"
     'variables_input_name' => 'variables',
 
     // Any middleware for the graphql route group
     'middleware' => [],
-    
+
+    // Any headers that will be added to the response returned by the default controller
+    'headers' => [],
+
+    // Any json encoding options when returning a response from the default controller
+    // See http://php.net/manual/function.json-encode.php for list of options
+    'json_encoding_options' => 0,
+
     // Config for GraphiQL (https://github.com/graphql/graphiql).
     // To disable GraphiQL, set this to null.
     'graphiql' => [
-        'routes' => '/graphiql',
+        'routes' => '/graphiql/{graphql_schema?}',
+        'controller' => \Folklore\GraphQL\GraphQLController::class.'@graphiql',
         'middleware' => [],
         'view' => 'graphql::graphiql'
     ],

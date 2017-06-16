@@ -29,4 +29,19 @@ class GraphiQLTest extends TestCase
         $content = $response->getContent();
         $this->assertContains($queryPath, $content);
     }
+
+    /**
+     * Test endpoint with custom schema
+     *
+     * @test
+     */
+    public function testEndpointWithSchema()
+    {
+        $queryPath = route('graphql.query', ['custom']);
+        $response = $this->call('GET', route('graphql.graphiql', ['custom']));
+        $this->assertEquals(200, $response->status());
+        $this->assertEquals($queryPath, $response->original->graphqlPath);
+        $content = $response->getContent();
+        $this->assertContains($queryPath, $content);
+    }
 }

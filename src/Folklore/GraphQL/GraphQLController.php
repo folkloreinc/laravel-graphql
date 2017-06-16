@@ -6,43 +6,53 @@ class GraphQLController extends Controller
 {
     public function query(Request $request, $schema = null)
     {
-        $isBatch = false;
-        $requestVariables = $request->all();
-        if(isset($requestVariables[0])) {
-            $isBatch = true;
-        }
+        $inputs = $request->all();
+        $isBatch = array_keys($inputs) === range(0, count($inputs) - 1);
+
         if (!$schema) {
             $schema = config('graphql.schema');
         }
-        $variableInputName = config('graphql.variables_input_name', 'params');
 
         if (!$isBatch) {
-            return $this->execQuery($schema, $variableInputName, $requestVariables);
+            $data = $this->executeQuery($schema, $inputs);
+        } else {
+            $data = [];
+            foreach ($inputs as $input) {
+                $data[] = $this->executeQuery($schema, $input);
+            }
         }
 
-        $results = [];
-        foreach ($requestVariables as $data) {
-            $results[] = $this->execQuery($schema, $variableInputName, $data);
-        }
-        return $results;
+        $headers = config('graphql.headers', []);
+        $options = config('graphql.json_encoding_options', 0);
+        return response()->json($data, 200, $headers, $options);
     }
 
-    public function execQuery($schema, $variableInputName, $data) {
-        $query = $data['query'];
-        $params = isset($data[$variableInputName]) ? $data[$variableInputName] : null;
-        if (is_string($params)) {
-            $params = json_decode($params, true);
+    public function graphiql(Request $request, $schema = null)
+    {
+        $view = config('graphql.graphiql.view', 'graphql::graphiql');
+        return view($view, [
+            'schema' => $schema,
+        ]);
+    }
+
+    protected function executeQuery($schema, $input)
+    {
+        $variablesInputName = config('graphql.variables_input_name', 'variables');
+        $query = array_get($input, 'query');
+        $variables = array_get($input, $variablesInputName);
+        if (is_string($variables)) {
+            $variables = json_decode($variables, true);
         }
-        $operationName = isset($data['operationName']) ? $data['operationName'] : null;
-        $context = $this->queryContext($query, $params, $schema);
-        return app('graphql')->query($query, $params, [
+        $operationName = array_get($input, 'operationName');
+        $context = $this->queryContext($query, $variables, $schema);
+        return app('graphql')->query($query, $variables, [
             'context' => $context,
             'schema' => $schema,
             'operationName' => $operationName
         ]);
     }
 
-    protected function queryContext($query, $params, $schema)
+    protected function queryContext($query, $variables, $schema)
     {
         try {
             return app('auth')->user();

@@ -2,7 +2,7 @@
 
 
 return [
-    
+
     'examples' =>  "
         query QueryExamples {
             examples {
@@ -10,7 +10,7 @@ return [
             }
         }
     ",
-      
+
     'examplesCustom' =>  "
         query QueryExamplesCustom {
             examplesCustom {
@@ -18,15 +18,15 @@ return [
             }
         }
     ",
-    
-    'examplesWithParams' =>  "
-        query QueryExamplesParams(\$index: Int) {
+
+    'examplesWithVariables' =>  "
+        query QueryExamplesVariables(\$index: Int) {
             examples(index: \$index) {
                 test
             }
         }
     ",
-    
+
     'examplesWithContext' =>  "
         query QueryExamplesContext {
             examplesContext {
@@ -34,7 +34,7 @@ return [
             }
         }
     ",
-    
+
     'examplesWithRoot' =>  "
         query QueryExamplesRoot {
             examplesRoot {
@@ -42,7 +42,7 @@ return [
             }
         }
     ",
-        
+
     'examplesWithError' =>  "
         query QueryExamplesWithError {
             examplesQueryNotFound {
@@ -50,7 +50,7 @@ return [
             }
         }
     ",
-    
+
     'examplesWithValidation' =>  "
         query QueryExamplesWithValidation(\$index: Int) {
             examples {
@@ -58,7 +58,7 @@ return [
             }
         }
     ",
-    
+
     'updateExampleCustom' =>  "
         mutation UpdateExampleCustom(\$test: String) {
             updateExampleCustom(test: \$test) {
@@ -66,5 +66,5 @@ return [
             }
         }
     "
-    
+
 ];

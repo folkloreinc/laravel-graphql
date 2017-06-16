@@ -210,10 +210,16 @@ use Folklore\GraphQL\Support\Type as GraphQLType;
 
 class UserType extends GraphQLType {
 
-    protected $attributes = [
+	protected $attributes = [
 		'name' => 'User',
 		'description' => 'A user'
 	];
+  
+  /*
+	 * Uncomment following line to make the type input object.
+	 * http://graphql.org/learn/schema/#input-types
+	 */
+	// protected $inputObject = true;
 
 	public function fields()
 	{
@@ -328,10 +334,10 @@ And that's it. You should be able to query GraphQL with a request to the url `/g
 ```
 
 query FetchUsers {
-    users {
-        id
-        email
-    }
+	users {
+		id
+		email
+	}
 }
 
 ```
@@ -416,10 +422,10 @@ You should then be able to use the following query on your endpoint to do the mu
 ```
 
 mutation users {
-    updateUserPassword(id: "1", password: "newpassword") {
-        id
-        email
-    }
+	updateUserPassword(id: "1", password: "newpassword") {
+		id
+		email
+	}
 }
 
 ```
@@ -452,14 +458,14 @@ class UpdateUserEmailMutation extends Mutation {
 
 	public function type()
 	{
-		return GraphQL::type('user');
+		return GraphQL::type('User');
 	}
 
 	public function args()
 	{
 		return [
 			'id' => ['name' => 'id', 'type' => Type::string()],
-			'email' => ['name' => 'password', 'type' => Type::string()]
+			'email' => ['name' => 'email', 'type' => Type::string()]
 		];
 	}
 
@@ -506,7 +512,7 @@ class UpdateUserEmailMutation extends Mutation {
 				'rules' => ['required']
 			],
 			'email' => [
-				'name' => 'password',
+				'name' => 'email',
 				'type' => Type::string(),
 				'rules' => ['required', 'email']
 			]
