@@ -1,6 +1,7 @@
 <?php namespace Folklore\GraphQL;
 
 use GraphQL\Validator\DocumentValidator;
+use GraphQL\Validator\Rules\DisableIntrospection;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 class ServiceProvider extends BaseServiceProvider
@@ -147,6 +148,13 @@ class ServiceProvider extends BaseServiceProvider
         if ($maxQueryDepth !== null) {
             $queryDepth = DocumentValidator::getRule('QueryDepth');
             $queryDepth->setMaxQueryDepth($maxQueryDepth);
+        }
+
+        $disableIntrospection = config('graphql.security.disable_introspection');
+        if ($disableIntrospection === true) {
+            $disableIntrospection = DocumentValidator::getRule('DisableIntrospection');
+            /** @var \GraphQL\Validator\Rules\DisableIntrospection $disableIntrospection */
+            $disableIntrospection->setEnabled(DisableIntrospection::ENABLED);
         }
     }
 
