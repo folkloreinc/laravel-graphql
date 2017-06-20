@@ -148,7 +148,7 @@ class CharacterInterface extends InterfaceType {
 }
 ```
 
-A Type that implements a interface:
+A Type that implements an interface:
 
 ```php
 <?php
