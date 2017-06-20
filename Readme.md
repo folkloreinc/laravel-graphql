@@ -118,6 +118,7 @@ config/graphql.php
 #### Advanced Usage
 - [Query variables](docs/advanced.md#query-variables)
 - [Query nested resource](docs/advanced.md#query-nested-resource)
+- [Enums](docs/advanced.md#enums)
 - [Interfaces](docs/advanced.md#interfaces)
 - [Custom field](docs/advanced.md#custom-field)
 - [Eager loading relationships](docs/advanced.md#eager-loading-relationships)

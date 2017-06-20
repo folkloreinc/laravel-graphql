@@ -2,6 +2,7 @@
 
 - [Query variables](#query-variables)
 - [Query nested resource](#query-nested-resource)
+- [Enums](#enums)
 - [Interfaces](#interfaces)
 - [Custom field](#custom-field)
 - [Eager loading relationships](#eager-loading-relationships)
@@ -71,6 +72,34 @@ public function resolvePostsField($root, $args)
 
     return $root->posts;
 }
+```
+
+### Enums
+
+Enumeration types are a special kind of scalar that is restricted to a particular set of allowed values.
+Read more about Enums [here](http://graphql.org/learn/schema/#enumeration-types)
+
+```php
+<?php
+// app/GraphQL/Enums/EpisodeEnum.php
+namespace App\GraphQL\Enums;
+
+use Folklore\GraphQL\Support\Type as GraphQLType;
+
+class EpisodeEnum extends GraphQLType {
+    protected $enumObject = true;
+
+    protected $attributes = [
+        'name' => 'Episode',
+        'description' => 'The types of demographic elements',
+        'values' => [
+            'NEWHOPE' => 'NEWHOPE',
+            'EMPIRE' => 'EMPIRE',
+            'JEDI' => 'JEDI',
+        ],
+    ];
+}
+
 ```
 
 ### Interfaces
