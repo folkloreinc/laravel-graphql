@@ -2,6 +2,7 @@
 
 - [Query variables](#query-variables)
 - [Query nested resource](#query-nested-resource)
+- [Interfaces](#interfaces)
 - [Custom field](#custom-field)
 - [Eager loading relationships](#eager-loading-relationships)
 
@@ -71,6 +72,97 @@ public function resolvePostsField($root, $args)
     return $root->posts;
 }
 ```
+
+### Interfaces
+
+You can use interfaces to abstract a set of fields. Read more about interfaces [here](http://graphql.org/learn/schema/#interfaces).
+
+An implementation of an interface:
+
+```php
+<?php
+// app/GraphQL/Interfaces/CharacterInterface.php
+namespace App\GraphQL\Interfaces;
+
+use GraphQL;
+use Folklore\GraphQL\Support\InterfaceType;
+use GraphQL\Type\Definition\Type;
+
+class CharacterInterface extends InterfaceType {
+    protected $attributes = [
+            'name' => 'Character',
+            'description' => 'Character interface.',
+        ];
+    
+        public function fields() {
+            return [
+                'id' => [
+                    'type' => Type::nonNull(Type::int()),
+                    'description' => 'The id of the character.'
+                ],
+                'appearsIn' => [
+                    'type' => Type::nonNull(Type::listOf(GraphQL::type('Episode'))),
+                    'description' => 'A list of episodes in which the character has an appearance.'
+                ],
+            ];
+        }
+    
+        public function resolveType($root) {
+            // Use the resolveType to resolve the Type which is implemented trough this interface
+            $type = $root['type'];
+            if ($type === 'human') {
+                return GraphQL::type('Human');
+            } else if  ($type === 'droid') {
+                return GraphQL::type('Droid');
+            }
+        }
+}
+```
+
+A Type that implements a interface:
+
+```php
+<?php
+// app/GraphQL/Types/HumanType.php
+namespace App\GraphQL\Types;
+
+use GraphQL;
+use Folklore\GraphQL\Support\Type as GraphQLType;
+use GraphQL\Type\Definition\Type;
+
+class HumanType extends GraphQLType {
+
+    protected $attributes = [
+        'name' => 'Human',
+        'description' => 'A human.'
+    ];
+
+    public function fields() {
+        return [
+            'id' => [
+                'type' => Type::nonNull(Type::int()),
+                'description' => 'The id of the human.',
+            ],
+            'appearsIn' => [
+                'type' => Type::nonNull(Type::listOf(GraphQL::type('Episode'))),
+                'description' => 'A list of episodes in which the human has an appearance.'
+            ],
+            'totalCredits' => [
+                'type' => Type::nonNull(Type::int()),
+                'description' => 'The total amount of credits this human owns.'
+            ]
+        ];
+    }
+
+    public function interfaces() {
+        return [
+            GraphQL::type('Character')
+        ];
+    }
+}
+
+```
+
 
 ### Custom field
 
