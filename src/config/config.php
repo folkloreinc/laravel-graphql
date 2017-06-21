@@ -141,6 +141,7 @@ return [
     // for details. Disabled by default.
     'security' => [
         'query_max_complexity' => null,
-        'query_max_depth' => null
+        'query_max_depth' => null,
+        'disable_introspection' => false
     ]
 ];
