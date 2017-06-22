@@ -2,7 +2,7 @@
 
 use Folklore\GraphQL\GraphQL as GraphQLFacade;
 use GraphQL\Schema;
-use GraphQL\Error;
+use GraphQL\Error\Error;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Folklore\GraphQL\Error\ValidationError;
@@ -285,7 +285,7 @@ class GraphQLTest extends TestCase
         ]);
         $validator->fails();
         $validationError = with(new ValidationError('validation'))->setValidator($validator);
-        $error = new Error('error', null, $validationError);
+        $error = new Error('error', null, null, null, null, $validationError);
         $error = $this->graphql->formatError($error);
 
         $this->assertInternalType('array', $error);
