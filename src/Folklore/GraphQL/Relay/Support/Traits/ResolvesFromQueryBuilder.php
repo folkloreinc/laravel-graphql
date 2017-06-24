@@ -45,7 +45,15 @@ trait ResolvesFromQueryBuilder
 
     protected function getCountFromQuery($query)
     {
-        return $query->count();
+        $countQuery = clone $query;
+        if ($countQuery instanceof \Illuminate\Database\Eloquent\Relations\Relation) {
+            $countQuery->getBaseQuery()->orders = null;
+        } else if ($countQuery instanceof \Illuminate\Database\Eloquent\Builder) {
+            $countQuery->getQuery()->orders = null;
+        } else if( $countQuery instanceof \Illuminate\Database\Query\Builder) {
+            $countQuery->orders = null;
+        }
+        return $countQuery->count();
     }
 
     protected function resolveQueryBuilderFromRoot($root, $args)
@@ -99,15 +107,7 @@ trait ResolvesFromQueryBuilder
         $first = array_get($args, 'first');
         $last = array_get($args, 'last');
 
-        $countQuery = clone $query;
-        if ($countQuery instanceof \Illuminate\Database\Eloquent\Relations\Relation) {
-            $countQuery->getBaseQuery()->orders = null;
-        } else if ($countQuery instanceof \Illuminate\Database\Eloquent\Builder) {
-            $countQuery->getQuery()->orders = null;
-        } else if( $countQuery instanceof \Illuminate\Database\Query\Builder) {
-            $countQuery->orders = null;
-        }
-        $count = $countQuery->count();
+        $count = $this->getCountFromQuery($query);
 
         $offset = 0;
         $limit = 0;
