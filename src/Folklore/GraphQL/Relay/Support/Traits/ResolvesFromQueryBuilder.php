@@ -132,6 +132,7 @@ trait ResolvesFromQueryBuilder
                 $offset += $d;
             }
         }
+        $limit = min($count - $offset, $limit);
 
         $query->skip($offset)->take($limit);
 
