@@ -108,23 +108,29 @@ trait ResolvesFromQueryBuilder
         $last = array_get($args, 'last');
 
         $count = $this->getCountFromQuery($query);
-
         $offset = 0;
         $limit = 0;
-        if ($first) {
+
+        if ($first !== null) {
             $limit = $first;
-        }
-
-        if ($last) {
+            $offset = 0;
+            if ($after !== null) {
+                $offset = $after + 1;
+            }
+            if ($before !== null) {
+                $limit = min(max(0, $before - $offset), $limit);
+            }
+        } else if ($last !== null) {
             $limit = $last;
-        }
-
-        if ($after) {
-            $offset = $after;
-        }
-
-        if ($before) {
-            $offset = $before - $limit;
+            $offset = $count - $limit;
+            if ($before !== null) {
+                $offset = $before - $limit;
+            }
+            if ($after !== null) {
+                $d = max(0, $after + 1 - $offset);
+                $limit -= $d;
+                $offset += $d;
+            }
         }
 
         $query->skip($offset)->take($limit);
