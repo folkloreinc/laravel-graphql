@@ -14,6 +14,14 @@ use Folklore\GraphQL\Exception\SchemaNotFound;
 use Folklore\GraphQL\Events\SchemaAdded;
 use Folklore\GraphQL\Events\TypeAdded;
 
+use GraphQL\Language\Parser;
+use GraphQL\Language\Source;
+use GraphQL\Language\Visitor;
+use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\FieldNode;
+use GraphQL\Language\AST\OperationDefinitionNode;
+
+
 class GraphQL
 {
     protected $app;
@@ -284,5 +292,62 @@ class GraphQL
         }
         
         return $error;
+    }
+
+    /**
+     * @desc  loaded schemas from inputs
+     * @param $inputs
+     */
+    public function SchemaAutoLoad($inputs)
+    {
+        $this->clearSchemas();
+        $schemaName = config('graphql.schema');
+        $Schemas['hummer'] = config('graphql.schemas.'.$schemaName);
+        $action = '';
+        $result = [];
+        $source = new Source($inputs['query'] ?: '', 'GraphQL request');
+        $asta = Parser::parse($source);
+        Visitor::visit($asta, [
+            'enter' => function(Node $node) use (&$result, $Schemas, &$action, $schemaName) {
+                if ($node instanceof OperationDefinitionNode) {
+                    $action = $node->operation;
+                }
+                if ($node instanceof FieldNode) {
+                    if (!empty($Schemas[$schemaName][$action][$node->name->value])){
+                        $result[$action][$node->name->value] = $Schemas[$schemaName][$action][$node->name->value];
+                    }
+                    return Visitor::skipNode();
+                }
+            },
+        ]);
+        $this->addSchema($schemaName, $result);
+    }
+
+    /**
+     * @desc   get type from the configuration or add
+     * Example:
+     * If you need to load from the configuration
+     *         GraphQL::getType('userType')
+     * or
+     *         GraphQL::getType('userType',Object::class)
+     *
+     * @param string $name
+     * @param string $class
+     * @return ObjectType|mixed|null
+     * @throws TypeNotFound
+     */
+    public function getType($name='', $class='')
+    {
+        $types = $this->getTypes();
+        if (!isset($types[$name])) {
+            if (!empty($class)) {
+                $this->addType($class, $name);
+            } else if (!empty(config('graphql.types')[$name])) {
+                $this->addType(config('graphql.types')[$name], $name);
+            } else {
+                throw new TypeNotFound('Type '.$name.' not found.');
+            }
+        }
+        return $this->type($name);
     }
 }

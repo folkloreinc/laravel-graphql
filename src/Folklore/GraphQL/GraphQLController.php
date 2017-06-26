@@ -8,7 +8,10 @@ class GraphQLController extends Controller
     {
         $inputs = $request->all();
         $isBatch = array_keys($inputs) === range(0, count($inputs) - 1);
-
+        //production loaded schemas from inputs
+        if (app()->environment('production')) {
+            \GraphQL::SchemaAutoLoad($inputs);
+        }
         if (!$schema) {
             $schema = config('graphql.schema');
         }
