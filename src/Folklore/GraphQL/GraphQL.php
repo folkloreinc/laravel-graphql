@@ -91,23 +91,39 @@ class GraphQL
             'types' => $types
         ]);
     }
-    
+
+    /**
+     * @desc   get type from the configuration
+     * @author kjone
+     * @param $name
+     * @param bool $fresh
+     * @return ObjectType|mixed|null
+     * @throws TypeNotFound
+     */
     public function type($name, $fresh = false)
     {
         if (!isset($this->types[$name])) {
+            if (!empty(config('graphql.types')[$name])) {
+                $this->addType(config('graphql.types')[$name], $name);
+            } else {
+                throw new TypeNotFound('Type '.$name.' not found.');
+            }
+        }
+
+        if (!isset($this->types[$name])) {
             throw new TypeNotFound('Type '.$name.' not found.');
         }
-        
+
         if (!$fresh && isset($this->typesInstances[$name])) {
             return $this->typesInstances[$name];
         }
-        
+
         $class = $this->types[$name];
         $type = $this->objectType($class, [
             'name' => $name
         ]);
         $this->typesInstances[$name] = $type;
-        
+
         return $type;
     }
     
@@ -302,7 +318,7 @@ class GraphQL
     {
         $this->clearSchemas();
         $schemaName = config('graphql.schema');
-        $Schemas['hummer'] = config('graphql.schemas.'.$schemaName);
+        $Schemas[$schemaName] = config('graphql.schemas.'.$schemaName);
         $action = '';
         $result = [];
         $source = new Source($inputs['query'] ?: '', 'GraphQL request');
@@ -321,33 +337,5 @@ class GraphQL
             },
         ]);
         $this->addSchema($schemaName, $result);
-    }
-
-    /**
-     * @desc   get type from the configuration or add
-     * Example:
-     * If you need to load from the configuration
-     *         GraphQL::getType('userType')
-     * or
-     *         GraphQL::getType('userType',Object::class)
-     *
-     * @param string $name
-     * @param string $class
-     * @return ObjectType|mixed|null
-     * @throws TypeNotFound
-     */
-    public function getType($name='', $class='')
-    {
-        $types = $this->getTypes();
-        if (!isset($types[$name])) {
-            if (!empty($class)) {
-                $this->addType($class, $name);
-            } else if (!empty(config('graphql.types')[$name])) {
-                $this->addType(config('graphql.types')[$name], $name);
-            } else {
-                throw new TypeNotFound('Type '.$name.' not found.');
-            }
-        }
-        return $this->type($name);
     }
 }
