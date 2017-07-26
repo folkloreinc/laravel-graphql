@@ -45,7 +45,7 @@ class Field extends Fluent
         $attributes = $this->attributes();
         $args = $this->args();
         
-        $attributes = array_merge($this->attributes, [
+        $attributes = array_merge([
             'args' => $args
         ], $attributes);
         
