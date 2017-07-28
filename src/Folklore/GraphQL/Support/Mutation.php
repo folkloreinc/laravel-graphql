@@ -9,4 +9,8 @@ use Folklore\GraphQL\Support\Traits\ShouldValidate;
 class Mutation extends Field
 {
     use ShouldValidate;
+
+    public function authorize() {
+        return false;
+    }
 }

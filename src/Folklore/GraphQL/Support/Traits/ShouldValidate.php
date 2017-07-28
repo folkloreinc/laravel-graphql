@@ -3,9 +3,36 @@
 namespace Folklore\GraphQL\Support\Traits;
 
 use Folklore\GraphQL\Error\ValidationError;
+use MongoDB\Driver\Exception\AuthenticationException;
 
 trait ShouldValidate
 {
+    /**
+     * Determine if the request passes the authorization check.
+     *
+     * @return bool
+     */
+    protected function passesAuthorization()
+    {
+        if (method_exists($this, 'authorize')) {
+            return $this->authorize();
+        }
+
+        return false;
+    }
+
+    /**
+     * Handle a failed authorization attempt.
+     *
+     * @return void
+     *
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    protected function failedAuthorization()
+    {
+        throw new AuthenticationException('This action is unauthorized.');
+    }
+
     protected function rules()
     {
         return [];
@@ -32,6 +59,10 @@ trait ShouldValidate
 
     protected function getValidator($args, $rules)
     {
+        if (! $this->passesAuthorization()) {
+            $this->failedAuthorization();
+        }
+        
         return app('validator')->make($args, $rules);
     }
 
