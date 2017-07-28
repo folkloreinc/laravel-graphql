@@ -3,7 +3,7 @@
 namespace Folklore\GraphQL\Support\Traits;
 
 use Folklore\GraphQL\Error\ValidationError;
-use MongoDB\Driver\Exception\AuthenticationException;
+use Folklore\GraphQL\Exception\AuthorizationException;
 
 trait ShouldValidate
 {
@@ -26,11 +26,11 @@ trait ShouldValidate
      *
      * @return void
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Folklore\GraphQL\Exception\AuthorizationException
      */
     protected function failedAuthorization()
     {
-        throw new AuthenticationException('This action is unauthorized.');
+        throw new AuthorizationException('This action is unauthorized.');
     }
 
     protected function rules()
@@ -62,7 +62,7 @@ trait ShouldValidate
         if (! $this->passesAuthorization()) {
             $this->failedAuthorization();
         }
-        
+
         return app('validator')->make($args, $rules);
     }
 
