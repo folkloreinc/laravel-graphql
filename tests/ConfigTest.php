@@ -63,7 +63,7 @@ class ConfigTest extends TestCase
 
         $this->assertEquals($response->getStatusCode(), 200);
 
-        $content = $response->getOriginalContent();
+        $content = $response->getData(true);
         $this->assertArrayHasKey('data', $content);
     }
 
@@ -75,7 +75,7 @@ class ConfigTest extends TestCase
 
         $this->assertEquals($response->getStatusCode(), 200);
 
-        $content = $response->getOriginalContent();
+        $content = $response->getData(true);
         $this->assertArrayHasKey('data', $content);
     }
 
@@ -113,7 +113,7 @@ class ConfigTest extends TestCase
 
         $this->assertEquals($response->getStatusCode(), 200);
 
-        $content = $response->getOriginalContent();
+        $content = $response->getData(true);
         $this->assertArrayHasKey('data', $content);
         $this->assertEquals($content['data'], [
             'examples' => [

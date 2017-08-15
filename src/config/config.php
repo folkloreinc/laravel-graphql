@@ -51,10 +51,18 @@ return [
     // Any middleware for the graphql route group
     'middleware' => [],
 
+    // Any headers that will be added to the response returned by the default controller
+    'headers' => [],
+
+    // Any json encoding options when returning a response from the default controller
+    // See http://php.net/manual/function.json-encode.php for list of options
+    'json_encoding_options' => 0,
+
     // Config for GraphiQL (https://github.com/graphql/graphiql).
     // To disable GraphiQL, set this to null.
     'graphiql' => [
-        'routes' => '/graphiql',
+        'routes' => '/graphiql/{graphql_schema?}',
+        'controller' => \Folklore\GraphQL\GraphQLController::class.'@graphiql',
         'middleware' => [],
         'view' => 'graphql::graphiql'
     ],
@@ -133,6 +141,7 @@ return [
     // for details. Disabled by default.
     'security' => [
         'query_max_complexity' => null,
-        'query_max_depth' => null
+        'query_max_depth' => null,
+        'disable_introspection' => false
     ]
 ];

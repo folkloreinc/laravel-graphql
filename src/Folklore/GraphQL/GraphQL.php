@@ -128,9 +128,9 @@ class GraphQL
         return $objectType;
     }
     
-    public function query($query, $params = [], $opts = [])
+    public function query($query, $variables = [], $opts = [])
     {
-        $result = $this->queryAndReturnResult($query, $params, $opts);
+        $result = $this->queryAndReturnResult($query, $variables, $opts);
         
         if (!empty($result->errors)) {
             $errorFormatter = config('graphql.error_formatter', [self::class, 'formatError']);
@@ -146,7 +146,7 @@ class GraphQL
         }
     }
     
-    public function queryAndReturnResult($query, $params = [], $opts = [])
+    public function queryAndReturnResult($query, $variables = [], $opts = [])
     {
         $root = array_get($opts, 'root', null);
         $context = array_get($opts, 'context', null);
@@ -155,7 +155,7 @@ class GraphQL
         
         $schema = $this->schema($schemaName);
         
-        $result = GraphQLBase::executeAndReturnResult($schema, $query, $root, $context, $params, $operationName);
+        $result = GraphQLBase::executeAndReturnResult($schema, $query, $root, $context, $variables, $operationName);
         
         return $result;
     }

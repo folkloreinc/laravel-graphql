@@ -1,11 +1,26 @@
 <?php
-
 namespace Folklore\GraphQL\View;
+
+use InvalidArgumentException;
+use Illuminate\View\View;
+use Illuminate\Support\Facades\Route;
 
 class GraphiQLComposer
 {
-    public function compose($view)
+    public function compose(View $view)
     {
-        $view->graphqlPath = route('graphql.query');
+        try {
+            $hasRoute = route('graphql.query');
+        } catch (InvalidArgumentException $e) {
+            $hasRoute = false;
+        }
+
+        $schema = $view->schema;
+
+        if (! empty($schema)) {
+            $view->graphqlPath = $hasRoute ? route('graphql.query', [$schema]) : url('/graphql/' . $schema);
+        } else {
+            $view->graphqlPath = $hasRoute ? route('graphql.query') : url('/graphql');
+        }
     }
 }

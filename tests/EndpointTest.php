@@ -18,7 +18,7 @@ class EndpointTest extends TestCase
 
         $this->assertEquals($response->getStatusCode(), 200);
 
-        $content = $response->getOriginalContent();
+        $content = $response->getData(true);
         $this->assertArrayHasKey('data', $content);
         $this->assertEquals($content['data'], [
             'examples' => $this->data
@@ -36,7 +36,7 @@ class EndpointTest extends TestCase
             'query' => $this->queries['examplesCustom']
         ]);
 
-        $content = $response->getOriginalContent();
+        $content = $response->getData(true);
         $this->assertArrayHasKey('data', $content);
         $this->assertEquals($content['data'], [
             'examplesCustom' => $this->data
@@ -59,9 +59,47 @@ class EndpointTest extends TestCase
 
         $this->assertEquals($response->getStatusCode(), 200);
 
-        $content = $response->getOriginalContent();
+        $content = $response->getData(true);
         $this->assertArrayHasKey('data', $content);
         $this->assertEquals($content['data'], [
+            'examples' => [
+                $this->data[0]
+            ]
+        ]);
+    }
+
+    /**
+     * Test support batched queries
+     *
+     * @test
+     */
+    public function testBatchedQueries() {
+        $response = $this->call('GET', '/graphql', [
+            [
+                'query' => $this->queries['examplesWithVariables'],
+                'variables' => [
+                    'index' => 0
+                ]
+            ],
+            [
+                'query' => $this->queries['examplesWithVariables'],
+                'variables' => [
+                    'index' => 0
+                ]
+            ]
+        ]);
+
+        $this->assertEquals($response->getStatusCode(), 200);
+
+        $content = $response->getData(true);
+        $this->assertArrayHasKey(0, $content);
+        $this->assertArrayHasKey(1, $content);
+        $this->assertEquals($content[0]['data'], [
+            'examples' => [
+                $this->data[0]
+            ]
+        ]);
+        $this->assertEquals($content[1]['data'], [
             'examples' => [
                 $this->data[0]
             ]
