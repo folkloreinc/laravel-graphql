@@ -9,18 +9,6 @@ use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 class ServiceProvider extends BaseServiceProvider
 {
     /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        $this->registerGraphQL();
-
-        $this->registerConsole();
-    }
-
-    /**
      * Bootstrap any application services.
      *
      * @return void
@@ -35,36 +23,57 @@ class ServiceProvider extends BaseServiceProvider
     }
 
     /**
-     * Get the services provided by the provider.
-     *
-     * @return array
-     */
-    public function provides()
-    {
-        return ['graphql'];
-    }
-
-    /**
-     * Register GraphQL facade
+     * Bootstrap router
      *
      * @return void
      */
-    protected function registerGraphQL()
+    protected function bootRouter()
     {
-        $this->app->singleton('graphql', function ($app) {
+        if ($this->app['config']->get('graphql.routes')) {
+            $router = $this->app['router'];
+            include __DIR__.'/routes.php';
+        }
+    }
 
-            $graphql = new GraphQL($app);
+    /**
+     * Bootstrap events
+     *
+     * @param GraphQL $graphql
+     * @return void
+     */
+    protected function registerEventListeners(GraphQL $graphql)
+    {
+        // Update the schema route pattern when schema is added
+        $this->app['events']->listen(
+            Events\SchemaAdded::class,
+            function() use ($graphql) {
+                $schemaNames = array_keys($graphql->getSchemas());
+                $this->app['router']->pattern('graphql_schema', '('.implode('|', $schemaNames).')');
+            }
+        );
+    }
 
-            $this->addTypes($graphql);
+    /**
+     * Bootstrap publishes
+     *
+     * @return void
+     */
+    protected function bootPublishes()
+    {
+        $configPath = __DIR__.'/../../config';
+        $viewsPath = __DIR__.'/../../resources/views';
 
-            $this->addSchemas($graphql);
+        $this->mergeConfigFrom($configPath.'/config.php', 'graphql');
 
-            $this->registerEventListeners($graphql);
+        $this->loadViewsFrom($viewsPath, 'graphql');
 
-            $this->applySecurityRules();
+        $this->publishes([
+            $configPath.'/config.php' => config_path('graphql.php'),
+        ], 'config');
 
-            return $graphql;
-        });
+        $this->publishes([
+            $viewsPath => base_path('resources/views/vendor/graphql'),
+        ], 'views');
     }
 
     /**
@@ -98,21 +107,18 @@ class ServiceProvider extends BaseServiceProvider
     }
 
     /**
-     * Bootstrap events
+     * Bootstrap Views
      *
-     * @param GraphQL $graphql
      * @return void
      */
-    protected function registerEventListeners(GraphQL $graphql)
+    protected function bootViews()
     {
-        // Update the schema route pattern when schema is added
-        $this->app['events']->listen(
-            Events\SchemaAdded::class,
-            function() use ($graphql) {
-                $schemaNames = array_keys($graphql->getSchemas());
-                $this->app['router']->pattern('graphql_schema', '('.implode('|', $schemaNames).')');
-            }
-        );
+        $config = $this->app['config'];
+
+        if ($config->get('graphql.graphiql', true)) {
+            $view = $config->get('graphql.graphiql.view', 'graphql::graphiql');
+            $this->app['view']->composer($view, View\GraphiQLComposer::class);
+        }
     }
 
     /**
@@ -145,6 +151,41 @@ class ServiceProvider extends BaseServiceProvider
     }
 
     /**
+     * Register any application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $this->registerGraphQL();
+
+        $this->registerConsole();
+    }
+
+    /**
+     * Register GraphQL facade
+     *
+     * @return void
+     */
+    protected function registerGraphQL()
+    {
+        $this->app->singleton('graphql', function ($app) {
+
+            $graphql = new GraphQL($app);
+
+            $this->addTypes($graphql);
+
+            $this->addSchemas($graphql);
+
+            $this->registerEventListeners($graphql);
+
+            $this->applySecurityRules();
+
+            return $graphql;
+        });
+    }
+
+    /**
      * Register console commands
      *
      * @return void
@@ -157,53 +198,12 @@ class ServiceProvider extends BaseServiceProvider
     }
 
     /**
-     * Bootstrap publishes
+     * Get the services provided by the provider.
      *
-     * @return void
+     * @return array
      */
-    protected function bootPublishes()
+    public function provides()
     {
-        $configPath = __DIR__.'/../../config';
-        $viewsPath = __DIR__.'/../../resources/views';
-
-        $this->mergeConfigFrom($configPath.'/config.php', 'graphql');
-
-        $this->loadViewsFrom($viewsPath, 'graphql');
-
-        $this->publishes([
-            $configPath.'/config.php' => config_path('graphql.php'),
-        ], 'config');
-
-        $this->publishes([
-            $viewsPath => base_path('resources/views/vendor/graphql'),
-        ], 'views');
-    }
-
-    /**
-     * Bootstrap router
-     *
-     * @return void
-     */
-    protected function bootRouter()
-    {
-        if ($this->app['config']->get('graphql.routes')) {
-            $router = $this->app['router'];
-            include __DIR__.'/routes.php';
-        }
-    }
-
-    /**
-     * Bootstrap Views
-     *
-     * @return void
-     */
-    protected function bootViews()
-    {
-        $config = $this->app['config'];
-
-        if ($config->get('graphql.graphiql', true)) {
-            $view = $config->get('graphql.graphiql.view', 'graphql::graphiql');
-            $this->app['view']->composer($view, View\GraphiQLComposer::class);
-        }
+        return ['graphql'];
     }
 }
