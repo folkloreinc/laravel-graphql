@@ -4,10 +4,6 @@ use GraphQL\Validator\DocumentValidator;
 use GraphQL\Validator\Rules\DisableIntrospection;
 use GraphQL\Validator\Rules\QueryComplexity;
 use GraphQL\Validator\Rules\QueryDepth;
-use Illuminate\Contracts\Config\Repository as Config;
-use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
-use Illuminate\Contracts\Routing\Registrar as Router;
-use Illuminate\Contracts\View\Factory as ViewFactory;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 class ServiceProvider extends BaseServiceProvider
@@ -29,13 +25,13 @@ class ServiceProvider extends BaseServiceProvider
      *
      * @return void
      */
-    public function boot(Config $config, Router $router, ViewFactory $viewFactory)
+    public function boot()
     {
         $this->bootPublishes();
 
-        $this->bootRouter($config, $router);
+        $this->bootRouter();
 
-        $this->bootViews($config, $viewFactory);
+        $this->bootViews();
     }
 
     /**
@@ -58,13 +54,12 @@ class ServiceProvider extends BaseServiceProvider
         $this->app->singleton('graphql', function ($app) {
 
             $graphql = new GraphQL($app);
-            $config = $app->make('config');
 
-            $this->addTypes($config, $graphql);
+            $this->addTypes($graphql);
 
-            $this->addSchemas($config, $graphql);
+            $this->addSchemas($graphql);
 
-            $this->registerEventListeners($app->make('events'), $app->make('router'), $graphql);
+            $this->registerEventListeners($graphql);
 
             $this->applySecurityRules();
 
@@ -75,13 +70,12 @@ class ServiceProvider extends BaseServiceProvider
     /**
      * Add types from config
      *
-     * @param Config $config
      * @param GraphQL $graphql
      * @return void
      */
-    protected function addTypes(Config $config, GraphQL $graphql)
+    protected function addTypes(GraphQL $graphql)
     {
-        $types = $config->get('graphql.types', []);
+        $types = $this->app['config']->get('graphql.types', []);
 
         foreach ($types as $name => $type) {
             $graphql->addType($type, is_numeric($name) ? null : $name);
@@ -91,13 +85,12 @@ class ServiceProvider extends BaseServiceProvider
     /**
      * Add schemas from config
      *
-     * @param Config $config
      * @param GraphQL $graphql
      * @return void
      */
-    protected function addSchemas(Config $config, GraphQL $graphql)
+    protected function addSchemas(GraphQL $graphql)
     {
-        $schemas = $config->get('graphql.schemas', []);
+        $schemas = $this->app['config']->get('graphql.schemas', []);
 
         foreach ($schemas as $name => $schema) {
             $graphql->addSchema($name, $schema);
@@ -107,18 +100,19 @@ class ServiceProvider extends BaseServiceProvider
     /**
      * Bootstrap events
      *
-     * @param EventDispatcher $events
-     * @param Router $router
      * @param GraphQL $graphql
      * @return void
      */
-    protected function registerEventListeners(EventDispatcher $events, Router $router, GraphQL $graphql)
+    protected function registerEventListeners(GraphQL $graphql)
     {
         // Update the schema route pattern when schema is added
-        $events->listen(Events\SchemaAdded::class, function () use ($router, $graphql) {
-            $schemaNames = array_keys($graphql->getSchemas());
-            $router->pattern('graphql_schema', '('.implode('|', $schemaNames).')');
-        });
+        $this->app['events']->listen(
+            Events\SchemaAdded::class,
+            function() use ($graphql) {
+                $schemaNames = array_keys($graphql->getSchemas());
+                $this->app['router']->pattern('graphql_schema', '('.implode('|', $schemaNames).')');
+            }
+        );
     }
 
     /**
@@ -190,9 +184,10 @@ class ServiceProvider extends BaseServiceProvider
      *
      * @return void
      */
-    protected function bootRouter(Config $config, Router $router)
+    protected function bootRouter()
     {
-        if ($config->get('graphql.routes')) {
+        if ($this->app['config']->get('graphql.routes')) {
+            $router = $this->app['router'];
             include __DIR__.'/routes.php';
         }
     }
@@ -200,15 +195,15 @@ class ServiceProvider extends BaseServiceProvider
     /**
      * Bootstrap Views
      *
-     * @param Config $config
-     * @param ViewFactory $viewFactory
      * @return void
      */
-    protected function bootViews(Config $config, ViewFactory $viewFactory)
+    protected function bootViews()
     {
+        $config = $this->app['config'];
+
         if ($config->get('graphql.graphiql', true)) {
             $view = $config->get('graphql.graphiql.view', 'graphql::graphiql');
-            $viewFactory->composer($view, View\GraphiQLComposer::class);
+            $this->app['view']->composer($view, View\GraphiQLComposer::class);
         }
     }
 }
