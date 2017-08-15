@@ -115,7 +115,7 @@ return [
     //     'user' => 'App\GraphQL\Type\UserType'
     // ]
     //
-    // or whitout specifying a key (it will use the ->name property of your type)
+    // or without specifying a key (it will use the ->name property of your type)
     //
     // 'types' => [
     //     'App\GraphQL\Type\UserType'
