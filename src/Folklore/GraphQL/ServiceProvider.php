@@ -44,13 +44,10 @@ class ServiceProvider extends BaseServiceProvider
     protected function registerEventListeners(GraphQL $graphql)
     {
         // Update the schema route pattern when schema is added
-        $this->app['events']->listen(
-            Events\SchemaAdded::class,
-            function() use ($graphql) {
-                $schemaNames = array_keys($graphql->getSchemas());
-                $this->app['router']->pattern('graphql_schema', '('.implode('|', $schemaNames).')');
-            }
-        );
+        $this->app['events']->listen(Events\SchemaAdded::class, function() use ($graphql) {
+            $schemaNames = array_keys($graphql->getSchemas());
+            $this->app['router']->pattern('graphql_schema', '('.implode('|', $schemaNames).')');
+        });
     }
 
     /**
