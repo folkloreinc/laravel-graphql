@@ -47,12 +47,12 @@ $ composer update
 
 **1-** Add the service provider to your `app/config/app.php` file
 ```php
-'Folklore\GraphQL\ServiceProvider',
+Folklore\GraphQL\ServiceProvider::class,
 ```
 
 **2-** Add the facade to your `app/config/app.php` file
 ```php
-'GraphQL' => 'Folklore\GraphQL\Support\Facades\GraphQL',
+'GraphQL' => Folklore\GraphQL\Support\Facades\GraphQL::class,
 ```
 
 **3-** Publish the configuration file

@@ -79,6 +79,7 @@ public function resolvePostsField($root, $args)
 Enumeration types are a special kind of scalar that is restricted to a particular set of allowed values.
 Read more about Enums [here](http://graphql.org/learn/schema/#enumeration-types)
 
+First create an Enum as an extention of the GraphQLType class:
 ```php
 <?php
 // app/GraphQL/Enums/EpisodeEnum.php
@@ -101,7 +102,28 @@ class EpisodeEnum extends GraphQLType {
 }
 
 ```
+Register the Enum in the 'types' array of the graphql.php config file:
 
+```php
+// config/graphql.php
+'types' => [TestEnum' => TestEnumType::class ];
+```
+
+Then use it like:
+```php
+<?php
+// app/GraphQL/Type/TestType.php
+class TestType extends GraphQLType {
+   public function fields()
+   {
+        return [
+            'type' => [
+                'type' => GraphQL::type('TestEnum')
+            ]
+        ]
+   }
+}
+```
 ### Interfaces
 
 You can use interfaces to abstract a set of fields. Read more about interfaces [here](http://graphql.org/learn/schema/#interfaces).
@@ -207,33 +229,33 @@ use Folklore\GraphQL\Support\Field;
 class PictureField extends Field {
 
         protected $attributes = [
-		'description' => 'A picture'
-	];
+        'description' => 'A picture'
+    ];
 
-	public function type(){
-		return Type::string();
-	}
+    public function type(){
+        return Type::string();
+    }
 
-	public function args()
-	{
-		return [
-			'width' => [
-				'type' => Type::int(),
-				'description' => 'The width of the picture'
-			],
-			'height' => [
-				'type' => Type::int(),
-				'description' => 'The height of the picture'
-			]
-		];
-	}
+    public function args()
+    {
+        return [
+            'width' => [
+                'type' => Type::int(),
+                'description' => 'The width of the picture'
+            ],
+            'height' => [
+                'type' => Type::int(),
+                'description' => 'The height of the picture'
+            ]
+        ];
+    }
 
-	protected function resolve($root, $args)
-	{
-		$width = isset($args['width']) ? $args['width']:100;
-		$height = isset($args['height']) ? $args['height']:100;
-		return 'http://placehold.it/'.$width.'x'.$height;
-	}
+    protected function resolve($root, $args)
+    {
+        $width = isset($args['width']) ? $args['width']:100;
+        $height = isset($args['height']) ? $args['height']:100;
+        return 'http://placehold.it/'.$width.'x'.$height;
+    }
 
 }
 
@@ -253,25 +275,25 @@ use App\GraphQL\Fields\PictureField;
 class UserType extends GraphQLType {
 
         protected $attributes = [
-		'name' => 'User',
-		'description' => 'A user'
-	];
+        'name' => 'User',
+        'description' => 'A user'
+    ];
 
-	public function fields()
-	{
-		return [
-			'id' => [
-				'type' => Type::nonNull(Type::string()),
-				'description' => 'The id of the user'
-			],
-			'email' => [
-				'type' => Type::string(),
-				'description' => 'The email of user'
-			],
-			//Instead of passing an array, you pass a class path to your custom field
-			'picture' => PictureField::class
-		];
-	}
+    public function fields()
+    {
+        return [
+            'id' => [
+                'type' => Type::nonNull(Type::string()),
+                'description' => 'The id of the user'
+            ],
+            'email' => [
+                'type' => Type::string(),
+                'description' => 'The email of user'
+            ],
+            //Instead of passing an array, you pass a class path to your custom field
+            'picture' => PictureField::class
+        ];
+    }
 
 }
 
@@ -295,41 +317,41 @@ use App\User;
 
 class UsersQuery extends Query
 {
-	protected $attributes = [
-		'name' => 'Users query'
-	];
+    protected $attributes = [
+        'name' => 'Users query'
+    ];
 
-	public function type()
-	{
-		return Type::listOf(GraphQL::type('user'));
-	}
+    public function type()
+    {
+        return Type::listOf(GraphQL::type('user'));
+    }
 
-	public function args()
-	{
-		return [
-			'id' => ['name' => 'id', 'type' => Type::string()],
-			'email' => ['name' => 'email', 'type' => Type::string()]
-		];
-	}
+    public function args()
+    {
+        return [
+            'id' => ['name' => 'id', 'type' => Type::string()],
+            'email' => ['name' => 'email', 'type' => Type::string()]
+        ];
+    }
 
-	public function resolve($root, $args, $context, ResolveInfo $info)
-	{
-		$fields = $info->getFieldSelection($depth = 3);
+    public function resolve($root, $args, $context, ResolveInfo $info)
+    {
+        $fields = $info->getFieldSelection($depth = 3);
 
-		$users = User::query();
+        $users = User::query();
 
-		foreach ($fields as $field => $keys) {
-			if ($field === 'profile') {
-				$users->with('profile');
-			}
+        foreach ($fields as $field => $keys) {
+            if ($field === 'profile') {
+                $users->with('profile');
+            }
 
-			if ($field === 'posts') {
-				$users->with('posts');
-			}
-		}
+            if ($field === 'posts') {
+                $users->with('posts');
+            }
+        }
 
-		return $users->get();
-	}
+        return $users->get();
+    }
 }
 ```
 
