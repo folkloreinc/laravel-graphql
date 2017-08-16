@@ -216,6 +216,8 @@ class GraphQLTest extends TestCase
     public function testAddType()
     {
         $this->expectsEvents(TypeAdded::class);
+	
+	    $this->app['events']->shouldReceive('listen');
         
         GraphQL::addType(CustomExampleType::class);
 
@@ -270,6 +272,8 @@ class GraphQLTest extends TestCase
     public function testAddSchema()
     {
         $this->expectsEvents(SchemaAdded::class);
+	
+	    $this->app['events']->shouldReceive('listen')->with(SchemaAdded::class, Closure::class)->once();
         
         GraphQL::addSchema('custom_add', [
             'query' => [

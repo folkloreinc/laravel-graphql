@@ -2,20 +2,12 @@
 
 use GraphQL\Validator\DocumentValidator;
 use GraphQL\Validator\Rules\DisableIntrospection;
+use GraphQL\Validator\Rules\QueryComplexity;
+use GraphQL\Validator\Rules\QueryDepth;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 class ServiceProvider extends BaseServiceProvider
 {
-    /**
-     * Get the active router.
-     *
-     * @return Router
-     */
-    protected function getRouter()
-    {
-        return $this->app['router'];
-    }
-
     /**
      * Bootstrap any application services.
      *
@@ -23,19 +15,11 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function boot()
     {
-        $this->bootEvents();
-
         $this->bootPublishes();
-
-        $this->bootTypes();
-
-        $this->bootSchemas();
 
         $this->bootRouter();
 
         $this->bootViews();
-        
-        $this->bootSecurity();
     }
 
     /**
@@ -45,8 +29,8 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected function bootRouter()
     {
-        if (config('graphql.routes')) {
-            $router = $this->getRouter();
+        if ($this->app['config']->get('graphql.routes')) {
+            $router = $this->app['router'];
             include __DIR__.'/routes.php';
         }
     }
@@ -54,14 +38,15 @@ class ServiceProvider extends BaseServiceProvider
     /**
      * Bootstrap events
      *
+     * @param GraphQL $graphql
      * @return void
      */
-    protected function bootEvents()
+    protected function registerEventListeners(GraphQL $graphql)
     {
-        //Update the schema route pattern when schema is added
-        $this->app['events']->listen(\Folklore\GraphQL\Events\SchemaAdded::class, function () {
-            $schemaNames = array_keys($this->app['graphql']->getSchemas());
-            $this->getRouter()->pattern('graphql_schema', '('.implode('|', $schemaNames).')');
+        // Update the schema route pattern when schema is added
+        $this->app['events']->listen(Events\SchemaAdded::class, function() use ($graphql) {
+            $schemaNames = array_keys($graphql->getSchemas());
+            $this->app['router']->pattern('graphql_schema', '('.implode('|', $schemaNames).')');
         });
     }
 
@@ -76,7 +61,7 @@ class ServiceProvider extends BaseServiceProvider
         $viewsPath = __DIR__.'/../../resources/views';
 
         $this->mergeConfigFrom($configPath.'/config.php', 'graphql');
-        
+
         $this->loadViewsFrom($viewsPath, 'graphql');
 
         $this->publishes([
@@ -91,30 +76,30 @@ class ServiceProvider extends BaseServiceProvider
     /**
      * Add types from config
      *
+     * @param GraphQL $graphql
      * @return void
      */
-    protected function bootTypes()
+    protected function addTypes(GraphQL $graphql)
     {
-        $configTypes = config('graphql.types');
-        foreach ($configTypes as $name => $type) {
-            if (is_numeric($name)) {
-                $this->app['graphql']->addType($type);
-            } else {
-                $this->app['graphql']->addType($type, $name);
-            }
+        $types = $this->app['config']->get('graphql.types', []);
+
+        foreach ($types as $name => $type) {
+            $graphql->addType($type, is_numeric($name) ? null : $name);
         }
     }
 
     /**
      * Add schemas from config
      *
+     * @param GraphQL $graphql
      * @return void
      */
-    protected function bootSchemas()
+    protected function addSchemas(GraphQL $graphql)
     {
-        $configSchemas = config('graphql.schemas');
-        foreach ($configSchemas as $name => $schema) {
-            $this->app['graphql']->addSchema($name, $schema);
+        $schemas = $this->app['config']->get('graphql.schemas', []);
+
+        foreach ($schemas as $name => $schema) {
+            $graphql->addSchema($name, $schema);
         }
     }
 
@@ -125,35 +110,39 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected function bootViews()
     {
-        $graphiQL = config('graphql.graphiql', true);
-        if ($graphiQL) {
-            $view = config('graphql.graphiql.view', 'graphql::graphiql');
-            app('view')->composer($view, \Folklore\GraphQL\View\GraphiQLComposer::class);
+        $config = $this->app['config'];
+
+        if ($config->get('graphql.graphiql', true)) {
+            $view = $config->get('graphql.graphiql.view', 'graphql::graphiql');
+            $this->app['view']->composer($view, View\GraphiQLComposer::class);
         }
     }
-    
+
     /**
      * Configure security from config
+     *
      * @return void
      */
-    protected function bootSecurity()
+    protected function applySecurityRules()
     {
         $maxQueryComplexity = config('graphql.security.query_max_complexity');
         if ($maxQueryComplexity !== null) {
+            /** @var QueryComplexity $queryComplexity */
             $queryComplexity = DocumentValidator::getRule('QueryComplexity');
             $queryComplexity->setMaxQueryComplexity($maxQueryComplexity);
         }
 
         $maxQueryDepth = config('graphql.security.query_max_depth');
         if ($maxQueryDepth !== null) {
+            /** @var QueryDepth $queryDepth */
             $queryDepth = DocumentValidator::getRule('QueryDepth');
             $queryDepth->setMaxQueryDepth($maxQueryDepth);
         }
 
         $disableIntrospection = config('graphql.security.disable_introspection');
         if ($disableIntrospection === true) {
+            /** @var DisableIntrospection $disableIntrospection */
             $disableIntrospection = DocumentValidator::getRule('DisableIntrospection');
-            /** @var \GraphQL\Validator\Rules\DisableIntrospection $disableIntrospection */
             $disableIntrospection->setEnabled(DisableIntrospection::ENABLED);
         }
     }
@@ -175,10 +164,21 @@ class ServiceProvider extends BaseServiceProvider
      *
      * @return void
      */
-    public function registerGraphQL()
+    protected function registerGraphQL()
     {
         $this->app->singleton('graphql', function ($app) {
-            return new GraphQL($app);
+
+            $graphql = new GraphQL($app);
+
+            $this->addTypes($graphql);
+
+            $this->addSchemas($graphql);
+
+            $this->registerEventListeners($graphql);
+
+            $this->applySecurityRules();
+
+            return $graphql;
         });
     }
 
@@ -187,13 +187,12 @@ class ServiceProvider extends BaseServiceProvider
      *
      * @return void
      */
-    public function registerConsole()
+    protected function registerConsole()
     {
-        $this->commands(\Folklore\GraphQL\Console\TypeMakeCommand::class);
-        $this->commands(\Folklore\GraphQL\Console\QueryMakeCommand::class);
-        $this->commands(\Folklore\GraphQL\Console\MutationMakeCommand::class);
+        $this->commands(Console\TypeMakeCommand::class);
+        $this->commands(Console\QueryMakeCommand::class);
+        $this->commands(Console\MutationMakeCommand::class);
     }
-
 
     /**
      * Get the services provided by the provider.
