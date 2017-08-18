@@ -135,12 +135,11 @@ class GraphQL
 
         if (!empty($result->errors)) {
             $authorizationErrors = array_filter($result->errors, function ($err) {
-                return $err instanceof AuthorizationError;
+                return $err->message === 'Unauthorized';
             });
 
             if (!empty($authorizationErrors)) {
-                return Response::create('', 403)
-                    ->header('Content-Type', 'application/json');
+                return null;
             }
 
             $errorFormatter = config('graphql.error_formatter', [self::class, 'formatError']);
