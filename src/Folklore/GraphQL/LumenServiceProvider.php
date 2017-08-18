@@ -21,15 +21,7 @@ class LumenServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->bootPublishes();
-        
-        $this->bootTypes();
-        
-        $this->bootSchemas();
-        
-        $this->bootRouter();
-        
-        $this->bootViews();
+        app()->environment('production') ? $this->bootProduction() : $this->bootDefault();
     }
     
     /**
@@ -70,5 +62,40 @@ class LumenServiceProvider extends ServiceProvider
         parent::registerConsole();
         
         $this->commands(\Folklore\GraphQL\Console\PublishCommand::class);
+    }
+
+    /**
+     * Bootstrap when config env is Production
+     * the schemas and type will be loaded as needed
+     * production close graphiql
+     * production close preload type and Schemas
+     * production close graphiql view
+     * production open security
+     */
+    public function bootProduction()
+    {
+        $this->bootPublishes();
+
+        app('config')->set('graphql.graphiql', null);
+
+        $this->bootRouter();
+
+        $this->bootSecurity();
+    }
+
+    /**
+     * Bootstrap when disable config env
+     */
+    public function bootDefault()
+    {
+        $this->bootPublishes();
+
+        $this->bootTypes();
+
+        $this->bootSchemas();
+
+        $this->bootRouter();
+
+        $this->bootViews();
     }
 }

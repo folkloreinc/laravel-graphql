@@ -14,6 +14,14 @@ use Folklore\GraphQL\Exception\SchemaNotFound;
 use Folklore\GraphQL\Events\SchemaAdded;
 use Folklore\GraphQL\Events\TypeAdded;
 
+use GraphQL\Language\Parser;
+use GraphQL\Language\Source;
+use GraphQL\Language\Visitor;
+use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\FieldNode;
+use GraphQL\Language\AST\OperationDefinitionNode;
+
+
 class GraphQL
 {
     protected $app;
@@ -83,23 +91,39 @@ class GraphQL
             'types' => $types
         ]);
     }
-    
+
+    /**
+     * @desc   get type from the configuration
+     * @author kjone
+     * @param $name
+     * @param bool $fresh
+     * @return ObjectType|mixed|null
+     * @throws TypeNotFound
+     */
     public function type($name, $fresh = false)
     {
         if (!isset($this->types[$name])) {
+            if (!empty(config('graphql.types')[$name])) {
+                $this->addType(config('graphql.types')[$name], $name);
+            } else {
+                throw new TypeNotFound('Type '.$name.' not found.');
+            }
+        }
+
+        if (!isset($this->types[$name])) {
             throw new TypeNotFound('Type '.$name.' not found.');
         }
-        
+
         if (!$fresh && isset($this->typesInstances[$name])) {
             return $this->typesInstances[$name];
         }
-        
+
         $class = $this->types[$name];
         $type = $this->objectType($class, [
             'name' => $name
         ]);
         $this->typesInstances[$name] = $type;
-        
+
         return $type;
     }
     
@@ -284,5 +308,34 @@ class GraphQL
         }
         
         return $error;
+    }
+
+    /**
+     * @desc  loaded schemas from inputs
+     * @param $inputs
+     */
+    public function SchemaAutoLoad($inputs)
+    {
+        $this->clearSchemas();
+        $schemaName = config('graphql.schema');
+        $Schemas[$schemaName] = config('graphql.schemas.'.$schemaName);
+        $action = '';
+        $result = [];
+        $source = new Source($inputs['query'] ?: '', 'GraphQL request');
+        $asta = Parser::parse($source);
+        Visitor::visit($asta, [
+            'enter' => function(Node $node) use (&$result, $Schemas, &$action, $schemaName) {
+                if ($node instanceof OperationDefinitionNode) {
+                    $action = $node->operation;
+                }
+                if ($node instanceof FieldNode) {
+                    if (!empty($Schemas[$schemaName][$action][$node->name->value])){
+                        $result[$action][$node->name->value] = $Schemas[$schemaName][$action][$node->name->value];
+                    }
+                    return Visitor::skipNode();
+                }
+            },
+        ]);
+        $this->addSchema($schemaName, $result);
     }
 }
