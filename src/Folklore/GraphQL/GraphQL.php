@@ -7,6 +7,7 @@ use GraphQL\Error\Error;
 use GraphQL\Type\Definition\ObjectType;
 
 use Folklore\GraphQL\Error\ValidationError;
+use Folklore\GraphQL\Error\AuthorizationError;
 
 use Folklore\GraphQL\Exception\TypeNotFound;
 use Folklore\GraphQL\Exception\SchemaNotFound;

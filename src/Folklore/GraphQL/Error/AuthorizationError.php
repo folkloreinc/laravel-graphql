@@ -1,4 +1,4 @@
-<?php
+<?php namespace Folklore\GraphQL\Error;
 
 use GraphQL\Error\Error;
 
