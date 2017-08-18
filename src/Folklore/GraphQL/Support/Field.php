@@ -47,7 +47,7 @@ class Field extends Fluent
             // Authorize
             if(call_user_func($authorize) != true)
             {
-                throw with(new AuthorizationError());
+                throw with(new AuthorizationError('Unauthorized'));
             }
 
             return call_user_func_array($resolver, $args);
