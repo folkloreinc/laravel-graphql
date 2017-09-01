@@ -1,6 +1,7 @@
 <?php namespace Folklore\GraphQL;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class GraphQLController extends Controller
 {
@@ -20,6 +21,15 @@ class GraphQLController extends Controller
             foreach ($inputs as $input) {
                 $data[] = $this->executeQuery($schema, $input);
             }
+        }
+
+        if ($data === null) {
+            return response()->json([
+                'data' => null,
+                'errors' => [
+                    ['message' => 'You are not authorized to access this endpoint'],
+                ],
+            ], 403);
         }
 
         $headers = config('graphql.headers', []);

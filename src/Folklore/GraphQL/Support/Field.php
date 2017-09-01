@@ -3,34 +3,53 @@
 namespace Folklore\GraphQL\Support;
 
 use Illuminate\Support\Fluent;
+use Folklore\GraphQL\Error\AuthorizationError;
 
 class Field extends Fluent
 {
-    
+
+    /**
+     * Override this in your queries or mutations
+     * to provide custom authorization
+     */
+    public function authorize()
+    {
+        return true;
+    }
+
     public function attributes()
     {
         return [];
     }
-    
+
     public function type()
     {
         return null;
     }
-    
+
     public function args()
     {
         return [];
     }
-    
+
     protected function getResolver()
     {
         if (!method_exists($this, 'resolve')) {
             return null;
         }
-        
+
         $resolver = array($this, 'resolve');
-        return function () use ($resolver) {
+        $authorize = [$this, 'authorize'];
+
+        return function () use ($resolver, $authorize) {
             $args = func_get_args();
+
+            // Authorize
+            if(call_user_func($authorize) != true)
+            {
+                throw with(new AuthorizationError('Unauthorized'));
+            }
+
             return call_user_func_array($resolver, $args);
         };
     }
@@ -44,21 +63,21 @@ class Field extends Fluent
     {
         $attributes = $this->attributes();
         $args = $this->args();
-        
+
         $attributes = array_merge($this->attributes, [
             'args' => $args
         ], $attributes);
-        
+
         $type = $this->type();
         if (isset($type)) {
             $attributes['type'] = $type;
         }
-        
+
         $resolver = $this->getResolver();
         if (isset($resolver)) {
             $attributes['resolve'] = $resolver;
         }
-        
+
         return $attributes;
     }
 
