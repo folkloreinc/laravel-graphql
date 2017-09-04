@@ -30,11 +30,7 @@ matrix:
       env: TESTBENCH_VERSION=3.5.* DATABASE_VERSION=3.5.* ILLUMINATE_VERSION=5.5.* PHPUNIT_VERSION=~6.0
 
 before_install:
-  - composer global require hirak/prestissimo --update-no-dev
-  - composer require "illuminate/support:${ILLUMINATE_VERSION}" --no-update --prefer-dist
-  - composer require "orchestra/database:${DATABASE_VERSION}" --no-update --prefer-dist
-  - composer require "orchestra/testbench:${TESTBENCH_VERSION}" --no-update --prefer-dist
-  - composer require "phpunit/phpunit:${PHPUNIT_VERSION}" --no-update --prefer-dist
+  - composer require "illuminate/support:${ILLUMINATE_VERSION}" "orchestra/database:${DATABASE_VERSION}" "orchestra/testbench:${TESTBENCH_VERSION}" "phpunit/phpunit:${PHPUNIT_VERSION}" --no-update --prefer-dist
 
 install: composer update --no-interaction --prefer-dist
 
