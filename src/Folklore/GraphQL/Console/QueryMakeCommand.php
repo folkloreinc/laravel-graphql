@@ -2,9 +2,6 @@
 
 namespace Folklore\GraphQL\Console;
 
-use Illuminate\Console\GeneratorCommand;
-use Symfony\Component\Console\Input\InputOption;
-
 class QueryMakeCommand extends GeneratorCommand
 {
     /**

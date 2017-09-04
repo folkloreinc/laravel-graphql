@@ -23,10 +23,11 @@
         "webonyx/graphql-php": "~0.10.2"
     },
     "require-dev": {
-        "orchestra/testbench": "3.1.*|3.2.*|3.3.*|3.4.*|3.5.*",
         "fzaninotto/faker": "~1.4",
+        "orchestra/testbench": "3.1.*|3.2.*|3.3.*|3.4.*|3.5.*",
         "mockery/mockery": "0.9.*",
-        "phpunit/phpunit": "~4.0|~5.0|~5.7|~6.0"
+        "phpunit/phpunit": "~4.0|~5.0|~5.7|~6.0",
+        "satooshi/php-coveralls": "^1.0"
     },
     "autoload": {
         "psr-0": {
@@ -36,6 +37,9 @@
     "autoload-dev": {
         "classmap": [
             "tests/"
-        ]
+        ],
+        "psr-4": {
+            "App\\": "tests/fixture/app/"
+        }
     }
 }

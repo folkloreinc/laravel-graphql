@@ -4,6 +4,70 @@
 return [
 
     /*
+     * The name of the default schema used when no arguments are provided
+     * to GraphQL::schema() or when the route is used without the graphql_schema
+     * parameter
+     */
+    'schema' => 'default',
+
+    /*
+     * The schemas for query and/or mutation. It expects an array to provide
+     * both the 'query' fields and the 'mutation' fields. You can also
+     * provide an GraphQL\Schema object directly.
+     *
+     * Example:
+     *
+     * 'schemas' => [
+     *     'default' => new Schema($config)
+     * ]
+     *
+     * or
+     *
+     * 'schemas' => [
+     *     'default' => [
+     *         'query' => [
+     *              'users' => 'App\GraphQL\Query\UsersQuery'
+     *          ],
+     *          'mutation' => [
+     *
+     *          ],
+     *          'types' => [
+     *
+     *          ]
+     *     ]
+     * ]
+     */
+    'schemas' => [
+        'default' => [
+            'query' => [
+
+            ],
+            'mutation' => [
+
+            ]
+        ]
+    ],
+
+    // The types available in the application. You can then access it from the
+    // facade like this: GraphQL::type('User')
+    //
+    // Example:
+    //
+    // 'types' => [
+    //     'User' => App\GraphQL\Type\UserType:class
+    // ]
+    //
+    // or whitout specifying a key (it will use the "name" attribute of your Type)
+    //
+    // 'types' => [
+    //     App\GraphQL\Type\UserType::class
+    // ]
+    //
+    'types' => [
+
+    ],
+
+    /*
      * The prefix for routes
      */
     'prefix' => 'graphql',
@@ -20,14 +84,18 @@ return [
      * 'routes' => [
      *     'query' => 'query/{graphql_schema?}',
      *     'mutation' => 'mutation/{graphql_schema?}',
-     *      mutation' => 'graphiql'
+     *      graphiql' => 'graphiql'
      * ]
      *
      * you can also disable routes by setting routes to null
      *
      * 'routes' => null,
      */
-    'routes' => '{graphql_schema?}',
+    'routes' => [
+        'query' => '{graphql_schema?}',
+        'mutation' => '{graphql_schema?}',
+        'graphiql' => 'graphiql'
+    ],
 
     /*
      * The controller to use in GraphQL requests. Either a string that will apply
@@ -67,79 +135,6 @@ return [
     'json_encoding_options' => 0,
 
     /*
-     * Config for GraphiQL (see (https://github.com/graphql/graphiql).
-     * To dissable GraphiQL, set this to null
-     */
-    'graphiql' => [
-        'routes' => '/graphiql/{graphql_schema?}',
-        'controller' => \Folklore\GraphQL\GraphQLController::class.'@graphiql',
-        'middleware' => [],
-        'view' => 'graphql::graphiql'
-    ],
-
-    /*
-     * The name of the default schema used when no arguments are provided
-     * to GraphQL::schema() or when the route is used without the graphql_schema
-     * parameter
-     */
-    'schema' => 'default',
-
-    /*
-     * The schemas for query and/or mutation. It expects an array to provide
-     * both the 'query' fields and the 'mutation' fields. You can also
-     * provide an GraphQL\Schema object directly.
-     *
-     * Example:
-     *
-     * 'schemas' => [
-     *     'default' => new Schema($config)
-     * ]
-     *
-     * or
-     *
-     * 'schemas' => [
-     *     'default' => [
-     *         'query' => [
-     *              'users' => 'App\GraphQL\Query\UsersQuery'
-     *          ],
-     *          'mutation' => [
-     *
-     *          ]
-     *     ]
-     * ]
-     */
-    'schemas' => [
-        'default' => [
-            'query' => [
-
-            ],
-            'mutation' => [
-
-            ]
-        ]
-    ],
-
-    /*
-     * The types available in the application. You can access them from the
-     * facade like this: GraphQL::type('user')
-     *
-     * Example:
-     *
-     * 'types' => [
-     *     'user' => 'App\GraphQL\Type\UserType'
-     * ]
-     *
-     * or without specifying a key (it will use the ->name property of your type)
-     *
-     * 'types' =>
-     *     'App\GraphQL\Type\UserType'
-     * ]
-     */
-    'types' => [
-
-    ],
-
-    /*
      * This callable will receive all the Exception objects that are caught by GraphQL.
      * The method should return an array representing the error.
      *
@@ -151,6 +146,47 @@ return [
      * ]
      */
     'error_formatter' => [\Folklore\GraphQL\GraphQL::class, 'formatError'],
+
+    // Introspection configuration
+    'introspection' => [
+
+        // Contains the path to the introspection query
+        // https://github.com/graphql/graphql-js/blob/master/src/utilities/introspectionQuery.js
+        'query' => base_path('resources/graphql/introspection.txt'),
+
+        // Used by the "make:graphql:schema" command as a default path for
+        // saving generated schema.
+        'schema_output' => base_path('resources/graphql/schema.json')
+    ],
+
+    // Relay configuration
+    'relay' => [
+
+        // Define the schemas on which you would like to use relay. It will
+        // automatically add the node query defined below to those schemas.
+        // The parameter can be a string, an array of names or "*" for all schemas.
+        'schemas' => 'default',
+
+        // The Query class used for the node query
+        'query' => [
+            'node' => \Folklore\GraphQL\Relay\NodeQuery::class
+        ],
+
+        // The Type classes used for the Node interface and the PageInfo
+        'types' => [
+            'Node' => \Folklore\GraphQL\Relay\NodeInterface::class,
+            'PageInfo' => \Folklore\GraphQL\Relay\PageInfoType::class
+        ]
+    ],
+
+    // Config for GraphiQL (https://github.com/graphql/graphiql).
+    // To disable GraphiQL, set this to null.
+    'graphiql' => [
+        'routes' => '/graphiql/{graphql_schema?}',
+        'middleware' => [],
+        'view' => 'graphql::graphiql',
+        'composer' => \Folklore\GraphQL\View\GraphiQLComposer::class
+    ],
 
     /*
      * Options to limit the query complexity and depth. See the doc

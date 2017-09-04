@@ -63,7 +63,7 @@ public function fields()
         ],
     ];
 }
-    
+
 public function resolvePostsField($root, $args)
 {
     if (isset($args['id'])) {
@@ -144,7 +144,7 @@ class CharacterInterface extends InterfaceType {
             'name' => 'Character',
             'description' => 'Character interface.',
         ];
-    
+
         public function fields() {
             return [
                 'id' => [
@@ -157,7 +157,7 @@ class CharacterInterface extends InterfaceType {
                 ],
             ];
         }
-    
+
         public function resolveType($root) {
             // Use the resolveType to resolve the Type which is implemented trough this interface
             $type = $root['type'];
@@ -317,41 +317,41 @@ use App\User;
 
 class UsersQuery extends Query
 {
-    protected $attributes = [
-        'name' => 'Users query'
-    ];
+	protected $attributes = [
+		'name' => 'Users query'
+	];
 
-    public function type()
-    {
-        return Type::listOf(GraphQL::type('user'));
-    }
+	protected function type()
+	{
+		return Type::listOf(GraphQL::type('User'));
+	}
 
-    public function args()
-    {
-        return [
-            'id' => ['name' => 'id', 'type' => Type::string()],
-            'email' => ['name' => 'email', 'type' => Type::string()]
-        ];
-    }
+	protected function args()
+	{
+		return [
+			'id' => ['name' => 'id', 'type' => Type::string()],
+			'email' => ['name' => 'email', 'type' => Type::string()]
+		];
+	}
 
-    public function resolve($root, $args, $context, ResolveInfo $info)
-    {
-        $fields = $info->getFieldSelection($depth = 3);
+	public function resolve($root, $args, $context, ResolveInfo $info)
+	{
+		$fields = $info->getFieldSelection($depth = 3);
 
-        $users = User::query();
+		$users = User::query();
 
-        foreach ($fields as $field => $keys) {
-            if ($field === 'profile') {
-                $users->with('profile');
-            }
+		foreach ($fields as $field => $keys) {
+			if ($field === 'profile') {
+				$users->with('profile');
+			}
 
-            if ($field === 'posts') {
-                $users->with('posts');
-            }
-        }
+			if ($field === 'posts') {
+				$users->with('posts');
+			}
+		}
 
-        return $users->get();
-    }
+		return $users->get();
+	}
 }
 ```
 
@@ -379,7 +379,7 @@ class UserType extends GraphQLType
     /**
      * @return array
      */
-    public function fields()
+    protected function fields()
     {
         return [
             'uuid' => [
@@ -414,7 +414,7 @@ class ProfileType extends GraphQLType
         'description' => 'A user profile',
     ];
 
-    public function fields()
+    protected function fields()
     {
         return [
             'name' => [
@@ -434,7 +434,7 @@ class PostType extends GraphQLType
         'description' => 'A post',
     ];
 
-    public function fields()
+    protected function fields()
     {
         return [
             'title' => [

@@ -3,6 +3,7 @@
 use GraphQL\Schema;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Validator\DocumentValidator;
+use App\Data;
 
 class ConfigTest extends TestCase
 {
@@ -24,27 +25,27 @@ class ConfigTest extends TestCase
             'schemas' => [
                 'default' => [
                     'query' => [
-                        'examples' => ExamplesQuery::class,
-                        'examplesContext' => ExamplesContextQuery::class,
-                        'examplesRoot' => ExamplesRootQuery::class
+                        'examples' => \App\GraphQL\Query\ExamplesQuery::class,
+                        'examplesContext' => \App\GraphQL\Query\ExamplesContextQuery::class,
+                        'examplesRoot' => \App\GraphQL\Query\ExamplesRootQuery::class
                     ],
                     'mutation' => [
-                        'updateExample' => UpdateExampleMutation::class
+                        'updateExample' => \App\GraphQL\Mutation\UpdateExampleMutation::class
                     ]
                 ],
                 'custom' => [
                     'query' => [
-                        'examplesCustom' => ExamplesQuery::class
+                        'examplesCustom' => \App\GraphQL\Query\ExamplesQuery::class
                     ],
                     'mutation' => [
-                        'updateExampleCustom' => UpdateExampleMutation::class
+                        'updateExampleCustom' => \App\GraphQL\Mutation\UpdateExampleMutation::class
                     ]
                 ]
             ],
 
             'types' => [
-                'Example' => ExampleType::class,
-                CustomExampleType::class
+                'Example' => \App\GraphQL\Type\ExampleType::class,
+                \App\GraphQL\Type\CustomExampleType::class
             ],
 
             'security' => [
@@ -107,17 +108,18 @@ class ConfigTest extends TestCase
         $response = $this->call('GET', '/graphql_test/query/default', [
             'query' => $this->queries['examplesWithVariables'],
             'params' => [
-                'index' => 0
+                'id' => 1
             ]
         ]);
 
         $this->assertEquals($response->getStatusCode(), 200);
 
         $content = $response->getData(true);
+
         $this->assertArrayHasKey('data', $content);
         $this->assertEquals($content['data'], [
             'examples' => [
-                $this->data[0]
+                Data::getById(1)
             ]
         ]);
     }

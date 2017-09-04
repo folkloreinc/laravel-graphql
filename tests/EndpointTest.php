@@ -2,6 +2,7 @@
 
 use GraphQL\Schema;
 use GraphQL\Type\Definition\ObjectType;
+use App\Data;
 
 class EndpointTest extends TestCase
 {
@@ -20,8 +21,10 @@ class EndpointTest extends TestCase
 
         $content = $response->getData(true);
         $this->assertArrayHasKey('data', $content);
+        $data = Data::get();
+        unset($data[1]['items']);
         $this->assertEquals($content['data'], [
-            'examples' => $this->data
+            'examples' => $data
         ]);
     }
 
@@ -38,8 +41,10 @@ class EndpointTest extends TestCase
 
         $content = $response->getData(true);
         $this->assertArrayHasKey('data', $content);
+        $data = Data::get();
+        unset($data[1]['items']);
         $this->assertEquals($content['data'], [
-            'examplesCustom' => $this->data
+            'examplesCustom' => $data
         ]);
     }
 
@@ -53,7 +58,7 @@ class EndpointTest extends TestCase
         $response = $this->call('GET', '/graphql', [
             'query' => $this->queries['examplesWithVariables'],
             'variables' => [
-                'index' => 0
+                'id' => 1
             ]
         ]);
 
@@ -63,7 +68,7 @@ class EndpointTest extends TestCase
         $this->assertArrayHasKey('data', $content);
         $this->assertEquals($content['data'], [
             'examples' => [
-                $this->data[0]
+                Data::getById(1)
             ]
         ]);
     }
@@ -73,18 +78,19 @@ class EndpointTest extends TestCase
      *
      * @test
      */
-    public function testBatchedQueries() {
+    public function testBatchedQueries()
+    {
         $response = $this->call('GET', '/graphql', [
             [
                 'query' => $this->queries['examplesWithVariables'],
                 'variables' => [
-                    'index' => 0
+                    'id' => 1
                 ]
             ],
             [
                 'query' => $this->queries['examplesWithVariables'],
                 'variables' => [
-                    'index' => 0
+                    'id' => 1
                 ]
             ]
         ]);
@@ -96,12 +102,12 @@ class EndpointTest extends TestCase
         $this->assertArrayHasKey(1, $content);
         $this->assertEquals($content[0]['data'], [
             'examples' => [
-                $this->data[0]
+                Data::getById(1)
             ]
         ]);
         $this->assertEquals($content[1]['data'], [
             'examples' => [
-                $this->data[0]
+                Data::getById(1)
             ]
         ]);
     }

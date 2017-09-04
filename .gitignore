@@ -1,5 +1,7 @@
 /vendor
 *.log
 composer.lock
+/converage
 /*_backup/
 .idea/*
+/tests/logs

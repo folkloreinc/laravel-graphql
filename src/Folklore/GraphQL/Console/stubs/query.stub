@@ -2,24 +2,24 @@
 
 namespace DummyNamespace;
 
-use Folklore\GraphQL\Support\Query;
+use Folklore\GraphQL\Support\Query as BaseQuery;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use GraphQL;
 
-class DummyClass extends Query
+class DummyClass extends BaseQuery
 {
     protected $attributes = [
         'name' => 'DummyQuery',
         'description' => 'A query'
     ];
 
-    public function type()
+    protected function type()
     {
         return Type::listOf(Type::string());
     }
 
-    public function args()
+    protected function args()
     {
         return [
             

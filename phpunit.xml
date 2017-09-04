@@ -12,7 +12,18 @@
 >
     <testsuites>
         <testsuite name="Folklore/GraphQL Test Suite">
-            <directory>./tests</directory>
+            <directory>./tests/</directory>
         </testsuite>
     </testsuites>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./src/Folklore/GraphQL</directory>
+            <exclude>
+                <file>./src/Folklore/GraphQL/routes.php</file>
+            </exclude>
+        </whitelist>
+    </filter>
+    <logging>
+        <log type="coverage-clover" target="tests/logs/clover.xml"/>
+    </logging>
 </phpunit>

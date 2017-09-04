@@ -36,5 +36,8 @@ install: composer update --no-interaction --prefer-dist
 
 script: vendor/bin/phpunit
 
+after_success:
+  - travis_retry php vendor/bin/coveralls
+
 notifications:
   email: false

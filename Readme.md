@@ -106,7 +106,8 @@ config/graphql.php
 
 ## Documentation
 
-- [Upgrade to 1.0](docs/upgrade.md)
+- [Upgrade to 1.1](docs/upgrade.md#upgrade-from-1-0-to-1-1)
+- [Upgrade to 1.0](docs/upgrade.md#upgrade-to-1-0)
 
 ## Usage
 
@@ -114,6 +115,7 @@ config/graphql.php
 - [Creating a query](#creating-a-query)
 - [Creating a mutation](#creating-a-mutation)
 - [Adding validation to mutation](#adding-validation-to-mutation)
+- [Relay](docs/relay.md)
 
 #### Advanced Usage
 - [Query variables](docs/advanced.md#query-variables)
@@ -217,7 +219,7 @@ class UserType extends GraphQLType {
 		'name' => 'User',
 		'description' => 'A user'
 	];
-  
+
   /*
 	 * Uncomment following line to make the type input object.
 	 * http://graphql.org/learn/schema/#input-types

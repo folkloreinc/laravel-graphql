@@ -81,22 +81,14 @@
 
             // Defines a GraphQL fetcher using the fetch API.
             function graphQLFetcher(graphQLParams) {
-                return fetch('<?php echo $graphqlPath; ?>', {
-                    method: 'post',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(graphQLParams),
-                    credentials: 'include',
-                }).then(function (response) {
-                    return response.text();
-                }).then(function (responseBody) {
-                    try {
-                        return JSON.parse(responseBody);
-                    } catch (error) {
-                        return responseBody;
-                    }
+                return new Promise(function(resolve, reject) {
+                    superagent.post('<?php echo $graphqlPath; ?>')
+                        .send(graphQLParams)
+                        .set('Accept', 'application/json')
+                        .set('Content-Type', 'application/json')
+                        .end(function(err, response) {
+                            resolve(response.body);
+                        });
                 });
             }
 

@@ -38,13 +38,20 @@ class PublishCommand extends Command
     public function __construct(Filesystem $files)
     {
         parent::__construct();
+        
         $this->files = $files;
         
-        $fromPath = __DIR__ . '/../../..';
-        $this->fileMap = [
-            $fromPath.'/config/config.php' => app()->basePath('config/graphql.php'),
-            $fromPath.'/resources/views/graphiql.php' => app()->basePath('resources/views/vendor/graphql/graphiql.php')
+        $paths = [
+            'config/config.php',
+            'resources/views/graphiql.php',
+            'resources/graphql/introspection.txt',
+            'resources/graphql/babelRelayPlugin.js'
         ];
+        $fromPath = __DIR__ . '/../../..';
+        $this->fileMap = [];
+        foreach ($paths as $path) {
+            $this->fileMap[$fromPath.'/'.$path] = app()->basePath($path);
+        }
     }
 
     /**
@@ -90,5 +97,4 @@ class PublishCommand extends Command
         $to = str_replace(base_path(), '', realpath($to));
         $this->line("<info>Copied File</info> <comment>[{$from}]</comment> <info>To</info> <comment>[{$to}]</comment>");
     }
-
 }

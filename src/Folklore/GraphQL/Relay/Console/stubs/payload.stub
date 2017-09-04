@@ -1,0 +1,22 @@
+<?php
+
+namespace DummyNamespace;
+
+use GraphQL\Type\Definition\Type;
+use Folklore\GraphQL\Relay\Support\PayloadType as BasePayloadType;
+use GraphQL;
+
+class DummyClass extends BasePayloadType
+{
+    protected $attributes = [
+        'name' => 'DummyPayload',
+        'description' => 'A relay mutation payload type'
+    ];
+
+    protected function fields()
+    {
+        return [
+        
+        ];
+    }
+}

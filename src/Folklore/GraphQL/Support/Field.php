@@ -17,41 +17,112 @@ class Field extends Fluent
         return true;
     }
 
-    public function attributes()
-    {
-        return [];
-    }
-
-    public function type()
+    protected function type()
     {
         return null;
     }
 
-    public function args()
+    protected function attributes()
     {
         return [];
     }
 
-    protected function getResolver()
+    protected function args()
     {
-        if (!method_exists($this, 'resolve')) {
+        return [];
+    }
+
+    public function getType()
+    {
+        $type = array_get($this->attributes, 'type');
+        return $type ? $type:$this->type();
+    }
+
+    public function setType($type)
+    {
+        $this->attributes['type'] = $type;
+        return $this;
+    }
+
+    public function getArgs()
+    {
+        $args = array_get($this->attributes, 'args');
+        return $args ? $args:$this->args();
+    }
+
+    public function setArgs($args)
+    {
+        $this->attributes['args'] = $args;
+        return $this;
+    }
+
+    public function getRootResolver()
+    {
+        $resolver = array_get($this->attributes, 'rootResolver');
+        if (!$resolver && method_exists($this, 'resolveRoot')) {
+            $resolver = array($this, 'resolveRoot');
+        }
+        return $resolver;
+    }
+
+    public function setRootResolver($resolver)
+    {
+        $this->attributes['rootResolver'] = $resolver;
+        return $this;
+    }
+
+    /**
+     * Get the resolver of this field. If a resolver was set with the setResolver
+     * method, it will be used, otherwise it will use the resolve method (if present).
+     * This method wraps the resolver in a closure.
+     *
+     * @return Closure
+     */
+    public function getResolver()
+    {
+        $resolver = array_get($this->attributes, 'resolver');
+        if (!$resolver && method_exists($this, 'resolve')) {
+            $resolver = array($this, 'resolve');
+        }
+
+        if (!$resolver) {
             return null;
         }
 
-        $resolver = array($this, 'resolve');
-        $authorize = [$this, 'authorize'];
+        $authorize = array_get($this->attributes, 'authorize');
+        if (!$authorize && method_exists($this, 'authorize')) {
+            $authorize = array($this, 'authorize');
+        }
 
-        return function () use ($resolver, $authorize) {
-            $args = func_get_args();
+        $rootResolver = $this->getRootResolver();
 
-            // Authorize
-            if(call_user_func($authorize) != true)
-            {
-                throw with(new AuthorizationError('Unauthorized'));
+        return function () use ($authorize, $rootResolver, $resolver) {
+            if ($authorize && call_user_func($authorize) !== true) {
+                throw new AuthorizationError('Unauthorized');
             }
 
+            $args = func_get_args();
+            if ($rootResolver) {
+                $root = call_user_func_array($rootResolver, $args);
+                if ($root === null) {
+                    return null;
+                }
+                $args[0] = $root;
+            }
             return call_user_func_array($resolver, $args);
         };
+    }
+
+    /**
+     * Set the resolver that will be used to resolve this field.
+     *
+     * @param callable|null $resolver The callable that will be called on resolve
+     * @return $this
+     */
+    public function setResolver($resolver)
+    {
+        $this->attributes['resolver'] = $resolver;
+        return $this;
     }
 
     /**
@@ -61,14 +132,24 @@ class Field extends Fluent
      */
     public function getAttributes()
     {
-        $attributes = $this->attributes();
-        $args = $this->args();
+        return array_merge($this->attributes, $this->attributes());
+    }
 
-        $attributes = array_merge($this->attributes, [
-            'args' => $args
-        ], $attributes);
+    /**
+     * Convert the Fluent instance to an array.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        $attributes = $this->getAttributes();
 
-        $type = $this->type();
+        $args = $this->getArgs();
+        if (sizeof($args)) {
+            $attributes['args'] = $args;
+        }
+
+        $type = $this->getType();
         if (isset($type)) {
             $attributes['type'] = $type;
         }
@@ -79,16 +160,6 @@ class Field extends Fluent
         }
 
         return $attributes;
-    }
-
-    /**
-     * Convert the Fluent instance to an array.
-     *
-     * @return array
-     */
-    public function toArray()
-    {
-        return $this->getAttributes();
     }
 
     /**

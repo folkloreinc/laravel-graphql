@@ -1,0 +1,22 @@
+<?php
+
+namespace DummyNamespace;
+
+use GraphQL\Type\Definition\Type;
+use Folklore\GraphQL\Support\InputType as BaseInputType;
+use GraphQL;
+
+class DummyClass extends BaseInputType
+{
+    protected $attributes = [
+        'name' => 'DummyType',
+        'description' => 'A type'
+    ];
+
+    protected function fields()
+    {
+        return [
+            
+        ];
+    }
+}

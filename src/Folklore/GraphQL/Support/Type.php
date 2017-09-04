@@ -5,32 +5,84 @@ namespace Folklore\GraphQL\Support;
 use GraphQL\Type\Definition\EnumType;
 use Illuminate\Support\Fluent;
 
+use Folklore\GraphQL\Support\Field;
+
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 
 class Type extends Fluent
 {
     protected static $instances = [];
-    
-    protected $inputObject = false;
-    protected $enumObject = false;
-    
-    public function attributes()
+
+    protected function attributes()
     {
         return [];
     }
-    
-    public function fields()
+
+    protected function fields()
     {
         return [];
     }
-    
-    public function interfaces()
+
+    protected function interfaces()
     {
         return [];
     }
-    
+
+    /**
+     * Get the fields of this type
+     * @return array The array of fields
+     */
+    public function getFields()
+    {
+        $fields = array_get($this->attributes, 'fields');
+        return $fields ? $fields:$this->fields();
+    }
+
+    /**
+     * Set the fields of this type
+     * @param array $fields The array of fields
+     * @return $this
+     */
+    public function setFields($fields)
+    {
+        $this->attributes['fields'] = $fields;
+        return $this;
+    }
+
+    public function getFieldsForObjectType()
+    {
+        $fields = $this->getFields();
+        $allFields = [];
+        foreach ($fields as $name => $field) {
+            if (is_string($field) || $field instanceof Field) {
+                $field = is_string($field) ? app($field):$field;
+                $field->name = $name;
+                $allFields[$name] = $field->toArray();
+            } else {
+                $resolver = $this->getFieldResolver($name, $field);
+                if ($resolver) {
+                    $field['resolve'] = $resolver;
+                }
+                $allFields[$name] = $field;
+            }
+        }
+
+        return $allFields;
+    }
+
+    public function getInterfaces()
+    {
+        $interfaces = array_get($this->attributes, 'interfaces');
+        return $interfaces ? $interfaces:$this->interfaces();
+    }
+
+    public function setInterfaces($interfaces)
+    {
+        $this->attributes['interfaces'] = $interfaces;
+        return $this;
+    }
+
     protected function getFieldResolver($name, $field)
     {
         $resolveMethod = 'resolve'.studly_case($name).'Field';
@@ -43,29 +95,8 @@ class Type extends Fluent
                 return call_user_func_array($resolver, $args);
             };
         }
-        
+
         return null;
-    }
-    
-    public function getFields()
-    {
-        $fields = $this->fields();
-        $allFields = [];
-        foreach ($fields as $name => $field) {
-            if (is_string($field)) {
-                $field = app($field);
-                $field->name = $name;
-                $allFields[$name] = $field->toArray();
-            } else {
-                $resolver = $this->getFieldResolver($name, $field);
-                if ($resolver) {
-                    $field['resolve'] = $resolver;
-                }
-                $allFields[$name] = $field;
-            }
-        }
-        
-        return $allFields;
     }
 
     /**
@@ -75,20 +106,7 @@ class Type extends Fluent
      */
     public function getAttributes()
     {
-        $attributes = $this->attributes();
-        $interfaces = $this->interfaces();
-        
-        $attributes = array_merge($this->attributes, [
-            'fields' => function () {
-                return $this->getFields();
-            }
-        ], $attributes);
-        
-        if (sizeof($interfaces)) {
-            $attributes['interfaces'] = $interfaces;
-        }
-        
-        return $attributes;
+        return array_merge($this->attributes, $this->attributes());
     }
 
     /**
@@ -98,17 +116,22 @@ class Type extends Fluent
      */
     public function toArray()
     {
-        return $this->getAttributes();
+        $attributes = $this->getAttributes();
+
+        $attributes['fields'] = function () {
+            return $this->getFieldsForObjectType();
+        };
+
+        $interfaces = $this->getInterfaces();
+        if (sizeof($interfaces)) {
+            $attributes['interfaces'] = $interfaces;
+        }
+
+        return $attributes;
     }
-    
+
     public function toType()
     {
-        if ($this->inputObject) {
-            return new InputObjectType($this->toArray());
-        }
-        if ($this->enumObject) {
-            return new EnumType($this->toArray());
-        }
         return new ObjectType($this->toArray());
     }
 
