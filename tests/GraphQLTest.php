@@ -2,7 +2,7 @@
 
 use Folklore\GraphQL\GraphQL as GraphQLFacade;
 use GraphQL\Schema;
-use GraphQL\Error;
+use GraphQL\Error\Error;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Folklore\GraphQL\Error\ValidationError;

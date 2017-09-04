@@ -2,7 +2,7 @@
 
 namespace App;
 
-use GraphQL\Error;
+use GraphQL\Error\Error;
 use Folklore\GraphQL\Error\ValidationError;
 
 class Data
@@ -38,7 +38,7 @@ class Data
             ]
         ];
     }
-    
+
     public static function getById($id)
     {
         $items = self::get();

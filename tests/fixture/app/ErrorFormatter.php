@@ -2,7 +2,7 @@
 
 namespace App;
 
-use GraphQL\Error;
+use GraphQL\Error\Error;
 use Folklore\GraphQL\Error\ValidationError;
 
 class ErrorFormatter
@@ -12,19 +12,19 @@ class ErrorFormatter
         $error = [
             'message' => $e->getMessage()
         ];
-        
+
         $locations = $e->getLocations();
         if (!empty($locations)) {
             $error['locations'] = array_map(function ($loc) {
                 return $loc->toArray();
             }, $locations);
         }
-        
+
         $previous = $e->getPrevious();
         if ($previous && $previous instanceof ValidationError) {
             $error['validation'] = $previous->getValidatorMessages();
         }
-        
+
         return $error;
     }
 }
