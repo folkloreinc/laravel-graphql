@@ -13,13 +13,14 @@
     <testsuites>
         <testsuite name="Folklore/GraphQL Test Suite">
             <directory>./tests/</directory>
-            <exclude>./tests/TestCase.php</exclude>
         </testsuite>
     </testsuites>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./src/Folklore/GraphQL</directory>
-            <exclude>./src/Folklore/GraphQL/routes.php</exclude>
+            <exclude>
+                <file>./src/Folklore/GraphQL/routes.php</file>
+            </exclude>
         </whitelist>
     </filter>
     <logging>
