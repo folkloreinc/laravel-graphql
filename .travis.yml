@@ -4,7 +4,6 @@ cache:
   directories:
     - $COMPOSER_CACHE_DIR
     - $HOME/.composer/cache
-    - vendor
 
 php:
   - 5.5
@@ -32,10 +31,7 @@ matrix:
 
 before_install:
   - composer global require hirak/prestissimo --update-no-dev
-  - composer require "illuminate/support:${ILLUMINATE_VERSION}" --no-update --prefer-dist
-  - composer require "orchestra/database:${DATABASE_VERSION}" --no-update --prefer-dist
-  - composer require "orchestra/testbench:${TESTBENCH_VERSION}" --no-update --prefer-dist
-  - composer require "phpunit/phpunit:${PHPUNIT_VERSION}" --no-update --prefer-dist
+  - composer require "illuminate/support:${ILLUMINATE_VERSION}" "orchestra/database:${DATABASE_VERSION}" "orchestra/testbench:${TESTBENCH_VERSION}" "phpunit/phpunit:${PHPUNIT_VERSION}" --no-update --prefer-dist
 
 install: composer update --no-interaction --prefer-dist
 
