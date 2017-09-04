@@ -2,6 +2,7 @@
 
 use GraphQL\Error\Error;
 
-class AuthorizationError extends Error {
+class AuthorizationError extends Error
+{
 
 }
