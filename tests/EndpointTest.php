@@ -69,6 +69,25 @@ class EndpointTest extends TestCase
     }
 
     /**
+     * Test get with unauthorized query
+     *
+     * @test
+     */
+    public function testGetUnauthorized()
+    {
+        $response = $this->call('GET', '/graphql', [
+            'query' => $this->queries['examplesWithAuthorize']
+        ]);
+
+        $this->assertEquals($response->getStatusCode(), 403);
+
+        $content = $response->getData(true);
+        $this->assertArrayHasKey('data', $content);
+        $this->assertArrayHasKey('errors', $content);
+        $this->assertNull($content['data']['examplesAuthorize']);
+    }
+
+    /**
      * Test support batched queries
      *
      * @test

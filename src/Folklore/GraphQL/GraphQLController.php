@@ -7,8 +7,8 @@ class GraphQLController extends Controller
 {
     public function query(Request $request, $schema = null)
     {
+        $isBatch = !$request->has('query');
         $inputs = $request->all();
-        $isBatch = array_keys($inputs) === range(0, count($inputs) - 1);
 
         if (!$schema) {
             $schema = config('graphql.schema');
@@ -23,17 +23,17 @@ class GraphQLController extends Controller
             }
         }
 
-        if ($data === null) {
-            return response()->json([
-                'data' => null,
-                'errors' => [
-                    ['message' => 'You are not authorized to access this endpoint'],
-                ],
-            ], 403);
-        }
-
         $headers = config('graphql.headers', []);
         $options = config('graphql.json_encoding_options', 0);
+
+        $errors = !$isBatch ? array_get($data, 'errors', []) : [];
+        $authorized = array_reduce($errors, function ($authorized, $error) {
+            return !$authorized || array_get($error, 'message') === 'Unauthorized' ? false : true;
+        }, true);
+        if (!$authorized) {
+            return response()->json($data, 403, $headers, $options);
+        }
+
         return response()->json($data, 200, $headers, $options);
     }
 

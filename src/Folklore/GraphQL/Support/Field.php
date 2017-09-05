@@ -45,9 +45,8 @@ class Field extends Fluent
             $args = func_get_args();
 
             // Authorize
-            if(call_user_func($authorize) != true)
-            {
-                throw with(new AuthorizationError('Unauthorized'));
+            if (call_user_func($authorize) !== true) {
+                throw new AuthorizationError('Unauthorized');
             }
 
             return call_user_func_array($resolver, $args);

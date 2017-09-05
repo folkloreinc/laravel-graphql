@@ -134,14 +134,6 @@ class GraphQL
         $result = $this->queryAndReturnResult($query, $variables, $opts);
 
         if (!empty($result->errors)) {
-            $authorizationErrors = array_filter($result->errors, function ($err) {
-                return $err->message === 'Unauthorized';
-            });
-
-            if (!empty($authorizationErrors)) {
-                return null;
-            }
-
             $errorFormatter = config('graphql.error_formatter', [self::class, 'formatError']);
 
             return [

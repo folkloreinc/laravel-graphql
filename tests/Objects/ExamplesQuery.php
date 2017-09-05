@@ -5,11 +5,10 @@ use Folklore\GraphQL\Support\Query;
 
 class ExamplesQuery extends Query
 {
-    
     protected $attributes = [
         'name' => 'examples'
     ];
-    
+
     public function type()
     {
         return Type::listOf(GraphQL::type('Example'));
@@ -25,13 +24,13 @@ class ExamplesQuery extends Query
     public function resolve($root, $args)
     {
         $data = include(__DIR__.'/data.php');
-        
+
         if (isset($args['index'])) {
             return [
                 $data[$args['index']]
             ];
         }
-        
+
         return $data;
     }
 }
