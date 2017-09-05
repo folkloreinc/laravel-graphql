@@ -70,7 +70,7 @@ return [
     /*
      * The prefix for routes
      */
-    'prefix' => 'graphql',
+    'routes_prefix' => 'graphql',
 
     /*
      * The routes to make GraphQL request. Either a string that will apply
@@ -116,7 +116,7 @@ return [
      * endpoint. Most libraries use "variables", you can change it here in case you need it.
      * In previous versions, the default used to be "params"
      */
-    'variables_input_name' => 'variables',
+    'request_variables_name' => 'variables',
 
     /*
      * Any middleware for the 'graphql' route group

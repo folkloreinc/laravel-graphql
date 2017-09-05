@@ -14,26 +14,26 @@ Changes in the `config/graphql.php`
 <?php
 
 return [
-    
+
     // prefix config name has been renamed to routes_prefix
-    
+
     'prefix' => 'graphql'
-    
+
     // become :
-    
+
     'routes_prefix' => 'graphql',
-    
+
     // ---------------------------------------
-    
+
     // variables_input_name has been renamed to request_variables_name
     // and variables is the new default
-    
+
     'variables_input_name' => 'params'
-    
+
     // become :
-    
+
     'request_variables_name' => 'variables',
-    
+
 ];
 ```
 
@@ -81,7 +81,7 @@ The main difference between versions prior 1.0 and 1.0 is the use of multiple sc
 
 return [
     'schema' => 'default',
-    
+
 	'schemas' => [
 		'default' => [
 			'query' => [
@@ -92,9 +92,9 @@ return [
 			]
 		]
 	]
-    
+
     // ...
-];	
+];
 
 ```
 
@@ -123,6 +123,6 @@ Since graphql-php v0.7 the arguments passed to the `resolve` method has changed.
 ```php
 public function resolve($root, $args, $context, ResolveInfo $info)
 {
-	
+
 }
 ```
