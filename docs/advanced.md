@@ -11,7 +11,7 @@
 
 GraphQL offer you the possibility to use variables in your query so you don't need to "hardcode" value. This is done like that:
 
-```
+```graphql
 query FetchUserByID($id: String) {
     user(id: $id) {
         id
@@ -30,7 +30,7 @@ http://homestead.app/graphql?query=query+FetchUserByID($id:String){user(id:$id){
 
 If you want to query nested resource like that :
 
-```
+```graphql
 query FetchUser{
     user(id: 123456789) {
         id
@@ -43,34 +43,50 @@ query FetchUser{
 
 you need to add post field and implement resolveField method in UserType:
 
-```
-public function fields()
-{
-    return [
-        'id' => [
-            'type'        => Type::nonNull(Type::string()),
-            'description' => 'Id of user',
-        ],
-        'posts' => [
-            'args' => [
-                'id' => [
-                    'type'        => Type::string(),
-                    'description' => 'id of the post',
-                ],
-            ],
-            'type'        => Type::listOf(GraphQL::type('Post')),
-            'description' => 'post description',
-        ],
-    ];
-}
+```php
 
-public function resolvePostsField($root, $args)
+class UserType extends BaseType
 {
-    if (isset($args['id'])) {
-        return  $root->posts->where('id', $args['id']);
+    // ...
+
+    public function fields()
+    {
+        return [
+            'id' => [
+                'type'        => Type::nonNull(Type::string()),
+                'description' => 'Id of user',
+            ],
+            'posts' => [
+                'args' => [
+                    'id' => [
+                        'type'        => Type::string(),
+                        'description' => 'id of the post',
+                    ],
+                ],
+                'type' => Type::listOf(GraphQL::type('Post')),
+                'description' => 'post description',
+
+                // You can use the resolve attribute
+                'resolve' => function ($root, $args) {
+                    if (isset($args['id'])) {
+                        return  $root->posts->where('id', $args['id']);
+                    }
+
+                    return $root->posts;
+                }
+            ],
+        ];
     }
 
-    return $root->posts;
+    // Or you can use a method `resolve{FIELD_NAME}Field()`
+    public function resolvePostsField($root, $args)
+    {
+        if (isset($args['id'])) {
+            return  $root->posts->where('id', $args['id']);
+        }
+
+        return $root->posts;
+    }
 }
 ```
 
@@ -83,47 +99,67 @@ First create an Enum as an extention of the GraphQLType class:
 ```php
 <?php
 // app/GraphQL/Enums/EpisodeEnum.php
+
 namespace App\GraphQL\Enums;
 
-use Folklore\GraphQL\Support\Type as GraphQLType;
+use Folklore\GraphQL\Support\EnumType as BaseEnumType;
 
-class EpisodeEnum extends GraphQLType {
+class EpisodeEnumType extends BaseEnumType {
     protected $enumObject = true;
 
     protected $attributes = [
         'name' => 'Episode',
         'description' => 'The types of demographic elements',
-        'values' => [
+    ];
+
+    protected function values()
+    {
+        return [
             'NEWHOPE' => 'NEWHOPE',
             'EMPIRE' => 'EMPIRE',
             'JEDI' => 'JEDI',
-        ],
-    ];
+        ];
+    }
 }
 
 ```
+
 Register the Enum in the 'types' array of the graphql.php config file:
 
 ```php
+<?php
 // config/graphql.php
-'types' => [TestEnum' => TestEnumType::class ];
+return [
+    // ...
+    'types' => [
+        EpisodeEnum' => \App\GraphQL\Enums\EpisodeEnumType::class
+    ]
+    // ...
+];
 ```
 
 Then use it like:
 ```php
 <?php
 // app/GraphQL/Type/TestType.php
-class TestType extends GraphQLType {
-   public function fields()
-   {
+
+namespace App\GraphQL\Type;
+
+use Folklore\GraphQL\Support\Type as BaseType;
+
+class TestType extends BaseType {
+    // ...
+    public function fields()
+    {
         return [
-            'type' => [
-                'type' => GraphQL::type('TestEnum')
+            'episode' => [
+                'type' => GraphQL::type('EpisodeEnum')
             ]
         ]
-   }
+    }
 }
 ```
+
 ### Interfaces
 
 You can use interfaces to abstract a set of fields. Read more about interfaces [here](http://graphql.org/learn/schema/#interfaces).
@@ -141,32 +177,34 @@ use GraphQL\Type\Definition\Type;
 
 class CharacterInterface extends InterfaceType {
     protected $attributes = [
-            'name' => 'Character',
-            'description' => 'Character interface.',
+        'name' => 'Character',
+        'description' => 'Character interface.',
+    ];
+
+    public function fields()
+    {
+        return [
+            'id' => [
+                'type' => Type::nonNull(Type::int()),
+                'description' => 'The id of the character.'
+            ],
+            'appearsIn' => [
+                'type' => Type::nonNull(Type::listOf(GraphQL::type('Episode'))),
+                'description' => 'A list of episodes in which the character has an appearance.'
+            ],
         ];
+    }
 
-        public function fields() {
-            return [
-                'id' => [
-                    'type' => Type::nonNull(Type::int()),
-                    'description' => 'The id of the character.'
-                ],
-                'appearsIn' => [
-                    'type' => Type::nonNull(Type::listOf(GraphQL::type('Episode'))),
-                    'description' => 'A list of episodes in which the character has an appearance.'
-                ],
-            ];
+    public function resolveType($root)
+    {
+        // Use the resolveType to resolve the Type which is implemented trough this interface
+        $type = $root['type'];
+        if ($type === 'human') {
+            return GraphQL::type('Human');
+        } else if  ($type === 'droid') {
+            return GraphQL::type('Droid');
         }
-
-        public function resolveType($root) {
-            // Use the resolveType to resolve the Type which is implemented trough this interface
-            $type = $root['type'];
-            if ($type === 'human') {
-                return GraphQL::type('Human');
-            } else if  ($type === 'droid') {
-                return GraphQL::type('Droid');
-            }
-        }
+    }
 }
 ```
 
