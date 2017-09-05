@@ -46,7 +46,7 @@ class GraphQLController extends Controller
 
     protected function executeQuery($schema, $input)
     {
-        $variablesInputName = config('graphql.request_variables_name', config('graphql.variables_input_name', 'variables'));
+        $variablesInputName = config('graphql.request_variables_name', 'variables');
         $query = array_get($input, 'query');
         $variables = array_get($input, $variablesInputName);
         if (is_string($variables)) {

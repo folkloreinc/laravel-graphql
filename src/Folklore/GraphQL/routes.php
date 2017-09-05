@@ -5,7 +5,7 @@ use Illuminate\Http\Request;
 $schemaParameterPattern = '/\{\s*graphql\_schema\s*\?\s*\}/';
 
 $router->group(array(
-    'prefix' => config('graphql.routes_prefix', config('graphql.prefix')),
+    'prefix' => config('graphql.routes_prefix', 'graphql'),
     'middleware' => config('graphql.middleware', [])
 ), function ($router) {
 

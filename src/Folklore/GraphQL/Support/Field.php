@@ -3,7 +3,6 @@
 namespace Folklore\GraphQL\Support;
 
 use Illuminate\Support\Fluent;
-use Folklore\GraphQL\Error\AuthorizationError;
 
 class Field extends Fluent
 {
