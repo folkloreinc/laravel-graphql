@@ -3,8 +3,8 @@
 use Folklore\Support\Field;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType as UnionObjectType;
-
 use Folklore\GraphQL\Support\UnionType;
+use App\GraphQL\Type\ExampleUnionType;
 
 /**
  * @coversDefaultClass \Folklore\GraphQL\Support\UnionType
@@ -89,25 +89,5 @@ class UnionTypeTest extends TestCase
         $typeTypes = $this->type->getTypes();
         $types = $objectType->getTypes();
         $this->assertEquals($typeTypes, $types);
-    }
-}
-
-
-
-class ExampleUnionType extends UnionType
-{
-    protected function attributes()
-    {
-        return [
-            'name' => 'name',
-            'description' => 'description'
-        ];
-    }
-
-    protected function types()
-    {
-        return [
-            GraphQL::type('Example')
-        ];
     }
 }

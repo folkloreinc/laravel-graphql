@@ -7,13 +7,12 @@ use Folklore\GraphQL\Support\InterfaceType;
 
 class ExampleInterfaceType extends InterfaceType
 {
-
     protected $attributes = [
         'name' => 'ExampleInterface',
         'description' => 'An example interface'
     ];
-    
-    protected function resolveType($root)
+
+    protected function resolveType()
     {
         return Type::string();
     }

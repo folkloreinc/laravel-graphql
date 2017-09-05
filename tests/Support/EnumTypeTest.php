@@ -5,6 +5,7 @@ use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\EnumType as EnumObjectType;
 
 use Folklore\GraphQL\Support\EnumType;
+use App\GraphQL\Type\ExampleEnumType;
 
 /**
  * @coversDefaultClass \Folklore\GraphQL\Support\EnumType
@@ -89,27 +90,5 @@ class EnumTypeTest extends TestCase
         $values = $objectType->getValues();
         $this->assertEquals(array_keys($typeValues)[0], $values[0]->name);
         $this->assertEquals($typeValues['TEST']['value'], $values[0]->value);
-    }
-}
-
-
-
-class ExampleEnumType extends EnumType
-{
-    protected function attributes()
-    {
-        return [
-            'name' => 'name',
-            'description' => 'description'
-        ];
-    }
-
-    protected function values()
-    {
-        return [
-            'TEST' => [
-                'value' => 1
-            ]
-        ];
     }
 }

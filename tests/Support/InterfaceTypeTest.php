@@ -3,6 +3,7 @@
 use Folklore\GraphQL\Support\InterfaceType;
 use GraphQL\Type\Definition\InterfaceType as BaseInterfaceType;
 use GraphQL\Type\Definition\Type;
+use App\GraphQL\Type\ExampleInterfaceType;
 
 /**
  * @coversDefaultClass \Folklore\GraphQL\Support\InterfaceType
@@ -86,31 +87,5 @@ class InterfaceTypeTest extends TestCase
         $this->type->name = 'ExampleInterfaceType';
         $objectType = $this->type->toType();
         $this->assertInstanceOf(BaseInterfaceType::class, $objectType);
-    }
-}
-
-
-class ExampleInterfaceType extends InterfaceType
-{
-    protected function attributes()
-    {
-        return [
-            'name' => 'name',
-            'description' => 'description'
-        ];
-    }
-
-    protected function fields()
-    {
-        return [
-            'test' => [
-                'type' => Type::string()
-            ]
-        ];
-    }
-
-    public function resolveType()
-    {
-        return Type::string();
     }
 }
