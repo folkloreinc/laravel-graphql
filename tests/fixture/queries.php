@@ -48,6 +48,15 @@ return [
         }
     ",
 
+    'examplesWithAuthorize' =>  "
+        query QueryExamplesWithAuthorize {
+            examplesAuthorize {
+                id
+                name
+            }
+        }
+    ",
+
     'examplesWithError' =>  "
         query QueryExamplesWithError {
             examplesQueryNotFound {

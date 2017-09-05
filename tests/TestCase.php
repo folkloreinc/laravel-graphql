@@ -23,7 +23,8 @@ abstract class TestCase extends BaseTestCase
             'query' => [
                 'examples' => \App\GraphQL\Query\ExamplesQuery::class,
                 'examplesContext' => \App\GraphQL\Query\ExamplesContextQuery::class,
-                'examplesRoot' => \App\GraphQL\Query\ExamplesRootQuery::class
+                'examplesRoot' => \App\GraphQL\Query\ExamplesRootQuery::class,
+                'examplesAuthorize' => \App\GraphQL\Query\ExamplesAuthorizeQuery::class
             ],
             'mutation' => [
                 'updateExample' => \App\GraphQL\Mutation\UpdateExampleMutation::class

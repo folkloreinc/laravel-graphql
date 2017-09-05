@@ -13,7 +13,7 @@ class ExamplesQuery extends Query
     protected $attributes = [
         'name' => 'examples'
     ];
-    
+
     protected function type()
     {
         return Type::listOf(GraphQL::type('Example'));
@@ -33,7 +33,7 @@ class ExamplesQuery extends Query
                 Data::getById($args['id'])
             ];
         }
-        
+
         return Data::get();
     }
 }

@@ -107,6 +107,18 @@ class GraphQLQueryTest extends TestCase
     }
 
     /**
+     * Test query with authorize
+     *
+     * @test
+     */
+    public function testQueryAndReturnResultWithAuthorize()
+    {
+        $result = GraphQL::query($this->queries['examplesWithAuthorize']);
+        $this->assertNull($result['data']['examplesAuthorize']);
+        $this->assertEquals('Unauthorized', $result['errors'][0]['message']);
+    }
+
+    /**
      * Test query with schema
      *
      * @test

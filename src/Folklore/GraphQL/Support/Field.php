@@ -12,7 +12,7 @@ class Field extends Fluent
      * Override this in your queries or mutations
      * to provide custom authorization
      */
-    public function authorize()
+    protected function authorize()
     {
         return true;
     }
@@ -90,7 +90,7 @@ class Field extends Fluent
         }
 
         $authorize = array_get($this->attributes, 'authorize');
-        if (!$authorize && method_exists($this, 'authorize')) {
+        if (is_null($authorize) && method_exists($this, 'authorize')) {
             $authorize = array($this, 'authorize');
         }
 
