@@ -11,14 +11,14 @@ class ConfigTest extends TestCase
     {
         $app['config']->set('graphql', [
 
-            'prefix' => 'graphql_test',
+            'routes_prefix' => 'graphql_test',
 
             'routes' => [
                 'query' => 'query/{graphql_schema?}',
                 'mutation' => 'mutation/{graphql_schema?}'
             ],
 
-            'variables_input_name' => 'params',
+            'request_variables_name' => 'params',
 
             'schema' => 'custom',
 
