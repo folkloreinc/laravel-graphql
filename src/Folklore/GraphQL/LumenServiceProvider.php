@@ -13,25 +13,7 @@ class LumenServiceProvider extends ServiceProvider
     {
         return $this->app;
     }
-    
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        $this->bootPublishes();
-        
-        $this->bootTypes();
-        
-        $this->bootSchemas();
-        
-        $this->bootRouter();
-        
-        $this->bootViews();
-    }
-    
+
     /**
      * Bootstrap publishes
      *
@@ -68,7 +50,7 @@ class LumenServiceProvider extends ServiceProvider
     public function registerConsole()
     {
         parent::registerConsole();
-        
+
         $this->commands(\Folklore\GraphQL\Console\PublishCommand::class);
     }
 }
