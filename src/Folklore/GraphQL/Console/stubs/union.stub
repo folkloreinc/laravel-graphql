@@ -1,0 +1,34 @@
+<?php
+
+namespace DummyNamespace;
+
+use GraphQL\Type\Definition\Type;
+use Folklore\GraphQL\Support\UnionType as BaseUnionType;
+use GraphQL;
+
+class DummyClass extends BaseUnionType
+{
+    protected $attributes = [
+        'name' => 'DummyType',
+        'description' => 'A type'
+    ];
+
+    protected function fields()
+    {
+        return [
+
+        ];
+    }
+
+    protected function types()
+    {
+        return [
+
+        ];
+    }
+
+    protected function resolveType($root, $args, $context, ResolveInfo $info)
+    {
+        // return GraphQL::type('SomeType');
+    }
+}

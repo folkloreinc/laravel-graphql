@@ -22,11 +22,11 @@ class DummyClass extends BaseField
     protected function args()
     {
         return [
-            
+
         ];
     }
 
-    public function resolve($root, $args, $content, ResolveInfo $info)
+    public function resolve($root, $args, $context, ResolveInfo $info)
     {
         return '';
     }

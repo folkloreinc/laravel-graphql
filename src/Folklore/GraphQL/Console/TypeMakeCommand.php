@@ -9,7 +9,12 @@ class TypeMakeCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'make:graphql:type {name} {--input}';
+    protected $signature = 'make:graphql:type
+                            {name : The name of the type}
+                            {--input : Generate an input type}
+                            {--interface : Generate an interface type}
+                            {--enum : Generate an enum type}
+                            {--union : Generate an union type}';
 
     /**
      * The console command description.
@@ -34,6 +39,12 @@ class TypeMakeCommand extends GeneratorCommand
     {
         if ($this->option('input')) {
             return __DIR__.'/stubs/input.stub';
+        } elseif ($this->option('interface')) {
+            return __DIR__.'/stubs/interface.stub';
+        } elseif ($this->option('enum')) {
+            return __DIR__.'/stubs/enum.stub';
+        } elseif ($this->option('union')) {
+            return __DIR__.'/stubs/union.stub';
         }
         return __DIR__.'/stubs/type.stub';
     }

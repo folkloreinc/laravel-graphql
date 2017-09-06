@@ -1,0 +1,22 @@
+<?php
+
+namespace DummyNamespace;
+
+use GraphQL\Type\Definition\Type;
+use Folklore\GraphQL\Support\EnumType as BaseEnumType;
+use GraphQL;
+
+class DummyClass extends BaseEnumType
+{
+    protected $attributes = [
+        'name' => 'DummyType',
+        'description' => 'A type'
+    ];
+
+    protected function values()
+    {
+        return [
+
+        ];
+    }
+}
