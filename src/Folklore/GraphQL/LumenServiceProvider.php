@@ -28,6 +28,19 @@ class LumenServiceProvider extends ServiceProvider
     }
 
     /**
+     * Bootstrap router
+     *
+     * @return void
+     */
+    protected function bootRouter()
+    {
+        if ($this->app['config']->get('graphql.routes')) {
+            $router = $this->getRouter();
+            include __DIR__.'/routes.php';
+        }
+    }
+
+    /**
      * Register facade
      *
      * @return void
