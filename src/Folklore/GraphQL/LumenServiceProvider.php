@@ -1,4 +1,6 @@
-<?php namespace Folklore\GraphQL;
+<?php
+
+namespace Folklore\GraphQL;
 
 use Illuminate\Support\Facades\Facade;
 
@@ -12,20 +14,6 @@ class LumenServiceProvider extends ServiceProvider
     protected function getRouter()
     {
         return $this->app;
-    }
-
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        $this->bootPublishes();
-
-        $this->bootRouter();
-
-        $this->bootViews();
     }
 
     /**
@@ -48,7 +36,6 @@ class LumenServiceProvider extends ServiceProvider
      */
     protected function bootRouter()
     {
-        // Define routes
         if ($this->app['config']->get('graphql.routes')) {
             $router = $this->getRouter();
             include __DIR__.'/routes.php';
