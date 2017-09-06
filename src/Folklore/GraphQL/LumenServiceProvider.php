@@ -23,10 +23,6 @@ class LumenServiceProvider extends ServiceProvider
     {
         $this->bootPublishes();
 
-        $this->bootTypes();
-
-        $this->bootSchemas();
-
         $this->bootRouter();
 
         $this->bootViews();
@@ -52,10 +48,9 @@ class LumenServiceProvider extends ServiceProvider
      */
     protected function bootRouter()
     {
-        $router = $this->getRouter();
-
         // Define routes
         if ($this->app['config']->get('graphql.routes')) {
+            $router = $this->getRouter();
             include __DIR__.'/routes.php';
         }
     }

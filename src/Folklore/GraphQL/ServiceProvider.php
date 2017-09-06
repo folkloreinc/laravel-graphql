@@ -8,6 +8,11 @@ use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 class ServiceProvider extends BaseServiceProvider
 {
+    protected function getRouter()
+    {
+        return $this->app['router'];
+    }
+
     /**
      * Bootstrap any application services.
      *
@@ -57,8 +62,8 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected function bootRouter()
     {
-        if ($this->app['config']->get('graphql.routes')) {
-            $router = $this->app['router'];
+        if ($this->app['config']->get('graphql.routes') && !$this->app->routesAreCached()) {
+            $router = $this->getRouter();
             include __DIR__.'/routes.php';
         }
     }
