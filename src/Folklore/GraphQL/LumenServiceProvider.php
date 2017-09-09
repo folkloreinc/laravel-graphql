@@ -11,7 +11,7 @@ class LumenServiceProvider extends ServiceProvider
      */
     protected function getRouter()
     {
-        return $this->app;
+        return $this->app->router;
     }
 
     /**
