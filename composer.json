@@ -37,5 +37,15 @@
         "classmap": [
             "tests/"
         ]
+    },
+    "extras": {
+        "laravel": {
+            "providers": [
+                "Folklore\\GraphQL\\ServiceProvider"
+            ],
+            "aliases": {
+                "GraphQL": "Folklore\\GraphQL\\Support\\Facades\\GraphQL"
+            }
+        }
     }
 }

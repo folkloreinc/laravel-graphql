@@ -45,6 +45,8 @@ $ composer update
 
 ### Laravel 5.x
 
+For Laravel 5.5 you can skip step 1 and 2 and let auto-discovery feature do it´s magic.
+
 **1-** Add the service provider to your `app/config/app.php` file
 ```php
 Folklore\GraphQL\ServiceProvider::class,
