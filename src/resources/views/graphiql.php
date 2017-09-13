@@ -17,7 +17,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react-dom.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/graphiql/0.10.2/graphiql.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/graphiql/0.11.3/graphiql.min.js"></script>
     </head>
     <body>
         <div id="graphiql">Loading...</div>
