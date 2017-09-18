@@ -12,7 +12,7 @@ class Field extends Fluent
      * Override this in your queries or mutations
      * to provide custom authorization
      */
-    public function authorize()
+    public function authorize($args)
     {
         return true;
     }
@@ -45,7 +45,7 @@ class Field extends Fluent
             $args = func_get_args();
 
             // Authorize
-            if (call_user_func($authorize) !== true) {
+            if (call_user_func_array($authorize, $args) !== true) {
                 throw new AuthorizationError('Unauthorized');
             }
 
