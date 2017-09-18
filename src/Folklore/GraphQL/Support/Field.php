@@ -12,7 +12,7 @@ class Field extends Fluent
      * Override this in your queries or mutations
      * to provide custom authorization
      */
-    public function authorize($args)
+    public function authorize($root, $args)
     {
         return true;
     }

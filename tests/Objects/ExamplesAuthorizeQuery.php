@@ -9,7 +9,7 @@ class ExamplesAuthorizeQuery extends ExamplesQuery
         'name' => 'Examples authorize query'
     ];
 
-    public function authorize($args)
+    public function authorize($root, $args)
     {
         return false;
     }
