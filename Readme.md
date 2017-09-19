@@ -43,7 +43,21 @@ or
 $ composer update
 ```
 
-### Laravel 5.x
+### Laravel 5.5
+
+**1-** Publish the configuration file
+
+```bash
+$ php artisan vendor:publish --provider="Folklore\GraphQL\ServiceProvider"
+```
+
+**2-** Review the configuration file
+
+```
+config/graphql.php
+```
+
+### Laravel <= 5.4.x
 
 **1-** Add the service provider to your `app/config/app.php` file
 ```php
