@@ -527,7 +527,7 @@ class UpdateUserEmailMutation extends BaseMutation
         $user->save();
         
         return [
-            'user' => user
+            'user' => $user
         ];
     }
 }
