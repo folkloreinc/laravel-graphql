@@ -8,7 +8,7 @@ class GraphQLController extends Controller
     public function __construct(Request $request)
     {
         $schema = $request->route('graphql_schema') ?
-          $request->route('graphql_schema') : config('graphql.schema');
+            $request->route('graphql_schema') : config('graphql.schema');
 
         $middleware = config('graphql.middleware_schema.' . $schema, null);
 
