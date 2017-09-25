@@ -23,6 +23,12 @@ class ConnectionType extends BaseType
     protected function fields()
     {
         return [
+            'total' => [
+                'type' => Type::int(),
+                'resolve' => function ($root) {
+                    return $this->getTotalFromRoot($root);
+                }
+            ],
             'edges' => [
                 'type' => Type::listOf($this->getEdgeObjectType()),
                 'resolve' => function ($root) {
@@ -69,6 +75,16 @@ class ConnectionType extends BaseType
         $resolveId = $edgeType->getField('id')->resolveFn;
         return $resolveId($edge);
     }
+
+    protected function getTotalFromRoot($root)
+    {
+        $total = 0;
+        if ($root instanceof EdgesCollection) {
+            $total = $root->getTotal();
+        }
+        return $total;
+    }
+
 
     protected function getEdgesFromRoot($root)
     {
