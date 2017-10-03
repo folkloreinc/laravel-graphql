@@ -59,12 +59,12 @@ config/graphql.php
 
 ### Laravel <= 5.4.x
 
-**1-** Add the service provider to your `app/config/app.php` file
+**1-** Add the service provider to your `config/app.php` file
 ```php
 Folklore\GraphQL\ServiceProvider::class,
 ```
 
-**2-** Add the facade to your `app/config/app.php` file
+**2-** Add the facade to your `config/app.php` file
 ```php
 'GraphQL' => Folklore\GraphQL\Support\Facades\GraphQL::class,
 ```
