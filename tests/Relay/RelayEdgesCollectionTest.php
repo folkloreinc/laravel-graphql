@@ -18,6 +18,20 @@ class RelayEdgesCollectionTest extends RelayTestCase
     }
 
     /**
+     * Test set and get total
+     *
+     * @test
+     * @covers ::setTotal
+     * @covers ::getTotal
+     */
+    public function testGetTotal()
+    {
+        $this->assertEquals(0, $this->collection->getTotal());
+        $this->collection->setTotal(1);
+        $this->assertEquals(1, $this->collection->getTotal());
+    }
+
+    /**
      * Test set and get hasNextPage
      *
      * @test

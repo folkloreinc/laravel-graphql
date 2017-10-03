@@ -6,10 +6,21 @@ use Illuminate\Database\Eloquent\Collection;
 
 class EdgesCollection extends Collection
 {
+    protected $total = 0;
     protected $startCursor = null;
     protected $endCursor = null;
     protected $hasNextPage = false;
     protected $hasPreviousPage = false;
+
+    public function setTotal($total)
+    {
+        $this->total = $total;
+    }
+
+    public function getTotal()
+    {
+        return $this->total;
+    }
 
     public function setHasNextPage($hasNextPage)
     {
