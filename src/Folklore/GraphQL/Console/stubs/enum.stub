@@ -2,14 +2,16 @@
 
 namespace DummyNamespace;
 
-use Folklore\GraphQL\Support\Type as BaseType;
+use Folklore\GraphQL\Support\EnumType;
 
-class DummyClass extends BaseType
+class DummyClass extends EnumType
 {
-    protected $enumObject = true;
     protected $attributes = [
         'name' => 'DummyType',
-        'description' => 'An enum',
-        'values' => []
+        'description' => 'An enum'
     ];
+
+    public function values() {
+        return [];
+    }
 }
