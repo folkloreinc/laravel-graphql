@@ -1,0 +1,44 @@
+<?php
+
+namespace DummyNamespace;
+
+use GraphQL\Type\Definition\ScalarType;
+
+class DummyClass extends ScalarType {
+   /**
+    * @var string
+    */
+   public $name = 'DummyType';
+
+   /**
+    * @var string
+    */
+   public $description = '';
+
+   /**
+    * @param mixed $value
+    * @return mixed
+    */
+   public function serialize($value)
+   {
+       return $value;
+   }
+
+    /**
+     * @param mixed $value
+     * @return string
+     */
+    public function parseValue($value)
+    {
+        return $value;
+    }
+
+    /**
+     * @param $ast
+     * @return null|string
+     */
+    public function parseLiteral($ast)
+    {
+        return null;
+    }
+}
