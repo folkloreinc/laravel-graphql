@@ -4,7 +4,6 @@ namespace Folklore\GraphQL\Relay;
 
 use GraphQL\Type\Definition\Type;
 use Folklore\GraphQL\Support\Field as BaseField;
-use Relay as RelayFacade;
 
 class NodeIdField extends BaseField
 {
@@ -45,6 +44,6 @@ class NodeIdField extends BaseField
     public function resolve()
     {
         $id = call_user_func_array($this->idResolver, func_get_args());
-        return RelayFacade::toGlobalId($this->idType, $id);
+        return app('graphql.relay')->toGlobalId($this->idType, $id);
     }
 }

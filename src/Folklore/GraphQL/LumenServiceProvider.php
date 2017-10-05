@@ -1,7 +1,5 @@
 <?php namespace Folklore\GraphQL;
 
-use Illuminate\Support\Facades\Facade;
-
 class LumenServiceProvider extends ServiceProvider
 {
     /**

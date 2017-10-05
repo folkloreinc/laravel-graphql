@@ -4,7 +4,6 @@ namespace Folklore\GraphQL\Relay;
 
 use Folklore\GraphQL\Relay\Support\ConnectionField;
 use Folklore\GraphQL\Relay\Support\ConnectionType;
-use GraphQL;
 
 class Relay
 {
@@ -32,11 +31,11 @@ class Relay
             'name' => $connectionName
         ]);
         $connectionType->setEdgeType($edgeType);
-        GraphQL::addType($connectionType, $connectionName);
+        $this->graphql->addType($connectionType, $connectionName);
 
         $fieldConfig = array_except($config, ['connectionTypeName']);
         $field = new ConnectionField($fieldConfig);
-        $field->setType(GraphQL::type($connectionName));
+        $field->setType($this->graphql->type($connectionName));
         return $field;
     }
 
