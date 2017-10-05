@@ -4,7 +4,6 @@ namespace Folklore\GraphQL\Relay;
 
 use GraphQL\Type\Definition\Type;
 use Folklore\GraphQL\Support\Type as BaseType;
-use GraphQL;
 
 class ConnectionEdgeType extends BaseType
 {
@@ -15,7 +14,7 @@ class ConnectionEdgeType extends BaseType
                 'type' => Type::nonNull(Type::id())
             ],
             'node' => [
-                'type' => GraphQL::type('Node')
+                'type' => app('graphql')->type('Node')
             ]
         ];
     }

@@ -5,7 +5,6 @@ namespace Folklore\GraphQL\Relay\Support;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\InterfaceType;
 use Folklore\GraphQL\Support\Type as BaseType;
-use GraphQL;
 
 use Folklore\GraphQL\Relay\EdgesCollection;
 use Illuminate\Pagination\AbstractPaginator;
@@ -36,7 +35,7 @@ class ConnectionType extends BaseType
                 }
             ],
             'pageInfo' => [
-                'type' => GraphQL::type('PageInfo'),
+                'type' => app('graphql')->type('PageInfo'),
                 'resolve' => function ($root) {
                     return $this->getPageInfoFromRoot($root);
                 }
@@ -60,8 +59,8 @@ class ConnectionType extends BaseType
     {
         $edgeType = $this->getEdgeType();
         $name = $edgeType->config['name'].'Edge';
-        GraphQL::addType(\Folklore\GraphQL\Relay\ConnectionEdgeType::class, $name);
-        $type = GraphQL::type($name);
+        app('graphql')->addType(\Folklore\GraphQL\Relay\ConnectionEdgeType::class, $name);
+        $type = app('graphql')->type($name);
         $type->setEdgeType($edgeType);
         return $type;
     }
