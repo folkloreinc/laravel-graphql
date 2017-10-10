@@ -13,7 +13,7 @@ class Field extends Fluent
      * Override this in your queries or mutations
      * to provide custom authorization
      */
-    public function authorize($root, $args, $context, ResolveInfo $info)
+    public function fieldAuthorize($root, $args, $context, ResolveInfo $info)
     {
         return true;
     }
@@ -40,7 +40,7 @@ class Field extends Fluent
         }
 
         $resolver = array($this, 'resolve');
-        $authorize = [$this, 'authorize'];
+        $authorize = [$this, 'fieldAuthorize'];
 
         return function () use ($resolver, $authorize) {
             $args = func_get_args();
