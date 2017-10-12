@@ -38,7 +38,7 @@
             "tests/"
         ]
     },
-    "extras": {
+    "extra": {
         "laravel": {
             "providers": [
                 "Folklore\\GraphQL\\ServiceProvider"
