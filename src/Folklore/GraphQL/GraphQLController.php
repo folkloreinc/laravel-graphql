@@ -7,8 +7,15 @@ class GraphQLController extends Controller
 {
     public function __construct(Request $request)
     {
-        $schema = $request->route('graphql_schema') ?
-            $request->route('graphql_schema') : config('graphql.schema');
+        $route = $request->route();
+        $defaultSchema = config('graphql.schema');
+        if (is_array($route)) {
+            $schema = array_get($route, '2.graphql_schema', $defaultSchema);
+        } elseif (is_object($route)) {
+            $schema = $route->parameter('graphql_schema', $defaultSchema);
+        } else {
+            $schema = $defaultSchema;
+        }
 
         $middleware = config('graphql.middleware_schema.' . $schema, null);
 
