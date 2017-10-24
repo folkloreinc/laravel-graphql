@@ -200,6 +200,10 @@ class ServiceProvider extends BaseServiceProvider
         $this->commands(Console\TypeMakeCommand::class);
         $this->commands(Console\QueryMakeCommand::class);
         $this->commands(Console\MutationMakeCommand::class);
+        $this->commands(Console\EnumMakeCommand::class);
+        $this->commands(Console\FieldMakeCommand::class);
+        $this->commands(Console\InterfaceMakeCommand::class);
+        $this->commands(Console\ScalarMakeCommand::class);
     }
 
     /**
