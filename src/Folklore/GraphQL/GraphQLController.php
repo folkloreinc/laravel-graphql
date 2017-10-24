@@ -21,7 +21,7 @@ class GraphQLController extends Controller
                 }
 
                 if (!empty($middleware[$schema])) {
-                    if (is_array($middleware)) {
+                    if (is_array($middleware[$schema])) {
                         foreach ($middleware[$schema] as $val) {
                             $this->middleware($val);
                         }
