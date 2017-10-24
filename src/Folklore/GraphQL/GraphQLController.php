@@ -7,38 +7,47 @@ class GraphQLController extends Controller
 {
     public function __construct(Request $request)
     {
-        $route = $request->route();
-        $defaultSchema = config('graphql.schema');
-        if (is_array($route)) {
-            $schema = array_get($route, '2.graphql_schema', $defaultSchema);
-        } elseif (is_object($route)) {
-            $schema = $route->parameter('graphql_schema', $defaultSchema);
-        } else {
-            $schema = $defaultSchema;
-        }
+        $middleware = config('graphql.middleware_schema', null);
+        if (!empty($middleware)) {
+            $route = $request->route();
+            $defaultSchema = config('graphql.schema');
+            if (!empty($defaultSchema)) {
+                if (is_array($route)) {
+                    $schema = array_get($route, '2.schema', $defaultSchema);
+                } elseif (is_object($route)) {
+                    $schema = $route->parameter('schema', $defaultSchema);
+                } else {
+                    $schema = $defaultSchema;
+                }
 
-        $middleware = config('graphql.middleware_schema.' . $schema, null);
-
-        if ($middleware) {
-            $this->middleware($middleware);
+                if (!empty($middleware[$schema])) {
+                    if (is_array($middleware[$schema])) {
+                        foreach ($middleware[$schema] as $val) {
+                            $this->middleware($val);
+                        }
+                    } else {
+                        $this->middleware($middleware[$schema]);
+                    }
+                }
+            }
         }
     }
 
-    public function query(Request $request, $schema = null)
+    public function query(Request $request, $graphql_schema = null)
     {
         $isBatch = !$request->has('query');
         $inputs = $request->all();
 
-        if (!$schema) {
-            $schema = config('graphql.schema');
+        if (!$graphql_schema) {
+            $graphql_schema = config('graphql.schema');
         }
 
         if (!$isBatch) {
-            $data = $this->executeQuery($schema, $inputs);
+            $data = $this->executeQuery($graphql_schema, $inputs);
         } else {
             $data = [];
             foreach ($inputs as $input) {
-                $data[] = $this->executeQuery($schema, $input);
+                $data[] = $this->executeQuery($graphql_schema, $input);
             }
         }
 
@@ -56,11 +65,11 @@ class GraphQLController extends Controller
         return response()->json($data, 200, $headers, $options);
     }
 
-    public function graphiql(Request $request, $schema = null)
+    public function graphiql(Request $request, $graphql_schema = null)
     {
         $view = config('graphql.graphiql.view', 'graphql::graphiql');
         return view($view, [
-            'schema' => $schema,
+            'schema' => $graphql_schema,
         ]);
     }
 
