@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace Folklore\GraphQL\Console;
 
 use Illuminate\Console\GeneratorCommand;
 use Symfony\Component\Console\Input\InputOption;
