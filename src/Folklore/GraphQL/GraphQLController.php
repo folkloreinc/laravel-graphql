@@ -22,11 +22,11 @@ class GraphQLController extends Controller
 
                 if (!empty($middleware[$schema])) {
                     if (is_array($middleware)) {
-                        foreach ($middleware as $val) {
+                        foreach ($middleware[$schema] as $val) {
                             $this->middleware($val);
                         }
                     } else {
-                        $this->middleware($middleware);
+                        $this->middleware($middleware[$schema]);
                     }
                 }
             }
