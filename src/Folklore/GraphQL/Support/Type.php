@@ -57,10 +57,25 @@ class Type extends Fluent
                 $field->name = $name;
                 $allFields[$name] = $field->toArray();
             } else {
+
                 $resolver = $this->getFieldResolver($name, $field);
+
+                if (isset($field['class'])) {
+
+                    $field = $field['class'];
+
+                    if (is_string($field)) {
+                        $field = app($field);
+                    }
+
+                    $field->name = $name;
+                    $field = $field->toArray();
+                }
+
                 if ($resolver) {
                     $field['resolve'] = $resolver;
                 }
+
                 $allFields[$name] = $field;
             }
         }
