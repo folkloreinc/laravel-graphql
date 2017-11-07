@@ -122,7 +122,8 @@ class ServiceProvider extends BaseServiceProvider
 
         if ($config->get('graphql.graphiql', true)) {
             $view = $config->get('graphql.graphiql.view', 'graphql::graphiql');
-            $this->app['view']->composer($view, View\GraphiQLComposer::class);
+            $composer = $config->get('graphql.graphiql.composer', View\GraphiQLComposer::class);
+            $this->app['view']->composer($view, $composer);
         }
     }
 

@@ -81,7 +81,8 @@ return [
         'routes' => '/graphiql/{graphql_schema?}',
         'controller' => \Folklore\GraphQL\GraphQLController::class.'@graphiql',
         'middleware' => [],
-        'view' => 'graphql::graphiql'
+        'view' => 'graphql::graphiql',
+        'composer' => \Folklore\GraphQL\View\GraphiQLComposer::class,
     ],
 
     /*
