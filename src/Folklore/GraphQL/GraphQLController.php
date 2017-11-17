@@ -8,6 +8,13 @@ class GraphQLController extends Controller
     public function __construct(Request $request)
     {
         $route = $request->route();
+
+        // Prevent schema middlewares to be applied to graphiql routes
+        $routeName = is_object($route) ? $route->getName() : null;
+        if (!is_null($routeName) && preg_match('/^graphql\.graphiql/', $routeName)) {
+            return;
+        }
+
         $defaultSchema = config('graphql.schema');
         if (is_array($route)) {
             $schema = array_get($route, '2.graphql_schema', $defaultSchema);
