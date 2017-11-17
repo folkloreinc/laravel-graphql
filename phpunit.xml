@@ -12,7 +12,7 @@
 >
     <testsuites>
         <testsuite name="Folklore/GraphQL Test Suite">
-            <directory>./tests</directory>
+            <directory>./tests/</directory>
         </testsuite>
     </testsuites>
     <filter>

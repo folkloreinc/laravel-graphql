@@ -1,5 +1,7 @@
 <?php
 
+use GraphQL\Type\Definition\Type;
+use Folklore\GraphQL\Support\Type as BaseType;
 use Folklore\GraphQL\Relay\Support\ConnectionField;
 
 /**
@@ -49,6 +51,30 @@ class RelayTest extends RelayTestCase
     {
         $name = 'testConnectionField';
         $field = $this->relay->connectionField([
+            'name' => $name
+        ]);
+        $this->assertInstanceOf(ConnectionField::class, $field);
+        $this->assertEquals($name, $field->name);
+    }
+
+    /**
+     * Test connection field from edge type
+     *
+     * @test
+     * @covers ::connectionFieldFromEdgeType
+     */
+    public function testConnectionFieldFromEdgeType()
+    {
+        $name = 'testConnectionField';
+        $edgeObjectType = new BaseType([
+            'name' => 'Test',
+            'fields' => [
+                'id' => [
+                    'type' => Type::int()
+                ]
+            ]
+        ]);
+        $field = $this->relay->connectionFieldFromEdgeType($edgeObjectType, [
             'name' => $name
         ]);
         $this->assertInstanceOf(ConnectionField::class, $field);

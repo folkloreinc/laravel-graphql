@@ -45,7 +45,15 @@ trait ResolvesFromQueryBuilder
 
     protected function getCountFromQuery($query)
     {
-        return $query->count();
+        $countQuery = clone $query;
+        if ($countQuery instanceof \Illuminate\Database\Eloquent\Relations\Relation) {
+            $countQuery->getBaseQuery()->orders = null;
+        } else if ($countQuery instanceof \Illuminate\Database\Eloquent\Builder) {
+            $countQuery->getQuery()->orders = null;
+        } else if( $countQuery instanceof \Illuminate\Database\Query\Builder) {
+            $countQuery->orders = null;
+        }
+        return $countQuery->count();
     }
 
     protected function resolveQueryBuilderFromRoot($root, $args)
@@ -69,9 +77,10 @@ trait ResolvesFromQueryBuilder
         return $query->get();
     }
 
-    protected function getCollectionFromItems($items, $offset, $limit, $hasPreviousPage, $hasNextPage)
+    protected function getCollectionFromItems($items, $offset, $limit, $total, $hasPreviousPage, $hasNextPage)
     {
         $collection = new EdgesCollection($items);
+        $collection->setTotal($total);
         $collection->setStartCursor($offset);
         $collection->setEndCursor($offset + $limit - 1);
         $collection->setHasNextPage($hasNextPage);
@@ -99,33 +108,34 @@ trait ResolvesFromQueryBuilder
         $first = array_get($args, 'first');
         $last = array_get($args, 'last');
 
-        $countQuery = clone $query;
-        if ($countQuery instanceof \Illuminate\Database\Eloquent\Relations\Relation) {
-            $countQuery->getBaseQuery()->orders = null;
-        } else if ($countQuery instanceof \Illuminate\Database\Eloquent\Builder) {
-            $countQuery->getQuery()->orders = null;
-        } else if( $countQuery instanceof \Illuminate\Database\Query\Builder) {
-            $countQuery->orders = null;
-        }
-        $count = $countQuery->count();
-
+        $count = $this->getCountFromQuery($query);
         $offset = 0;
         $limit = 0;
-        if ($first) {
+
+        if ($first !== null) {
             $limit = $first;
-        }
-
-        if ($last) {
+            $offset = 0;
+            if ($after !== null) {
+                $offset = $after + 1;
+            }
+            if ($before !== null) {
+                $limit = min(max(0, $before - $offset), $limit);
+            }
+        } else if ($last !== null) {
             $limit = $last;
+            $offset = $count - $limit;
+            if ($before !== null) {
+                $offset = max(0, $before - $limit);
+                $limit = min($before - $offset, $limit);
+            }
+            if ($after !== null) {
+                $d = max(0, $after + 1 - $offset);
+                $limit -= $d;
+                $offset += $d;
+            }
         }
-
-        if ($after) {
-            $offset = $after;
-        }
-
-        if ($before) {
-            $offset = $before - $limit;
-        }
+        $offset = max(0, $offset);
+        $limit = min($count - $offset, $limit);
 
         $query->skip($offset)->take($limit);
 
@@ -134,7 +144,7 @@ trait ResolvesFromQueryBuilder
 
         $resolveItemsArguments = array_merge([$query], $arguments);
         $items = call_user_func_array([$this, 'resolveItemsFromQueryBuilder'], $resolveItemsArguments);
-        $collection = $this->getCollectionFromItems($items, $offset, $limit, $hasPreviousPage, $hasNextPage);
+        $collection = $this->getCollectionFromItems($items, $offset, $limit, $count, $hasPreviousPage, $hasNextPage);
 
         return $collection;
     }

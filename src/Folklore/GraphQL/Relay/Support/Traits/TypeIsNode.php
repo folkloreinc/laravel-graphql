@@ -2,7 +2,6 @@
 
 namespace Folklore\GraphQL\Relay\Support\Traits;
 
-use GraphQL;
 use Folklore\GraphQL\Relay\NodeIdField;
 
 trait TypeIsNode
@@ -47,7 +46,7 @@ trait TypeIsNode
     protected function relayInterfaces()
     {
         return [
-            GraphQL::type('Node')
+            app('graphql')->type('Node')
         ];
     }
     

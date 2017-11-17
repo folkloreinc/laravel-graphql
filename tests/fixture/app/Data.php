@@ -38,7 +38,7 @@ class Data
             ]
         ];
     }
-    
+
     public static function getById($id)
     {
         $items = self::get();

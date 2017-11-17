@@ -295,7 +295,7 @@ class UserNodeType extends NodeType
             'photos' => Relay::connectionFieldFromEdgeTypeAndQueryBuilder(
                 GraphQL::type('Photo'),
                 function ($root, $args) {
-                    return $user->photos();
+                    return $root->photos();
                     // or
                     return Photo::query()->where('user_id', $root->id);
                 },
@@ -527,7 +527,7 @@ class UpdateUserEmailMutation extends BaseMutation
         $user->save();
         
         return [
-            'user' => user
+            'user' => $user
         ];
     }
 }
