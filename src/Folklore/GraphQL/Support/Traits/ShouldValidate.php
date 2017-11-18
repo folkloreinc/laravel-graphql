@@ -3,9 +3,36 @@
 namespace Folklore\GraphQL\Support\Traits;
 
 use Folklore\GraphQL\Error\ValidationError;
+use Folklore\GraphQL\Exception\AuthorizationException;
 
 trait ShouldValidate
 {
+    /**
+     * Determine if the request passes the authorization check.
+     *
+     * @return bool
+     */
+    protected function passesAuthorization()
+    {
+        if (method_exists($this, 'authorize')) {
+            return $this->authorize();
+        }
+
+        return false;
+    }
+
+    /**
+     * Handle a failed authorization attempt.
+     *
+     * @return void
+     *
+     * @throws \Folklore\GraphQL\Exception\AuthorizationException
+     */
+    protected function failedAuthorization()
+    {
+        throw new AuthorizationException('This action is unauthorized.');
+    }
+
     protected function rules()
     {
         return [];
@@ -32,6 +59,10 @@ trait ShouldValidate
 
     protected function getValidator($args, $rules)
     {
+        if (! $this->passesAuthorization()) {
+            $this->failedAuthorization();
+        }
+
         return app('validator')->make($args, $rules);
     }
 
