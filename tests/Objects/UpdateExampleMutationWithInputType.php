@@ -4,7 +4,7 @@ use Folklore\GraphQL\Support\Facades\GraphQL;
 use Folklore\GraphQL\Support\Mutation;
 use GraphQL\Type\Definition\Type;
 
-class UpdateExampleMutation extends Mutation
+class UpdateExampleMutationWithInputType extends Mutation
 {
 
     protected $attributes = [
@@ -43,6 +43,12 @@ class UpdateExampleMutation extends Mutation
                 'rules' => function () {
                     return ['required'];
                 }
+            ],
+
+            'test_with_rules_input_object' => [
+                'name' => 'test',
+                'type' => GraphQL::type('ExampleValidationInputObject'),
+                'rules' => ['required'],
             ],
         ];
     }

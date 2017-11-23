@@ -9,7 +9,7 @@ class MutationTest extends FieldTest
 {
     protected function getFieldClass()
     {
-        return UpdateExampleMutation::class;
+        return UpdateExampleMutationWithInputType::class;
     }
 
     protected function getEnvironmentSetUp($app)
