@@ -22,22 +22,27 @@ trait ShouldValidate
         $argsRules = [];
         foreach ($this->args() as $name => $arg) {
             if (isset($arg['rules'])) {
-                if (is_callable($arg['rules'])) {
-                    $argsRules[$name] = call_user_func_array($arg['rules'], $arguments);
-                } else {
-                    $argsRules[$name] = $arg['rules'];
-                }
+                $argsRules[$name] = $this->resolveRules($arg['rules'], $arguments);
             }
 
             if (isset($arg['type'])) {
-                $argsRules = array_merge($argsRules, $this->inferRulesFromType($arg['type'], $name));
+                $argsRules = array_merge($argsRules, $this->inferRulesFromType($arg['type'], $name, $arguments));
             }
         }
 
         return array_merge($rules, $argsRules);
     }
 
-    public function inferRulesFromType($type, $prefix)
+    public function resolveRules($rules, $arguments)
+    {
+        if (is_callable($rules)) {
+            return call_user_func_array($rules, $arguments);
+        }
+
+        return $rules;
+    }
+
+    public function inferRulesFromType($type, $prefix, $resolutionArguments)
     {
         $rules = [];
 
@@ -54,7 +59,7 @@ trait ShouldValidate
         // if it is an input object type - the only type we care about here...
         if ($type instanceof InputObjectType) {
             // merge in the input type's rules
-            $rules = array_merge($rules, $this->getInputTypeRules($type, $prefix));
+            $rules = array_merge($rules, $this->getInputTypeRules($type, $prefix, $resolutionArguments));
         }
 
         // Ignore scalar types
@@ -62,7 +67,7 @@ trait ShouldValidate
         return $rules;
     }
 
-    public function getInputTypeRules(InputObjectType $input, $prefix)
+    public function getInputTypeRules(InputObjectType $input, $prefix, $resolutionArguments)
     {
         $rules = [];
 
@@ -71,12 +76,12 @@ trait ShouldValidate
 
             // get any explicitly set rules
             if (isset($field->rules)) {
-                $rules[$key] = $field->rules;
+                $rules[$key] = $this->resolveRules($field->rules, $resolutionArguments);
             }
 
             // then recursively call the parent method to see if this is an
             // input object, passing in the new prefix
-            array_merge($rules, $this->inferRulesFromType($field->type, $key));
+            $rules = array_merge($rules, $this->inferRulesFromType($field->type, $key, $resolutionArguments));
         }
 
         return $rules;
