@@ -19,10 +19,10 @@ class GraphQLController extends Controller
          * @see https://laravel.com/api/5.5/Illuminate/Http/Request.html#method_route
          */
         $routeName = is_object($route)
-          ? $route->getName()
-          : (is_array($route) && isset($route['as'])
-            ? $route['as']
-            : null);
+            ? $route->getName()
+            : (is_array($route) && isset($route['as'])
+                ? $route['as']
+                : null);
 
         if (!is_null($routeName) && preg_match('/^graphql\.graphiql/', $routeName)) {
             return;
