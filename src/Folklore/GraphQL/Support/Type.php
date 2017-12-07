@@ -96,7 +96,7 @@ class Type extends Fluent
         $attributes = array_merge($this->attributes, [
             'fields' => function () use ($interfaces) {
                 return array_merge(
-                    array_merge(array_map(function($interface){
+                    call_user_func_array("array_merge", array_map(function($interface){
                         return $interface->getFields();
                     }, $interfaces)), 
                     $this->getFields()
