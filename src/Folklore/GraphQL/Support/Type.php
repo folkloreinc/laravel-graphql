@@ -94,14 +94,13 @@ class Type extends Fluent
         $interfaces = $this->interfaces();
         
         $attributes = array_merge($this->attributes, [
-            'fields' => function () use ($interfaces) {
-                return array_merge(
-                    call_user_func_array("array_merge", array_map(function($interface){
-                        return $interface->getFields();
-                    }, $interfaces)), 
-                    $this->getFields()
-                );
-            }
+            'fields' => array_merge(function () use ($interfaces) {
+                $fields = array_map(function ($interface) {
+                    return $interface->getFields();
+                }, $interfaces);
+                $fields[] = $this->getFields();
+                return $fields;
+            })
         ], $attributes);
         
         if (sizeof($interfaces)) {
