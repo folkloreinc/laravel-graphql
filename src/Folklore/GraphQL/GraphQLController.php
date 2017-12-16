@@ -9,8 +9,21 @@ class GraphQLController extends Controller
     {
         $route = $request->route();
 
-        // Prevent schema middlewares to be applied to graphiql routes
-        $routeName = is_object($route) ? $route->getName() : null;
+        /**
+         * Prevent schema middlewares to be applied to graphiql routes
+         *
+         * Be careful !! For Lumen < 5.6, Request->route() returns an array with
+         * 'as' key for named routes
+         *
+         * @see https://github.com/laravel/lumen-framework/issues/119
+         * @see https://laravel.com/api/5.5/Illuminate/Http/Request.html#method_route
+         */
+        $routeName = is_object($route)
+            ? $route->getName()
+            : (is_array($route) && isset($route['as'])
+                ? $route['as']
+                : null);
+
         if (!is_null($routeName) && preg_match('/^graphql\.graphiql/', $routeName)) {
             return;
         }
@@ -36,7 +49,7 @@ class GraphQLController extends Controller
         $isBatch = !$request->has('query');
         $inputs = $request->all();
 
-        if (!$schema) {
+        if (is_null($schema)) {
             $schema = config('graphql.schema');
         }
 
@@ -67,7 +80,7 @@ class GraphQLController extends Controller
     {
         $view = config('graphql.graphiql.view', 'graphql::graphiql');
         return view($view, [
-            'schema' => $schema,
+            'graphql_schema' => $schema,
         ]);
     }
 
