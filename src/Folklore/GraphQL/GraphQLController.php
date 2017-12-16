@@ -9,7 +9,7 @@ class GraphQLController extends Controller
     {
         $route = $request->route();
 
-        /** 
+        /**
          * Prevent schema middlewares to be applied to graphiql routes
          *
          * Be careful !! For Lumen < 5.6, Request->route() returns an array with
@@ -44,21 +44,21 @@ class GraphQLController extends Controller
         }
     }
 
-    public function query(Request $request, $graphql_schema = null)
+    public function query(Request $request, $schema = null)
     {
         $isBatch = !$request->has('query');
         $inputs = $request->all();
 
-        if (!$graphql_schema) {
-            $graphql_schema = config('graphql.schema');
+        if (is_null($schema)) {
+            $schema = config('graphql.schema');
         }
 
         if (!$isBatch) {
-            $data = $this->executeQuery($graphql_schema, $inputs);
+            $data = $this->executeQuery($schema, $inputs);
         } else {
             $data = [];
             foreach ($inputs as $input) {
-                $data[] = $this->executeQuery($graphql_schema, $input);
+                $data[] = $this->executeQuery($schema, $input);
             }
         }
 
@@ -76,11 +76,11 @@ class GraphQLController extends Controller
         return response()->json($data, 200, $headers, $options);
     }
 
-    public function graphiql(Request $request, $graphql_schema = null)
+    public function graphiql(Request $request, $schema = null)
     {
         $view = config('graphql.graphiql.view', 'graphql::graphiql');
         return view($view, [
-            'graphql_schema' => $graphql_schema,
+            'graphql_schema' => $schema,
         ]);
     }
 
