@@ -6,6 +6,7 @@ $schemaParameterPattern = '/\{\s*graphql\_schema\s*\?\s*\}/';
 
 $router->group(array(
     'prefix' => config('graphql.prefix'),
+    'domain' => config('graphql.domain'),
     'middleware' => config('graphql.middleware', [])
 ), function ($router) use ($schemaParameterPattern) {
     //Get routes from config
