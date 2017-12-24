@@ -9,6 +9,11 @@ return [
     'prefix' => 'graphql',
 
     /*
+     * The domain for routes
+     */
+    'domain' => null,
+
+    /*
      * The routes to make GraphQL request. Either a string that will apply
      * to both query and mutation or an array containing the key 'query' and/or
      * 'mutation' with the according Route
