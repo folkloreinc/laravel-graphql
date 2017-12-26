@@ -9,8 +9,21 @@ class GraphQLController extends Controller
     {
         $route = $request->route();
 
-        // Prevent schema middlewares to be applied to graphiql routes
-        $routeName = is_object($route) ? $route->getName() : null;
+        /**
+         * Prevent schema middlewares to be applied to graphiql routes
+         *
+         * Be careful !! For Lumen < 5.6, Request->route() returns an array with
+         * 'as' key for named routes
+         *
+         * @see https://github.com/laravel/lumen-framework/issues/119
+         * @see https://laravel.com/api/5.5/Illuminate/Http/Request.html#method_route
+         */
+        $routeName = is_object($route)
+            ? $route->getName()
+            : (is_array($route) && isset($route['as'])
+                ? $route['as']
+                : null);
+
         if (!is_null($routeName) && preg_match('/^graphql\.graphiql/', $routeName)) {
             return;
         }
@@ -31,21 +44,21 @@ class GraphQLController extends Controller
         }
     }
 
-    public function query(Request $request, $schema = null)
+    public function query(Request $request, $graphql_schema = null)
     {
         $isBatch = !$request->has('query');
         $inputs = $request->all();
 
-        if (!$schema) {
-            $schema = config('graphql.schema');
+        if (is_null($graphql_schema)) {
+            $graphql_schema = config('graphql.schema');
         }
 
         if (!$isBatch) {
-            $data = $this->executeQuery($schema, $inputs);
+            $data = $this->executeQuery($graphql_schema, $inputs);
         } else {
             $data = [];
             foreach ($inputs as $input) {
-                $data[] = $this->executeQuery($schema, $input);
+                $data[] = $this->executeQuery($graphql_schema, $input);
             }
         }
 
@@ -63,11 +76,11 @@ class GraphQLController extends Controller
         return response()->json($data, 200, $headers, $options);
     }
 
-    public function graphiql(Request $request, $schema = null)
+    public function graphiql(Request $request, $graphql_schema = null)
     {
         $view = config('graphql.graphiql.view', 'graphql::graphiql');
         return view($view, [
-            'schema' => $schema,
+            'graphql_schema' => $graphql_schema,
         ]);
     }
 

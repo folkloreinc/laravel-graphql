@@ -15,10 +15,10 @@ class GraphiQLComposer
             $hasRoute = false;
         }
 
-        $schema = $view->schema;
+        $schema = $view->graphql_schema;
 
         if (! empty($schema)) {
-            $view->graphqlPath = $hasRoute ? route('graphql.query', [$schema]) : url('/graphql/' . $schema);
+            $view->graphqlPath = $hasRoute ? route('graphql.query', ['graphql_schema' => $schema]) : url('/graphql/' . $schema);
         } else {
             $view->graphqlPath = $hasRoute ? route('graphql.query') : url('/graphql');
         }
