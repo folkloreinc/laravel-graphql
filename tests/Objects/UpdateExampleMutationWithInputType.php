@@ -16,7 +16,7 @@ class UpdateExampleMutationWithInputType extends Mutation
         return GraphQL::type('Example');
     }
 
-    public function rules()
+    public function rules($root = NULL, $args = NULL)
     {
         return [
             'test' => ['required']
@@ -40,7 +40,7 @@ class UpdateExampleMutationWithInputType extends Mutation
             'test_with_rules_closure' => [
                 'name' => 'test',
                 'type' => Type::string(),
-                'rules' => function () {
+                'rules' => function ($root = NULL, $args = NULL) {
                     return ['required'];
                 }
             ],
