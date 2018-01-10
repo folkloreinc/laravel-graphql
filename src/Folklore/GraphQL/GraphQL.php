@@ -58,6 +58,8 @@ class GraphQL
                 ]);
                 $this->typesInstances[$name] = $objectType;
                 $types[] = $objectType;
+                
+                $this->addType($type, $name);
             }
         } else {
             foreach ($this->types as $name => $type) {
@@ -87,10 +89,9 @@ class GraphQL
 
     public function type($name, $fresh = false)
     {
-        // See: https://github.com/Folkloreatelier/laravel-graphql/issues/198#issuecomment-344369081
-        //if (!isset($this->types[$name])) {
-        //    throw new TypeNotFound('Type '.$name.' not found.');
-        //}
+        if (!isset($this->types[$name])) {
+            throw new TypeNotFound('Type '.$name.' not found.');
+        }
 
         if (!$fresh && isset($this->typesInstances[$name])) {
             return $this->typesInstances[$name];
