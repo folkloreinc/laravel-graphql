@@ -1,5 +1,5 @@
 {
-    "name": "folklore/graphql",
+    "name": "kevinvdburgt/graphql",
     "description": "Facebook GraphQL for Laravel",
     "keywords": ["framework", "laravel", "graphql", "react"],
     "authors": [
