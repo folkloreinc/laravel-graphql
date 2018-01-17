@@ -18,6 +18,9 @@
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./src/Folklore/GraphQL</directory>
+            <exclude>
+                <file>./src/Folklore/GraphQL/routes.php</file>
+            </exclude>
         </whitelist>
     </filter>
     <logging>
