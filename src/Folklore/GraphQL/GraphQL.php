@@ -58,6 +58,8 @@ class GraphQL
                 ]);
                 $this->typesInstances[$name] = $objectType;
                 $types[] = $objectType;
+                
+                $this->addType($type, $name);
             }
         } else {
             foreach ($this->types as $name => $type) {
