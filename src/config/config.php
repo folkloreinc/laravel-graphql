@@ -75,7 +75,7 @@ return [
 
     /*
      * Config for GraphiQL (see (https://github.com/graphql/graphiql).
-     * To dissable GraphiQL, set this to null
+     * To disable GraphiQL, set this to null
      */
     'graphiql' => [
         'routes' => '/graphiql/{graphql_schema?}',
