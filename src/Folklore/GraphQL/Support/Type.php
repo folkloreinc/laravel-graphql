@@ -2,14 +2,14 @@
 
 namespace Folklore\GraphQL\Support;
 
+use Folklore\GraphQL\Support\Contracts\TypeConvertible;
 use GraphQL\Type\Definition\EnumType;
 use Illuminate\Support\Fluent;
 
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\InputObjectType;
-use GraphQL\Type\Definition\InterfaceType;
 
-class Type extends Fluent
+class Type extends Fluent implements TypeConvertible
 {
     protected static $instances = [];
     

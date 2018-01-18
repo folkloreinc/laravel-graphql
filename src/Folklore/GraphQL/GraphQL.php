@@ -1,5 +1,6 @@
 <?php namespace Folklore\GraphQL;
 
+use Folklore\GraphQL\Support\Contracts\TypeConvertible;
 use GraphQL\GraphQL as GraphQLBase;
 use GraphQL\Schema;
 use GraphQL\Error\Error;
@@ -228,6 +229,10 @@ class GraphQL
     {
         if (!is_object($type)) {
             $type = $this->app->make($type);
+        }
+
+        if (!$type instanceof TypeConvertible) {
+            throw new TypeNotFound(sprintf('Unable to convert %s to a GraphQL type', get_class($type)));
         }
 
         foreach ($opts as $key => $value) {
