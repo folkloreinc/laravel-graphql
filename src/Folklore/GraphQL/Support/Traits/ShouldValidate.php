@@ -9,7 +9,7 @@ use GraphQL\Type\Definition\WrappingType;
 
 trait ShouldValidate
 {
-    protected function rules()
+    public function rules($root = NULL, $args = NULL)
     {
         return [];
     }
@@ -19,6 +19,7 @@ trait ShouldValidate
         $arguments = func_get_args();
 
         $rules = call_user_func_array([$this, 'rules'], $arguments);
+
         $argsRules = [];
         foreach ($this->args() as $name => $arg) {
             if (isset($arg['rules'])) {
