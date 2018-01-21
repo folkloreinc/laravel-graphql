@@ -14,6 +14,16 @@ trait ShouldValidate
         return [];
     }
 
+    /**
+     * Return an array of custom validation error messages.
+     *
+     * @return array
+     */
+    public function validationErrorMessages($root, $args, $context)
+    {
+        return [];
+    }
+
     public function getRules()
     {
         $arguments = func_get_args();
@@ -87,9 +97,9 @@ trait ShouldValidate
         return $rules;
     }
 
-    protected function getValidator($args, $rules)
+    protected function getValidator($args, $rules, $messages = [])
     {
-        return app('validator')->make($args, $rules);
+        return app('validator')->make($args, $rules, $messages);
     }
 
     protected function getResolver()
@@ -103,9 +113,10 @@ trait ShouldValidate
             $arguments = func_get_args();
 
             $rules = call_user_func_array([$this, 'getRules'], $arguments);
+            $validationErrorMessages = call_user_func_array([$this, 'validationErrorMessages'], $arguments);
             if (sizeof($rules)) {
                 $args = array_get($arguments, 1, []);
-                $validator = $this->getValidator($args, $rules);
+                $validator = $this->getValidator($args, $rules, $validationErrorMessages);
                 if ($validator->fails()) {
                     throw with(new ValidationError('validation'))->setValidator($validator);
                 }
