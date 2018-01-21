@@ -1,8 +1,5 @@
 <?php
 
-use Folklore\Support\Field;
-use GraphQL\Type\Definition\Type;
-use GraphQL\Type\Definition\ObjectType;
 use Illuminate\Validation\Validator;
 
 class MutationTest extends FieldTest
@@ -24,7 +21,7 @@ class MutationTest extends FieldTest
     }
 
     /**
-     * Test get rules
+     * Test get rules.
      *
      * @test
      */
@@ -50,7 +47,7 @@ class MutationTest extends FieldTest
     }
 
     /**
-     * Test resolve
+     * Test resolve.
      *
      * @test
      */
@@ -80,7 +77,7 @@ class MutationTest extends FieldTest
     }
 
     /**
-     * Test resolve throw validation error
+     * Test resolve throw validation error.
      *
      * @test
      * @expectedException \Folklore\GraphQL\Error\ValidationError
@@ -95,7 +92,7 @@ class MutationTest extends FieldTest
     }
 
     /**
-     * Test validation error
+     * Test validation error.
      *
      * @test
      */
@@ -120,6 +117,31 @@ class MutationTest extends FieldTest
             $this->assertTrue($messages->has('test_with_rules_input_object.val'));
             $this->assertTrue($messages->has('test_with_rules_input_object.nest'));
             $this->assertTrue($messages->has('test_with_rules_input_object.list'));
+        }
+    }
+
+    /**
+     * Test custom validation error messages.
+     *
+     * @test
+     */
+    public function testCustomValidationErrorMessages()
+    {
+        $class = $this->getFieldClass();
+        $field = new $class();
+        $rules = $field->getRules();
+        $attributes = $field->getAttributes();
+        try {
+            $attributes['resolve'](null, [
+                 'test_with_rules_input_object' => [
+                     'nest' => ['email' => 'invalidTestEmail.com'],
+                 ],
+             ], [], null);
+        } catch (\Folklore\GraphQL\Error\ValidationError $e) {
+            $messages = $e->getValidatorMessages();
+
+            $this->assertEquals($messages->first('test'), 'A test is required.');
+            $this->assertEquals($messages->first('test_with_rules_input_object.nest.email'), 'Invalid your email : invalidTestEmail.com');
         }
     }
 }
