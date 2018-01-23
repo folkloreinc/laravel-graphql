@@ -38,13 +38,13 @@ class PublishCommand extends Command
     public function __construct(Filesystem $files)
     {
         parent::__construct();
-        
+
         $this->files = $files;
-        
+
         $paths = [
             'config/config.php',
             'resources/views/graphiql.php',
-            'resources/graphql/introspection.txt',
+            'resources/graphql/introspectionQuery.txt',
             'resources/graphql/babelRelayPlugin.js'
         ];
         $fromPath = __DIR__ . '/../../..';
