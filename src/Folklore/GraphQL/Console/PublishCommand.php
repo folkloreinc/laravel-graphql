@@ -42,13 +42,15 @@ class PublishCommand extends Command
         $this->files = $files;
 
         $paths = [
-            'config/config.php',
             'resources/views/graphiql.php',
-            'resources/graphql/introspectionQuery.txt',
             'resources/graphql/babelRelayPlugin.js'
         ];
         $fromPath = __DIR__ . '/../../..';
-        $this->fileMap = [];
+
+        $this->fileMap = [
+            $fromPath.'/config/config.php' => app()->basePath('config/graphql.php'),
+            $fromPath.'/resources/graphql/introspectionQuery.txt' => app()->basePath('resources/graphql/introspection.txt'),
+        ];
         foreach ($paths as $path) {
             $this->fileMap[$fromPath.'/'.$path] = app()->basePath($path);
         }
