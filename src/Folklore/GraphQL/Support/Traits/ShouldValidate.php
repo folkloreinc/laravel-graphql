@@ -89,7 +89,12 @@ trait ShouldValidate
 
     protected function getValidator($args, $rules)
     {
-        return app('validator')->make($args, $rules);
+        $validator =  app('validator')->make($args, $rules);
+        if (method_exists($this, 'withValidator')) {
+            $this->withValidator($validator, $args);
+        }
+        
+        return $validator;
     }
 
     protected function getResolver()
