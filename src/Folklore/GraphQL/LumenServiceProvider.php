@@ -37,9 +37,9 @@ class LumenServiceProvider extends ServiceProvider
      */
     protected function bootPublishes()
     {
-        $configPath = __DIR__ . '/../../config';
-        $viewsPath = __DIR__.'/../../resources/views';
-        $this->mergeConfigFrom($configPath . '/config.php', 'graphql');
+        $configPath = __DIR__.'/../../config';
+        $viewsPath  = __DIR__.'/../../resources/views';
+        $this->mergeConfigFrom($configPath.'/config.php', 'graphql');
         $this->loadViewsFrom($viewsPath, 'graphql');
     }
 

@@ -1,4 +1,6 @@
-<?php namespace Folklore\GraphQL\Relay\Support\Facades;
+<?php
+
+namespace Folklore\GraphQL\Relay\Support\Facades;
 
 use Illuminate\Support\Facades\Facade;
 

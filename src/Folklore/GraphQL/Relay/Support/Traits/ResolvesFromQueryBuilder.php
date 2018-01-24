@@ -2,47 +2,77 @@
 
 namespace Folklore\GraphQL\Relay\Support\Traits;
 
+use Folklore\GraphQL\Relay\EdgesCollection;
 use GraphQL;
 use Relay;
-use Folklore\GraphQL\Relay\EdgesCollection;
 
 trait ResolvesFromQueryBuilder
 {
+    /**
+     * @var mixed
+     */
     protected $queryBuilderResolver;
 
+    /**
+     * @return mixed
+     */
     public function getQueryBuilderResolver()
     {
         return $this->queryBuilderResolver;
     }
 
+    /**
+     * @param $queryBuilderResolver
+     * @return mixed
+     */
     public function setQueryBuilderResolver($queryBuilderResolver)
     {
         $this->queryBuilderResolver = $queryBuilderResolver;
         return $queryBuilderResolver;
     }
 
+    /**
+     * @param $query
+     * @param $id
+     */
     protected function scopeAfter($query, $id)
     {
         $query->where('id', '>=', $id);
     }
 
+    /**
+     * @param $query
+     * @param $id
+     */
     protected function scopeBefore($query, $id)
     {
         $query->where('id', '<=', $id);
     }
 
+    /**
+     * @param $query
+     * @param $value
+     */
     protected function scopeFirst($query, $value)
     {
         $query->orderBy('id', 'ASC');
         $query->take($value);
     }
 
+    /**
+     * @param $query
+     * @param $value
+     */
     protected function scopeLast($query, $value)
     {
         $query->orderBy('id', 'DESC');
         $query->take($value);
     }
 
+    /**
+     * @param $query
+     * @return mixed
+     */
     protected function getCountFromQuery($query)
     {
         $countQuery = clone $query;
@@ -50,12 +80,16 @@ trait ResolvesFromQueryBuilder
             $countQuery->getBaseQuery()->orders = null;
         } else if ($countQuery instanceof \Illuminate\Database\Eloquent\Builder) {
             $countQuery->getQuery()->orders = null;
-        } else if( $countQuery instanceof \Illuminate\Database\Query\Builder) {
+        } else if ($countQuery instanceof \Illuminate\Database\Query\Builder) {
             $countQuery->orders = null;
         }
         return $countQuery->count();
     }
 
+    /**
+     * @param $root
+     * @param $args
+     */
     protected function resolveQueryBuilderFromRoot($root, $args)
     {
         if (method_exists($this, 'resolveQueryBuilder')) {
@@ -72,11 +106,24 @@ trait ResolvesFromQueryBuilder
         return call_user_func_array($queryBuilderResolver, $args);
     }
 
+    /**
+     * @param $query
+     * @return mixed
+     */
     protected function resolveItemsFromQueryBuilder($query)
     {
         return $query->get();
     }
 
+    /**
+     * @param $items
+     * @param $offset
+     * @param $limit
+     * @param $total
+     * @param $hasPreviousPage
+     * @param $hasNextPage
+     * @return mixed
+     */
     protected function getCollectionFromItems($items, $offset, $limit, $total, $hasPreviousPage, $hasNextPage)
     {
         $collection = new EdgesCollection($items);
@@ -88,11 +135,16 @@ trait ResolvesFromQueryBuilder
         return $collection;
     }
 
+    /**
+     * @param $root
+     * @param $args
+     * @return mixed
+     */
     public function resolve($root, $args)
     {
         // Get the query builder
         $arguments = func_get_args();
-        $query = call_user_func_array([$this, 'resolveQueryBuilderFromRoot'], $arguments);
+        $query     = call_user_func_array([$this, 'resolveQueryBuilderFromRoot'], $arguments);
 
         // If there is no query builder returned, try to use the parent resolve method.
         if (!$query) {
@@ -103,17 +155,17 @@ trait ResolvesFromQueryBuilder
             }
         }
 
-        $after = array_get($args, 'after');
+        $after  = array_get($args, 'after');
         $before = array_get($args, 'before');
-        $first = array_get($args, 'first');
-        $last = array_get($args, 'last');
+        $first  = array_get($args, 'first');
+        $last   = array_get($args, 'last');
 
-        $count = $this->getCountFromQuery($query);
+        $count  = $this->getCountFromQuery($query);
         $offset = 0;
-        $limit = 0;
+        $limit  = 0;
 
         if ($first !== null) {
-            $limit = $first;
+            $limit  = $first;
             $offset = 0;
             if ($after !== null) {
                 $offset = $after + 1;
@@ -122,11 +174,11 @@ trait ResolvesFromQueryBuilder
                 $limit = min(max(0, $before - $offset), $limit);
             }
         } else if ($last !== null) {
-            $limit = $last;
+            $limit  = $last;
             $offset = $count - $limit;
             if ($before !== null) {
                 $offset = max(0, $before - $limit);
-                $limit = min($before - $offset, $limit);
+                $limit  = min($before - $offset, $limit);
             }
             if ($after !== null) {
                 $d = max(0, $after + 1 - $offset);
@@ -135,16 +187,16 @@ trait ResolvesFromQueryBuilder
             }
         }
         $offset = max(0, $offset);
-        $limit = min($count - $offset, $limit);
+        $limit  = min($count - $offset, $limit);
 
         $query->skip($offset)->take($limit);
 
-        $hasNextPage = ($offset + $limit) < $count;
+        $hasNextPage     = ($offset + $limit) < $count;
         $hasPreviousPage = $offset > 0;
 
         $resolveItemsArguments = array_merge([$query], $arguments);
-        $items = call_user_func_array([$this, 'resolveItemsFromQueryBuilder'], $resolveItemsArguments);
-        $collection = $this->getCollectionFromItems($items, $offset, $limit, $count, $hasPreviousPage, $hasNextPage);
+        $items                 = call_user_func_array([$this, 'resolveItemsFromQueryBuilder'], $resolveItemsArguments);
+        $collection            = $this->getCollectionFromItems($items, $offset, $limit, $count, $hasPreviousPage, $hasNextPage);
 
         return $collection;
     }

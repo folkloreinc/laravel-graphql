@@ -1,34 +1,56 @@
 <?php namespace Folklore\GraphQL;
 
+use Folklore\GraphQL\Error\ValidationError;
+use Folklore\GraphQL\Events\SchemaAdded;
+use Folklore\GraphQL\Events\TypeAdded;
+use Folklore\GraphQL\Exception\SchemaNotFound;
+use Folklore\GraphQL\Exception\TypeNotFound;
+use GraphQL\Error\Error;
 use GraphQL\GraphQL as GraphQLBase;
 use GraphQL\Schema;
-use GraphQL\Error\Error;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Validator\DocumentValidator;
 
-use Folklore\GraphQL\Error\ValidationError;
-
-use Folklore\GraphQL\Exception\TypeNotFound;
-use Folklore\GraphQL\Exception\SchemaNotFound;
-
-use Folklore\GraphQL\Events\SchemaAdded;
-use Folklore\GraphQL\Events\TypeAdded;
-
 class GraphQL
 {
+    /**
+     * @var mixed
+     */
     protected $app;
 
+    /**
+     * @var array
+     */
     protected $schemas = [];
+    /**
+     * @var array
+     */
     protected $types = [];
+    /**
+     * @var array
+     */
     protected $typesInstances = [];
+    /**
+     * @var mixed
+     */
     protected $schema;
+    /**
+     * @var mixed
+     */
     protected $introspectionQuery;
 
+    /**
+     * @param $app
+     */
     public function __construct($app)
     {
         $this->app = $app;
     }
 
+    /**
+     * @param $schema
+     * @return mixed
+     */
     public function schema($schema = null)
     {
         if ($schema instanceof Schema) {
@@ -36,16 +58,16 @@ class GraphQL
         }
 
         //Get the schema
-        $schemaName = is_string($schema) ? $schema:$this->getDefaultSchema();
+        $schemaName = is_string($schema) ? $schema : $this->getDefaultSchema();
         if (!is_array($schema) && !isset($this->schemas[$schemaName])) {
             throw new SchemaNotFound('Type '.$schemaName.' not found.');
         }
-        $schema = is_array($schema) ? $schema:$this->schemas[$schemaName];
+        $schema = is_array($schema) ? $schema : $this->schemas[$schemaName];
 
         // Get values from the schema
-        $schemaQuery = array_get($schema, 'query', []);
+        $schemaQuery    = array_get($schema, 'query', []);
         $schemaMutation = array_get($schema, 'mutation', []);
-        $schemaTypes = array_get($schema, 'types', []);
+        $schemaTypes    = array_get($schema, 'types', []);
 
         // Clear the cache of type instance
         $this->clearTypeInstances();
@@ -54,11 +76,11 @@ class GraphQL
         $types = [];
         if (sizeof($schemaTypes)) {
             foreach ($schemaTypes as $name => $type) {
-                $objectType = $this->objectType($type, is_numeric($name) ? []:[
-                    'name' => $name
+                $objectType = $this->objectType($type, is_numeric($name) ? [] : [
+                    'name' => $name,
                 ]);
                 $this->typesInstances[$name] = $objectType;
-                $types[] = $objectType;
+                $types[]                     = $objectType;
             }
         } else {
             foreach ($this->types as $name => $type) {
@@ -68,21 +90,26 @@ class GraphQL
 
         // Create the root Query object type
         $query = $this->objectType($schemaQuery, [
-            'name' => 'Query'
+            'name' => 'Query',
         ]);
 
         // Create the root Mutation object type
         $mutation = $this->objectType($schemaMutation, [
-            'name' => 'Mutation'
+            'name' => 'Mutation',
         ]);
 
         return new Schema([
-            'query' => $query,
+            'query'    => $query,
             'mutation' => $mutation,
-            'types' => $types
+            'types'    => $types,
         ]);
     }
 
+    /**
+     * @param $name
+     * @param $fresh
+     * @return mixed
+     */
     public function type($name, $fresh = false)
     {
         if (!isset($this->types[$name])) {
@@ -94,14 +121,19 @@ class GraphQL
         }
 
         $class = $this->types[$name];
-        $type = $this->objectType($class, [
-            'name' => $name
+        $type  = $this->objectType($class, [
+            'name' => $name,
         ]);
         $this->typesInstances[$name] = $type;
 
         return $type;
     }
 
+    /**
+     * @param $type
+     * @param array $opts
+     * @return mixed
+     */
     public function objectType($type, $opts = [])
     {
         // If it's already an ObjectType, just update properties and return it.
@@ -127,6 +159,11 @@ class GraphQL
         return $objectType;
     }
 
+    /**
+     * @param $query
+     * @param array $params
+     * @param array $opts
+     */
     public function query($query, $params = [], $opts = [])
     {
         $result = $this->queryAndReturnResult($query, $params, $opts);
@@ -135,21 +172,27 @@ class GraphQL
             $errorFormatter = config('graphql.error_formatter', [self::class, 'formatError']);
 
             return [
-                'data' => $result->data,
-                'errors' => array_map($errorFormatter, $result->errors)
+                'data'   => $result->data,
+                'errors' => array_map($errorFormatter, $result->errors),
             ];
         } else {
             return [
-                'data' => $result->data
+                'data' => $result->data,
             ];
         }
     }
 
+    /**
+     * @param $query
+     * @param array $params
+     * @param array $opts
+     * @return mixed
+     */
     public function queryAndReturnResult($query, $params = [], $opts = [])
     {
-        $root = array_get($opts, 'root', null);
-        $context = array_get($opts, 'context', null);
-        $schemaName = array_get($opts, 'schema', null);
+        $root          = array_get($opts, 'root', null);
+        $context       = array_get($opts, 'context', null);
+        $schemaName    = array_get($opts, 'schema', null);
         $operationName = array_get($opts, 'operationName', null);
 
         $schema = $this->schema($schemaName);
@@ -159,6 +202,10 @@ class GraphQL
         return $result;
     }
 
+    /**
+     * @param $schema
+     * @return mixed
+     */
     public function introspection($schema = null)
     {
         if (!$schema) {
@@ -173,7 +220,7 @@ class GraphQL
         }
 
         $return = $this->query($query, [], [
-            'schema' => $schema
+            'schema' => $schema,
         ]);
 
         if ($queryDepth < 110) {
@@ -183,6 +230,9 @@ class GraphQL
         return $return;
     }
 
+    /**
+     * @return mixed
+     */
     public function introspectionQuery()
     {
         if (!$this->introspectionQuery) {
@@ -192,6 +242,9 @@ class GraphQL
         return $this->introspectionQuery;
     }
 
+    /**
+     * @param $query
+     */
     public function setIntrospectionQuery($query)
     {
         $this->introspectionQuery = $query;
@@ -199,7 +252,7 @@ class GraphQL
 
     protected function loadIntrospectionQuery()
     {
-        $defaultPath = base_path('resources/graphql/introspectionQuery.txt');
+        $defaultPath       = base_path('resources/graphql/introspectionQuery.txt');
         $introspectionPath = $this->app['config']->get('graphql.introspection.query', $defaultPath);
         if (!file_exists($introspectionPath)) {
             $introspectionPath = __DIR__.'/../../resources/graphql/introspectionQuery.txt';
@@ -213,16 +266,23 @@ class GraphQL
         return '('.implode('|', $schemaNames).')';
     }
 
+    /**
+     * @param $types
+     */
     public function addTypes($types)
     {
         foreach ($types as $name => $type) {
-            $this->addType($type, is_numeric($name) ? null:$name);
+            $this->addType($type, is_numeric($name) ? null : $name);
         }
     }
 
+    /**
+     * @param $class
+     * @param $name
+     */
     public function addType($class, $name = null)
     {
-        $name = $this->getTypeName($class, $name);
+        $name               = $this->getTypeName($class, $name);
         $this->types[$name] = $class;
 
         if ($this->app['events']) {
@@ -230,6 +290,9 @@ class GraphQL
         }
     }
 
+    /**
+     * @param $schemas
+     */
     public function addSchemas($schemas)
     {
         foreach ($schemas as $name => $schema) {
@@ -237,6 +300,10 @@ class GraphQL
         }
     }
 
+    /**
+     * @param $name
+     * @param $schema
+     */
     public function addSchema($name, $schema)
     {
         $this->schemas[$name] = $schema;
@@ -246,6 +313,9 @@ class GraphQL
         }
     }
 
+    /**
+     * @param $name
+     */
     public function clearType($name)
     {
         if (isset($this->types[$name])) {
@@ -253,6 +323,9 @@ class GraphQL
         }
     }
 
+    /**
+     * @param $name
+     */
     public function clearSchema($name)
     {
         if (isset($this->schemas[$name])) {
@@ -270,26 +343,42 @@ class GraphQL
         $this->schemas = [];
     }
 
+    /**
+     * @return mixed
+     */
     public function getTypes()
     {
         return $this->types;
     }
 
+    /**
+     * @return mixed
+     */
     public function getSchemas()
     {
         return $this->schemas;
     }
 
+    /**
+     * @param $name
+     */
     public function setDefaultSchema($name)
     {
         $this->schema = $name;
     }
 
+    /**
+     * @return mixed
+     */
     public function getDefaultSchema()
     {
         return $this->schema;
     }
 
+    /**
+     * @param $value
+     * @return mixed
+     */
     public function setMaxQueryComplexity($value)
     {
         $rule = DocumentValidator::getRule('QueryComplexity');
@@ -297,6 +386,10 @@ class GraphQL
         return $rule;
     }
 
+    /**
+     * @param $value
+     * @return mixed
+     */
     public function setMaxQueryDepth($value)
     {
         $rule = DocumentValidator::getRule('QueryDepth');
@@ -304,12 +397,18 @@ class GraphQL
         return $rule;
     }
 
+    /**
+     * @return mixed
+     */
     public function getMaxQueryComplexity()
     {
         $rule = DocumentValidator::getRule('QueryComplexity');
         return $rule->getMaxQueryComplexity();
     }
 
+    /**
+     * @return mixed
+     */
     public function getMaxQueryDepth()
     {
         $rule = DocumentValidator::getRule('QueryDepth');
@@ -321,6 +420,11 @@ class GraphQL
         $this->typesInstances = [];
     }
 
+    /**
+     * @param $type
+     * @param array $opts
+     * @return mixed
+     */
     protected function buildObjectTypeFromClass($type, $opts = [])
     {
         if (!is_object($type)) {
@@ -334,41 +438,54 @@ class GraphQL
         return $type->toType();
     }
 
+    /**
+     * @param $fields
+     * @param array $opts
+     */
     protected function buildObjectTypeFromFields($fields, $opts = [])
     {
         $typeFields = [];
         foreach ($fields as $name => $field) {
             if (is_string($field)) {
-                $field = $this->app->make($field);
-                $name = is_numeric($name) ? $field->name:$name;
+                $field       = $this->app->make($field);
+                $name        = is_numeric($name) ? $field->name : $name;
                 $field->name = $name;
-                $field = $field->toArray();
+                $field       = $field->toArray();
             } else {
-                $name = is_numeric($name) ? $field['name']:$name;
+                $name          = is_numeric($name) ? $field['name'] : $name;
                 $field['name'] = $name;
             }
             $typeFields[$name] = $field;
         }
 
         return new ObjectType(array_merge([
-            'fields' => $typeFields
+            'fields' => $typeFields,
         ], $opts));
     }
 
+    /**
+     * @param $class
+     * @param $name
+     * @return mixed
+     */
     protected function getTypeName($class, $name = null)
     {
         if ($name) {
             return $name;
         }
 
-        $type = is_object($class) ? $class:$this->app->make($class);
+        $type = is_object($class) ? $class : $this->app->make($class);
         return $type->name;
     }
 
+    /**
+     * @param Error $e
+     * @return mixed
+     */
     public static function formatError(Error $e)
     {
         $error = [
-            'message' => $e->getMessage()
+            'message' => $e->getMessage(),
         ];
 
         $locations = $e->getLocations();

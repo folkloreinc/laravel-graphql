@@ -4,6 +4,10 @@ use Illuminate\Http\Request;
 
 class GraphQLController extends Controller
 {
+    /**
+     * @param Request $request
+     * @param $schema
+     */
     public function query(Request $request, $schema = null)
     {
         if (!$schema) {
@@ -11,9 +15,9 @@ class GraphQLController extends Controller
         }
 
         $variablesInputName = config('graphql.variables_input_name', 'variables');
-        $query = $request->get('query');
-        $params = $request->get($variablesInputName);
-        $operationName = $request->get('operationName', null);
+        $query              = $request->get('query');
+        $params             = $request->get($variablesInputName);
+        $operationName      = $request->get('operationName', null);
 
         if (is_string($params)) {
             $params = json_decode($params, true);
@@ -22,12 +26,17 @@ class GraphQLController extends Controller
         $context = $this->queryContext($query, $params, $schema);
 
         return app('graphql')->query($query, $params, [
-            'context' => $context,
-            'schema' => $schema,
-            'operationName' => $operationName
+            'context'       => $context,
+            'schema'        => $schema,
+            'operationName' => $operationName,
         ]);
     }
 
+    /**
+     * @param $query
+     * @param $params
+     * @param $schema
+     */
     protected function queryContext($query, $params, $schema)
     {
         try {
