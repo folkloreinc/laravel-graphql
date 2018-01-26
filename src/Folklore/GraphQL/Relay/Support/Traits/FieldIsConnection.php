@@ -9,22 +9,22 @@ trait FieldIsConnection
     protected function connectionArgs()
     {
         return [
-            'first' => [
+            'first'  => [
                 'name' => 'first',
-                'type' => Type::int()
+                'type' => Type::int(),
             ],
-            'last' => [
+            'last'   => [
                 'name' => 'last',
-                'type' => Type::int()
+                'type' => Type::int(),
             ],
-            'after' => [
+            'after'  => [
                 'name' => 'after',
-                'type' => Type::string()
+                'type' => Type::string(),
             ],
             'before' => [
                 'name' => 'before',
-                'type' => Type::string()
-            ]
+                'type' => Type::string(),
+            ],
         ];
     }
 

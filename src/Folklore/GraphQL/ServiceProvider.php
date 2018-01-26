@@ -41,8 +41,8 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected function bootPublishes()
     {
-        $configPath = __DIR__.'/../../config';
-        $viewsPath = __DIR__.'/../../resources/views';
+        $configPath    = __DIR__.'/../../config';
+        $viewsPath     = __DIR__.'/../../resources/views';
         $resourcesPath = __DIR__.'/../../resources/graphql';
 
         $this->mergeConfigFrom($configPath.'/config.php', 'graphql');
@@ -69,7 +69,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected function bootRouter()
     {
-        $router = $this->getRouter();
+        $router  = $this->getRouter();
         $graphql = $this->app['graphql'];
 
         //Update the schema route pattern when schema is added
@@ -92,10 +92,10 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected function bootViews()
     {
-        $config = $this->app['config'];
+        $config   = $this->app['config'];
         $graphiQL = $config->get('graphql.graphiql', true);
         if ($graphiQL) {
-            $view = $config->get('graphql.graphiql.view', 'graphql::graphiql');
+            $view     = $config->get('graphql.graphiql.view', 'graphql::graphiql');
             $composer = $config->get('graphql.graphiql.composer', \Folklore\GraphQL\View\GraphiQLComposer::class);
             $this->app['view']->composer($view, $composer);
         }
@@ -130,9 +130,9 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected function bootSecurity()
     {
-        $config = $this->app['config'];
+        $config             = $this->app['config'];
         $maxQueryComplexity = $config->get('graphql.security.query_max_complexity');
-        $maxQueryDepth = $config->get('graphql.security.query_max_depth');
+        $maxQueryDepth      = $config->get('graphql.security.query_max_depth');
         if ($maxQueryComplexity !== null) {
             $this->app['graphql']->setMaxQueryComplexity($maxQueryComplexity);
         }
@@ -174,7 +174,7 @@ class ServiceProvider extends BaseServiceProvider
     public function registerCommands()
     {
         $commands = [
-            'MakeSchema', 'MakeType', 'MakeQuery', 'MakeMutation', 'MakeField'
+            'MakeSchema', 'MakeType', 'MakeQuery', 'MakeMutation', 'MakeField',
         ];
 
         // We'll simply spin through the list of commands that are migration related
@@ -265,7 +265,7 @@ class ServiceProvider extends BaseServiceProvider
             'command.graphql.make.type',
             'command.graphql.make.query',
             'command.graphql.make.mutation',
-            'command.graphql.make.field'
+            'command.graphql.make.field',
         ];
     }
 }

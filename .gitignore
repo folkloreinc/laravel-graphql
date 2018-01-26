@@ -4,3 +4,4 @@ composer.lock
 /converage
 /*_backup
 /tests/logs
+*.DS_Store

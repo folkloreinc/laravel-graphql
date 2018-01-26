@@ -1,6 +1,5 @@
 <?php namespace Folklore\GraphQL\Relay;
 
-use GraphQL\Validator\DocumentValidator;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 class ServiceProvider extends BaseServiceProvider
@@ -13,7 +12,7 @@ class ServiceProvider extends BaseServiceProvider
     public function boot()
     {
         $this->bootTypes();
-        
+
         $this->bootSchemas();
     }
 
@@ -24,16 +23,16 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected function bootSchemas()
     {
-        $query = config('graphql.relay.query', []);
+        $query   = config('graphql.relay.query', []);
         $schemas = config('graphql.relay.schemas');
         if ($schemas === null) {
             return null;
         } elseif ($schemas === '*') {
             $schemas = array_keys(config('graphql.schemas', []));
         } else {
-            $schemas = (array)$schemas;
+            $schemas = (array) $schemas;
         }
-        
+
         $allSchemas = $this->app['graphql']->getSchemas();
         foreach ($allSchemas as $name => $schema) {
             if (!in_array($name, $schemas)) {
@@ -90,7 +89,7 @@ class ServiceProvider extends BaseServiceProvider
     public function registerCommands()
     {
         $commands = [
-            'MakeNode', 'MakeMutation', 'MakeInput', 'MakePayload', 'MakeConnection'
+            'MakeNode', 'MakeMutation', 'MakeInput', 'MakePayload', 'MakeConnection',
         ];
 
         // We'll simply spin through the list of commands that are migration related
@@ -99,7 +98,7 @@ class ServiceProvider extends BaseServiceProvider
         foreach ($commands as $command) {
             $this->{'register'.$command.'Command'}();
         }
-        
+
         $this->commands(
             'command.relay.make.node',
             'command.relay.make.mutation',
@@ -108,7 +107,7 @@ class ServiceProvider extends BaseServiceProvider
             'command.relay.make.connection'
         );
     }
-    
+
     /**
      * Register the "make:graphql:node" migration command.
      *
@@ -120,7 +119,7 @@ class ServiceProvider extends BaseServiceProvider
             return new \Folklore\GraphQL\Relay\Console\NodeMakeCommand($app['files']);
         });
     }
-    
+
     /**
      * Register the "make:graphql:mutation" migration command.
      *
@@ -132,7 +131,7 @@ class ServiceProvider extends BaseServiceProvider
             return new \Folklore\GraphQL\Relay\Console\MutationMakeCommand($app['files']);
         });
     }
-    
+
     /**
      * Register the "make:graphql:input" migration command.
      *
@@ -144,7 +143,7 @@ class ServiceProvider extends BaseServiceProvider
             return new \Folklore\GraphQL\Relay\Console\InputMakeCommand($app['files']);
         });
     }
-    
+
     /**
      * Register the "make:graphql:payload" migration command.
      *
@@ -156,7 +155,7 @@ class ServiceProvider extends BaseServiceProvider
             return new \Folklore\GraphQL\Relay\Console\PayloadMakeCommand($app['files']);
         });
     }
-    
+
     /**
      * Register the "make:graphql:payload" migration command.
      *
@@ -181,7 +180,7 @@ class ServiceProvider extends BaseServiceProvider
             'command.relay.make.node',
             'command.relay.make.input',
             'command.relay.make.payload',
-            'command.relay.make.connection'
+            'command.relay.make.connection',
         ];
     }
 }

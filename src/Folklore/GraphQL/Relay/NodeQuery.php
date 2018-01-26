@@ -22,6 +22,7 @@ class NodeQuery extends Query
         return app('graphql')->type('Node');
     }
 
+
     protected function args()
     {
         return [

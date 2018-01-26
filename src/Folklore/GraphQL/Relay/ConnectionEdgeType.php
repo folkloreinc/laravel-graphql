@@ -2,8 +2,8 @@
 
 namespace Folklore\GraphQL\Relay;
 
-use GraphQL\Type\Definition\Type;
 use Folklore\GraphQL\Support\Type as BaseType;
+use GraphQL\Type\Definition\Type;
 
 class ConnectionEdgeType extends BaseType
 {
@@ -11,14 +11,14 @@ class ConnectionEdgeType extends BaseType
     {
         return [
             'cursor' => [
-                'type' => Type::nonNull(Type::id())
+                'type' => Type::nonNull(Type::id()),
             ],
-            'node' => [
-                'type' => app('graphql')->type('Node')
-            ]
+            'node'   => [
+                'type' => app('graphql')->type('Node'),
+            ],
         ];
     }
-    
+
     public function toType()
     {
         return new EdgeObjectType($this->toArray());

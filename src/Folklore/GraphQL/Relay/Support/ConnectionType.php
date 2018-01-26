@@ -2,16 +2,18 @@
 
 namespace Folklore\GraphQL\Relay\Support;
 
-use GraphQL\Type\Definition\Type;
-use GraphQL\Type\Definition\InterfaceType;
-use Folklore\GraphQL\Support\Type as BaseType;
-
 use Folklore\GraphQL\Relay\EdgesCollection;
+use Folklore\GraphQL\Support\Type as BaseType;
+use GraphQL\Type\Definition\InterfaceType;
+use GraphQL\Type\Definition\Type;
 use Illuminate\Pagination\AbstractPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class ConnectionType extends BaseType
 {
+    /**
+     * @var mixed
+     */
     protected $edgeType;
 
     protected function edgeType()
@@ -19,52 +21,69 @@ class ConnectionType extends BaseType
         return null;
     }
 
+    /**
+     * @return mixed
+     */
     protected function fields()
     {
         return [
-            'total' => [
-                'type' => Type::int(),
+            'total'    => [
+                'type'    => Type::int(),
                 'resolve' => function ($root) {
                     return $this->getTotalFromRoot($root);
-                }
+                },
             ],
-            'edges' => [
-                'type' => Type::listOf($this->getEdgeObjectType()),
+            'edges'    => [
+                'type'    => Type::listOf($this->getEdgeObjectType()),
                 'resolve' => function ($root) {
                     return $this->getEdgesFromRoot($root);
-                }
+                },
             ],
             'pageInfo' => [
-                'type' => app('graphql')->type('PageInfo'),
+                'type'    => app('graphql')->type('PageInfo'),
                 'resolve' => function ($root) {
                     return $this->getPageInfoFromRoot($root);
-                }
-            ]
+                },
+            ],
         ];
     }
 
+    /**
+     * @return mixed
+     */
     public function getEdgeType()
     {
         $edgeType = $this->edgeType();
-        return $edgeType ? $edgeType:$this->edgeType;
+        return $edgeType ? $edgeType : $this->edgeType;
     }
 
+    /**
+     * @param $edgeType
+     * @return mixed
+     */
     public function setEdgeType($edgeType)
     {
         $this->edgeType = $edgeType;
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
     protected function getEdgeObjectType()
     {
         $edgeType = $this->getEdgeType();
-        $name = $edgeType->config['name'].'Edge';
+        $name     = $edgeType->config['name'].'Edge';
         app('graphql')->addType(\Folklore\GraphQL\Relay\ConnectionEdgeType::class, $name);
         $type = app('graphql')->type($name);
         $type->setEdgeType($edgeType);
         return $type;
     }
 
+    /**
+     * @param $edge
+     * @return mixed
+     */
     protected function getCursorFromNode($edge)
     {
         $edgeType = $this->getEdgeType();
@@ -75,6 +94,10 @@ class ConnectionType extends BaseType
         return $resolveId($edge);
     }
 
+    /**
+     * @param $root
+     * @return mixed
+     */
     protected function getTotalFromRoot($root)
     {
         $total = 0;
@@ -84,15 +107,18 @@ class ConnectionType extends BaseType
         return $total;
     }
 
-
+    /**
+     * @param $root
+     * @return mixed
+     */
     protected function getEdgesFromRoot($root)
     {
         $cursor = $this->getStartCursorFromRoot($root);
-        $edges = [];
+        $edges  = [];
         foreach ($root as $item) {
             $edges[] = [
-                'cursor' => $cursor !== null ? $cursor:$this->getCursorFromNode($item),
-                'node' => $item
+                'cursor' => $cursor !== null ? $cursor : $this->getCursorFromNode($item),
+                'node'   => $item,
             ];
             if ($cursor !== null) {
                 $cursor++;
@@ -101,6 +127,10 @@ class ConnectionType extends BaseType
         return $edges;
     }
 
+    /**
+     * @param $root
+     * @return mixed
+     */
     protected function getHasPreviousPageFromRoot($root)
     {
         $hasPreviousPage = false;
@@ -115,6 +145,10 @@ class ConnectionType extends BaseType
         return $hasPreviousPage;
     }
 
+    /**
+     * @param $root
+     * @return mixed
+     */
     protected function getHasNextPageFromRoot($root)
     {
         $hasNextPage = false;
@@ -127,6 +161,10 @@ class ConnectionType extends BaseType
         return $hasNextPage;
     }
 
+    /**
+     * @param $root
+     * @return mixed
+     */
     protected function getStartCursorFromRoot($root)
     {
         $startCursor = null;
@@ -137,6 +175,10 @@ class ConnectionType extends BaseType
         return $startCursor;
     }
 
+    /**
+     * @param $root
+     * @return mixed
+     */
     protected function getEndCursorFromRoot($root)
     {
         $endCursor = null;
@@ -147,19 +189,22 @@ class ConnectionType extends BaseType
         return $endCursor;
     }
 
+    /**
+     * @param $root
+     */
     protected function getPageInfoFromRoot($root)
     {
         $hasPreviousPage = $this->getHasPreviousPageFromRoot($root);
-        $hasNextPage = $this->getHasNextPageFromRoot($root);
-        $startCursor = $this->getStartCursorFromRoot($root);
-        $endCursor = $this->getEndCursorFromRoot($root);
-        $edges = $startCursor === null || $endCursor === null ? $this->getEdgesFromRoot($root):null;
+        $hasNextPage     = $this->getHasNextPageFromRoot($root);
+        $startCursor     = $this->getStartCursorFromRoot($root);
+        $endCursor       = $this->getEndCursorFromRoot($root);
+        $edges           = $startCursor === null || $endCursor === null ? $this->getEdgesFromRoot($root) : null;
 
         return [
             'hasPreviousPage' => $hasPreviousPage,
-            'hasNextPage' => $hasNextPage,
-            'startCursor' => $startCursor !== null ? $startCursor:array_get($edges, '0.cursor'),
-            'endCursor' => $endCursor !== null ? $endCursor:array_get($edges, (sizeof($edges)-1).'.cursor')
+            'hasNextPage'     => $hasNextPage,
+            'startCursor'     => $startCursor !== null ? $startCursor : array_get($edges, '0.cursor'),
+            'endCursor'       => $endCursor !== null ? $endCursor : array_get($edges, (sizeof($edges) - 1).'.cursor'),
         ];
     }
 }
