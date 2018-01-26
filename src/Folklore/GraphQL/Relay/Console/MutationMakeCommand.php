@@ -71,11 +71,9 @@ class MutationMakeCommand extends GeneratorCommand
     protected function replaceType($stub, $name)
     {
         preg_match('/([^\\\]+)$/', $name, $matches);
-        $stub = str_replace(
-            'DummyMutation',
-            $matches[1],
-            $stub
-        );
+        $stub = str_replace('DummyMutation', $matches[1], $stub);
+        $stub = str_replace('DummyInput', $matches[1], $stub.'Input');
+        $stub = str_replace('DummyPayload', $matches[1], $stub.'Payload');
 
         return $stub;
     }

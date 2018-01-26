@@ -15,16 +15,23 @@ class DummyClass extends BaseMutation
 
     protected function inputType()
     {
-        return null;
+        return GraphQL::type('DummyInput');
     }
-    
+
     protected function type()
     {
-        return null;
+        return GraphQL::type('DummyPayload');
     }
-    
+
+    protected function args()
+    {
+        return [
+            'id' => ['name' => 'id', 'type' => Type::nonNull(Type::string())],
+        ];
+    }
+
     public function resolve($root, $args, $context, ResolveInfo $info)
     {
-        
+
     }
 }
