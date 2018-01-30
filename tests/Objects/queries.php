@@ -27,6 +27,12 @@ return [
         }
     ",
 
+    'shorthandExamplesWithVariables' =>  "
+        query QueryShorthandExamplesVariables(\$message: String!) {
+            echo(message: \$message)
+        }
+    ",
+
     'examplesWithContext' =>  "
         query QueryExamplesContext {
             examplesContext {
