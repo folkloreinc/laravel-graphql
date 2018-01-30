@@ -48,7 +48,7 @@ class TestCase extends BaseTestCase
 
     protected function assertGraphQLSchema($schema)
     {
-        $this->assertInstanceOf('GraphQL\Schema', $schema);
+        $this->assertInstanceOf('GraphQL\Type\Schema', $schema);
     }
 
     protected function assertGraphQLSchemaHasQuery($schema, $key)
