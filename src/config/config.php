@@ -133,6 +133,25 @@ return [
     ],
 
     /*
+     * Additional resolvers which can also be used with shorthand building of the schema
+     * using \GraphQL\Utils::BuildSchema feature
+     *
+     * Example:
+     *
+     * 'resolvers' => [
+     *     'default' => [
+     *         'echo' => function ($root, $args, $context) {
+     *              return 'Echo: ' . $args['message'];
+     *          },
+     *     ],
+     * ],
+     */
+    'resolvers' => [
+        'default' => [
+        ],
+    ],
+
+    /*
      * The types available in the application. You can access them from the
      * facade like this: GraphQL::type('user')
      *
