@@ -43,7 +43,11 @@ class GraphQL
             throw new SchemaNotFound('Type '.$schemaName.' not found.');
         }
 
-        $schema = is_array($schema) ? $schema:$this->schemas[$schemaName];
+        $schema = is_array($schema) ? $schema : $this->schemas[$schemaName];
+
+        if ($schema instanceof Schema) {
+            return $schema;
+        }
 
         $schemaQuery = array_get($schema, 'query', []);
         $schemaMutation = array_get($schema, 'mutation', []);
@@ -152,10 +156,13 @@ class GraphQL
 
     public function queryAndReturnResult($query, $variables = [], $opts = [])
     {
-        $root = array_get($opts, 'root', null);
         $context = array_get($opts, 'context', null);
         $schemaName = array_get($opts, 'schema', null);
         $operationName = array_get($opts, 'operationName', null);
+
+        $additionalResolversSchemaName = is_string($schemaName) ? $schemaName : config('graphql.schema', 'default');
+        $additionalResolvers = config('graphql.resolvers.' . $additionalResolversSchemaName, []);
+        $root = array_merge(array_get($opts, 'root', []), $additionalResolvers);
 
         $schema = $this->schema($schemaName);
 
