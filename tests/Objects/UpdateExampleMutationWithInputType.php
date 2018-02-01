@@ -6,9 +6,8 @@ use GraphQL\Type\Definition\Type;
 
 class UpdateExampleMutationWithInputType extends Mutation
 {
-
     protected $attributes = [
-        'name' => 'updateExample'
+        'name' => 'updateExample',
     ];
 
     public function type()
@@ -19,8 +18,18 @@ class UpdateExampleMutationWithInputType extends Mutation
     public function rules()
     {
         return [
-            'test' => ['required']
+            'test' => ['required'],
         ];
+    }
+
+    public function validationErrorMessages($root, $args, $context)
+    {
+        $inavlidEmail = array_get($args, 'test_with_rules_input_object.nest.email');
+
+        return [
+             'test.required' => 'A test is required.',
+             'test_with_rules_input_object.nest.email.email' => 'Invalid your email : '.$inavlidEmail,
+          ];
     }
 
     public function args()
@@ -28,13 +37,13 @@ class UpdateExampleMutationWithInputType extends Mutation
         return [
             'test' => [
                 'name' => 'test',
-                'type' => Type::string()
+                'type' => Type::string(),
             ],
 
             'test_with_rules' => [
                 'name' => 'test',
                 'type' => Type::string(),
-                'rules' => ['required']
+                'rules' => ['required'],
             ],
 
             'test_with_rules_closure' => [
@@ -42,7 +51,7 @@ class UpdateExampleMutationWithInputType extends Mutation
                 'type' => Type::string(),
                 'rules' => function () {
                     return ['required'];
-                }
+                },
             ],
 
             'test_with_rules_input_object' => [
@@ -56,7 +65,7 @@ class UpdateExampleMutationWithInputType extends Mutation
     public function resolve($root, $args)
     {
         return [
-            'test' => array_get($args, 'test')
+            'test' => array_get($args, 'test'),
         ];
     }
 }
