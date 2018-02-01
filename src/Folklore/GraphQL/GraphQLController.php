@@ -18,6 +18,9 @@ class GraphQLController extends Controller
          * @see https://github.com/laravel/lumen-framework/issues/119
          * @see https://laravel.com/api/5.5/Illuminate/Http/Request.html#method_route
          */
+        
+        $prefix = config('graphql.prefix');
+        
         $routeName = is_object($route)
             ? $route->getName()
             : (is_array($route) && isset($route['as'])
@@ -30,9 +33,9 @@ class GraphQLController extends Controller
 
         $defaultSchema = config('graphql.schema');
         if (is_array($route)) {
-            $schema = array_get($route, '2.graphql_schema', $defaultSchema);
+            $schema = array_get($route, '2.'.$prefix.'_schema', $defaultSchema);
         } elseif (is_object($route)) {
-            $schema = $route->parameter('graphql_schema', $defaultSchema);
+            $schema = $route->parameter($prefix.'_schema', $defaultSchema);
         } else {
             $schema = $defaultSchema;
         }
