@@ -2,7 +2,7 @@
 
 use Folklore\GraphQL\Support\Contracts\TypeConvertible;
 use GraphQL\GraphQL as GraphQLBase;
-use GraphQL\Schema;
+use GraphQL\Type\Schema;
 use GraphQL\Error\Error;
 
 use GraphQL\Type\Definition\ObjectType;

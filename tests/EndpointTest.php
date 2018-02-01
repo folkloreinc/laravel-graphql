@@ -1,6 +1,6 @@
 <?php
 
-use GraphQL\Schema;
+use GraphQL\Type\Schema;
 use GraphQL\Type\Definition\ObjectType;
 
 class EndpointTest extends TestCase
