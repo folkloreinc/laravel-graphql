@@ -7,7 +7,7 @@ use GraphQL\Type\Definition\Type;
 
 class ConnectionEdgeType extends BaseType
 {
-    protected function fields()
+    public function fields()
     {
         return [
             'cursor' => [

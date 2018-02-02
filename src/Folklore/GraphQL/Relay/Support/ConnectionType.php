@@ -24,7 +24,7 @@ class ConnectionType extends BaseType
     /**
      * @return mixed
      */
-    protected function fields()
+    public function fields()
     {
         return [
             'total'    => [
