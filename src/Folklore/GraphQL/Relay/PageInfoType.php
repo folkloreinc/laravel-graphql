@@ -16,7 +16,7 @@ class PageInfoType extends BaseType
         'description' => 'The relay pageInfo type used by connections',
     ];
 
-    protected function fields()
+    public function fields()
     {
         return [
             'hasNextPage'     => [

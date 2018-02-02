@@ -16,7 +16,7 @@ class NodeInterface extends BaseInterfaceType
         'description' => 'The relay node interface',
     ];
 
-    protected function fields()
+    public function fields()
     {
         return [
             'id' => [
