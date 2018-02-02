@@ -340,7 +340,7 @@ use Folklore\GraphQL\Relay\Support\ConnectionField;
 class PhotosConnectionField extends ConnectionField
 {
     // Here you can define additional arguments to filter you connection
-    protected function args()
+    public function args()
     {
         return [
             'size' => [
@@ -350,7 +350,7 @@ class PhotosConnectionField extends ConnectionField
         ];
     }
 
-    protected function type()
+    public function type()
     {
         return GraphQL::type('PhotosConnection');
     }
@@ -530,7 +530,7 @@ class UpdateUserEmailMutation extends BaseMutation
         return GraphQL::type('UpdateUserEmailInput');
     }
 
-    protected function type()
+    public function type()
     {
         return GraphQL::type('UpdateUserEmailPayload');
     }

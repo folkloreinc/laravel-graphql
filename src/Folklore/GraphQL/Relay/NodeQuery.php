@@ -23,7 +23,7 @@ class NodeQuery extends Query
     }
 
 
-    protected function args()
+    public function args()
     {
         return [
             'id' => [

@@ -23,7 +23,7 @@ class DummyClass extends BaseMutation
         return GraphQL::type('DummyPayload');
     }
 
-    protected function args()
+    public function args()
     {
         return [
             'id' => ['name' => 'id', 'type' => Type::nonNull(Type::string())],

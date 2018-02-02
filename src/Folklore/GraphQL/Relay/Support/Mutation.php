@@ -34,7 +34,7 @@ class Mutation extends BaseMutation
         $this->inputType = $inputType;
     }
 
-    protected function args()
+    public function args()
     {
         return [
             'input' => [
