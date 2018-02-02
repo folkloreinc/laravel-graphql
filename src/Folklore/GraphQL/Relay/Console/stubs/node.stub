@@ -13,7 +13,7 @@ class DummyClass extends BaseNodeType
         'description' => 'A relay node type'
     ];
 
-    protected function fields()
+    public function fields()
     {
         return [
             'id' => [
@@ -21,7 +21,7 @@ class DummyClass extends BaseNodeType
             ]
         ];
     }
-    
+
     public function resolveById($id)
     {
         // Get a node from an id
