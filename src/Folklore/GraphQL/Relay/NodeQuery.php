@@ -17,7 +17,7 @@ class NodeQuery extends Query
         'description' => 'A query'
     ];
 
-    protected function type()
+    public function type()
     {
         return app('graphql')->type('Node');
     }

@@ -18,7 +18,7 @@ class DummyClass extends BaseMutation
         return GraphQL::type('DummyInput');
     }
 
-    protected function type()
+    public function type()
     {
         return GraphQL::type('DummyPayload');
     }
