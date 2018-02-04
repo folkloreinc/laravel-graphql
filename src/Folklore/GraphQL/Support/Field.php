@@ -12,6 +12,13 @@ class Field extends Fluent
     /**
      * Override this in your queries or mutations
      * to provide custom authorization
+     *
+     * @param $root
+     * @param array $args
+     * @param array $context
+     * @param ResolveInfo $info
+     *
+     * @return boolean
      */
     public function authorize($root, $args, $context, ResolveInfo $info)
     {
