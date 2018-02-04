@@ -4,6 +4,7 @@ namespace Folklore\GraphQL\Support;
 
 use Illuminate\Support\Fluent;
 use Folklore\GraphQL\Error\AuthorizationError;
+use Folklore\GraphQL\Type\Definition\ResolveInfo;
 
 class Field extends Fluent
 {
@@ -12,7 +13,7 @@ class Field extends Fluent
      * Override this in your queries or mutations
      * to provide custom authorization
      */
-    public function authorize($root, $args)
+    public function authorize($root, $args, $context, ResolveInfo $info)
     {
         return true;
     }
