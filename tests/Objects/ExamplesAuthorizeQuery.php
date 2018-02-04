@@ -2,6 +2,7 @@
 
 use GraphQL\Type\Definition\Type;
 use Folklore\GraphQL\Support\Query;
+use Folklore\GraphQL\Type\Definition\ResolveInfo;
 
 class ExamplesAuthorizeQuery extends ExamplesQuery
 {
@@ -9,7 +10,7 @@ class ExamplesAuthorizeQuery extends ExamplesQuery
         'name' => 'Examples authorize query'
     ];
 
-    public function authorize($root, $args)
+    public function authorize($root, $args, $context, ResolveInfo $info)
     {
         return false;
     }
