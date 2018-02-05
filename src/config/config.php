@@ -171,6 +171,28 @@ return [
 
     ],
 
+    // Relay configuration
+    'relay' => [
+
+        // Define the schemas on which you would like to use relay. It will
+        // automatically add the node query defined below to those schemas.
+        // The parameter can be a string, an array of names or "*" for all schemas.
+        'schemas' => '*',
+
+        // The Query class used for the node query
+        'query' => [
+            'node' => \Folklore\GraphQL\Relay\NodeQuery::class,
+            // 'users' => App\GraphQL\Query\UsersQuery::class,
+        ],
+
+        // The Type classes used for the Node interface and the PageInfo
+        'types' => [
+            'Node' => \Folklore\GraphQL\Relay\NodeInterface::class,
+            'PageInfo' => \Folklore\GraphQL\Relay\PageInfoType::class,
+            // 'User' => App\GraphQL\Type\UserNodeType::class
+        ]
+    ],
+
     /*
      * This callable will receive all the Exception objects that are caught by GraphQL.
      * The method should return an array representing the error.
