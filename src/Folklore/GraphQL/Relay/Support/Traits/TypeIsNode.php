@@ -9,9 +9,9 @@ trait TypeIsNode
     /**
      * @return mixed
      */
-    public function getFieldsForObjectType()
+    public function getFields()
     {
-        $currentFields = parent::getFieldsForObjectType();
+        $currentFields = parent::getFields();
 
         $idResolver  = $this->getIdResolverFromFields($currentFields);
         $nodeIdField = $this->getNodeIdField();
