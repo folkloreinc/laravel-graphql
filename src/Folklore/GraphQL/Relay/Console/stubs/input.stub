@@ -1,0 +1,22 @@
+<?php
+
+namespace DummyNamespace;
+
+use GraphQL\Type\Definition\Type;
+use Folklore\GraphQL\Relay\Support\InputType as BaseInputType;
+use GraphQL;
+
+class DummyClass extends BaseInputType
+{
+    protected $attributes = [
+        'name' => 'DummyInput',
+        'description' => 'A relay mutation input type'
+    ];
+
+    public function fields()
+    {
+        return [
+
+        ];
+    }
+}

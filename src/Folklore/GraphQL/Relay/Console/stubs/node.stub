@@ -1,0 +1,29 @@
+<?php
+
+namespace DummyNamespace;
+
+use GraphQL\Type\Definition\Type;
+use Folklore\GraphQL\Relay\Support\NodeType as BaseNodeType;
+use GraphQL;
+
+class DummyClass extends BaseNodeType
+{
+    protected $attributes = [
+        'name' => 'DummyType',
+        'description' => 'A relay node type'
+    ];
+
+    public function fields()
+    {
+        return [
+            'id' => [
+                'type' => Type::nonNull(Type::id())
+            ]
+        ];
+    }
+
+    public function resolveById($id)
+    {
+        // Get a node from an id
+    }
+}
