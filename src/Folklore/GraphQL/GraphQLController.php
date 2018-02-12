@@ -18,9 +18,9 @@ class GraphQLController extends Controller
          * @see https://github.com/laravel/lumen-framework/issues/119
          * @see https://laravel.com/api/5.5/Illuminate/Http/Request.html#method_route
          */
-        
+
         $prefix = config('graphql.prefix');
-        
+
         $routeName = is_object($route)
             ? $route->getName()
             : (is_array($route) && isset($route['as'])
@@ -70,7 +70,7 @@ class GraphQLController extends Controller
 
         $errors = !$isBatch ? array_get($data, 'errors', []) : [];
         $authorized = array_reduce($errors, function ($authorized, $error) {
-            return !$authorized || array_get($error, 'message') === 'Unauthorized' ? false : true;
+            return !$authorized || strpos(array_get($error, 'message'), 'nauthorized') !== false ? false : true;
         }, true);
         if (!$authorized) {
             return response()->json($data, 403, $headers, $options);
