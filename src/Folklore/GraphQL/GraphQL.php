@@ -29,7 +29,7 @@ class GraphQL
     public function __construct($app)
     {
         $this->app = $app;
-        $this->fireEvents = config('graphql.fire_events', true);
+        $this->fireTypeAddedEvent = config('graphql.fire_type_added_events', true);
     }
 
     public function schema($schema = null)
@@ -186,18 +186,14 @@ class GraphQL
         $name = $this->getTypeName($class, $name);
         $this->types[$name] = $class;
 
-        if ($this->fireEvents === true) {
+        if ($this->fireTypeAddedEvent === true) {
             event(new TypeAdded($class, $name));
         }
     }
 
     public function addSchema($name, $schema)
     {
-        $this->schemas[$name] = $schema;
-
-        if ($this->fireEvents === true) {
-            event(new SchemaAdded($schema, $name));
-        }
+        event(new SchemaAdded($schema, $name));
     }
 
     public function clearType($name)

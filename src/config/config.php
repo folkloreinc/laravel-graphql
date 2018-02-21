@@ -91,9 +91,9 @@ return [
     ],
 
     /*
-     * Whether or not to fire events such as TypeAdded, SchemaAdded, etc.
+     * Whether or not to fire the 'TypeAdded' event. You can set this to false if you don't use it in your application.
      */
-    'fire_events' => false,
+    'fire_type_added_events' => false,
 
     /*
      * The name of the default schema used when no arguments are provided
