@@ -43,7 +43,7 @@ or
 $ composer update
 ```
 
-### Laravel 5.5
+### Laravel 5.6.x
 
 **1-** Publish the configuration file
 
