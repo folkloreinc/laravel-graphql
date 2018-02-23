@@ -320,23 +320,23 @@ For example, if you had an optional argument in your query to `include_deleted_u
 
 ```
 public function args()
-    {
-        return [
-            'id' => [
-                'name' => 'id',
-                'type' => Type::string()
-            ],
-            'email' => [
-                'name' => 'email',
-                'type' => Type::string()
-            ],
-            'include_deleted_users' => [
-                'name' => 'include_deleted_users',
-                'type' => Type::boolean(),
-                'defaultValue' => false
-            ]
-        ];
-    }
+{
+    return [
+        'id' => [
+            'name' => 'id',
+            'type' => Type::string()
+        ],
+        'email' => [
+            'name' => 'email',
+            'type' => Type::string()
+        ],
+        'include_deleted_users' => [
+            'name' => 'include_deleted_users',
+            'type' => Type::boolean(),
+            'defaultValue' => false
+        ]
+    ];
+}
 ```
 
 You can also include descriptions for query fields by adding a `description` array key - this will be shown in the schema, and picked up by tools like GraphiQL.
