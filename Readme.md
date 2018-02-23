@@ -389,7 +389,7 @@ class UpdateUserPasswordMutation extends Mutation
 
 As you can see in the `resolve` method, you use the arguments to update your model and return it.
 
-You then add the muation to the `config/graphql.php` configuration file
+You then add the mutation to the `config/graphql.php` configuration file
 
 ```php
 'schema' => [
