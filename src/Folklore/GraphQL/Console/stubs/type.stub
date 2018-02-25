@@ -8,6 +8,7 @@ use GraphQL;
 
 class DummyClass extends BaseType
 {
+    DummyInputObject
     protected $attributes = [
         'name' => 'DummyType',
         'description' => 'A type'
@@ -16,7 +17,10 @@ class DummyClass extends BaseType
     public function fields()
     {
         return [
-            
+              'sampleField' => [
+                'type' => Type::string(),
+                'description' => 'Sample field description',
+            ],
         ];
     }
 }
