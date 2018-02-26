@@ -17,6 +17,15 @@ class Field extends Fluent
         return true;
     }
 
+    /**
+     * Override this in your queries or mutations
+     * to authenticate per query or mutation
+     */
+    public function authenticated($root, $args, $context)
+    {
+        return true;
+    }
+
     public function attributes()
     {
         return [];
@@ -39,10 +48,16 @@ class Field extends Fluent
         }
 
         $resolver = array($this, 'resolve');
+        $authenticate = [$this, 'authenticated'];
         $authorize = [$this, 'authorize'];
 
-        return function () use ($resolver, $authorize) {
+        return function () use ($resolver, $authorize, $authenticate) {
             $args = func_get_args();
+
+            // Authenticated
+            if (call_user_func_array($authenticate, $args) !== true) {
+                throw new AuthorizationError('Unauthenticated');
+            }
 
             // Authorize
             if (call_user_func_array($authorize, $args) !== true) {

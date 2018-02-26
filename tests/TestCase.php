@@ -25,7 +25,8 @@ class TestCase extends BaseTestCase
                 'examples' => ExamplesQuery::class,
                 'examplesContext' => ExamplesContextQuery::class,
                 'examplesRoot' => ExamplesRootQuery::class,
-                'examplesAuthorize' => ExamplesAuthorizeQuery::class
+                'examplesAuthorize' => ExamplesAuthorizeQuery::class,
+                'examplesAuthenticated' => ExamplesAuthenticatedQuery::class,
             ],
             'mutation' => [
                 'updateExample' => UpdateExampleMutation::class

@@ -49,6 +49,14 @@ return [
         }
     ",
 
+    'examplesWithAuthenticated' =>  "
+        query QueryExamplesAuthenticated {
+            examplesAuthenticated {
+                test
+            }
+        }
+    ",
+
     'examplesWithRoot' =>  "
         query QueryExamplesRoot {
             examplesRoot {
