@@ -193,6 +193,7 @@ class GraphQL
 
     public function addSchema($name, $schema)
     {
+        $this->schemas[$name] = $schema;
         event(new SchemaAdded($schema, $name));
     }
 
