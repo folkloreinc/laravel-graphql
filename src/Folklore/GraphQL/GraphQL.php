@@ -16,6 +16,9 @@ use Folklore\GraphQL\Exception\SchemaNotFound;
 use Folklore\GraphQL\Events\SchemaAdded;
 use Folklore\GraphQL\Events\TypeAdded;
 
+use Folklore\GraphQL\Support\PaginationType;
+use Folklore\GraphQL\Support\PaginationCursorType;
+
 class GraphQL
 {
     protected $app;
@@ -300,5 +303,20 @@ class GraphQL
         }
 
         return $error;
+    }
+
+    public function pagination(ObjectType $type)
+    {
+        // Only add the PaginationCursor when there is a pagination defined.
+        if (!isset($this->types['PaginationCursor'])) {
+            $this->types['PaginationCursor'] = new PaginationCursorType();
+        }
+
+        // If the instace type of the given pagination does not exists, create a new one!
+        if (!isset($this->typesInstances[$type->name . 'Pagination'])) {
+            $this->typesInstances[$type->name . 'Pagination'] = new PaginationType($type->name);
+        }
+
+        return $this->typesInstances[$type->name . 'Pagination'];
     }
 }
