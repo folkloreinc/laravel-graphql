@@ -14,7 +14,7 @@ class NodeIdField extends BaseField
         'description' => 'A relay node id field'
     ];
 
-    protected function type()
+    public function type()
     {
         return Type::nonNull(Type::id());
     }

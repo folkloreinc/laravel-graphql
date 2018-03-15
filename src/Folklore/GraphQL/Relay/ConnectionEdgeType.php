@@ -7,7 +7,7 @@ use Folklore\GraphQL\Support\Type as BaseType;
 
 class ConnectionEdgeType extends BaseType
 {
-    protected function fields()
+    public function fields()
     {
         return [
             'cursor' => [

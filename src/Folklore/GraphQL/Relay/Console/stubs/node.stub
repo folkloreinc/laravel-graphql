@@ -13,7 +13,7 @@ class DummyClass extends BaseNodeType
         'description' => 'A relay node type'
     ];
 
-    protected function fields()
+    public function fields()
     {
         return [
             'id' => [
