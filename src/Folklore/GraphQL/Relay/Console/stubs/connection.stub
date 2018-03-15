@@ -1,0 +1,20 @@
+<?php
+
+namespace DummyNamespace;
+
+use GraphQL\Type\Definition\Type;
+use Folklore\GraphQL\Relay\Support\ConnectionType as BaseConnectionType;
+use GraphQL;
+
+class DummyClass extends BaseConnectionType
+{
+    protected $attributes = [
+        'name' => 'DummyConnection',
+        'description' => 'A relay connection type'
+    ];
+
+    public function edgeType()
+    {
+        return null;
+    }
+}

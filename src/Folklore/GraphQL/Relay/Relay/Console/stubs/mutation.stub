@@ -1,0 +1,30 @@
+<?php
+
+namespace DummyNamespace;
+
+use GraphQL\Type\Definition\Type;
+use Folklore\GraphQL\Relay\Support\Mutation as BaseMutation;
+use GraphQL;
+
+class DummyClass extends BaseMutation
+{
+    protected $attributes = [
+        'name' => 'DummyMutation',
+        'description' => 'A relay mutation'
+    ];
+
+    protected function inputType()
+    {
+        return null;
+    }
+    
+    public function type()
+    {
+        return null;
+    }
+    
+    public function resolve($root, $args, $context, ResolveInfo $info)
+    {
+        
+    }
+}
