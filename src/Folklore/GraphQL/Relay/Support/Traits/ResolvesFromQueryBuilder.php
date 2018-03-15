@@ -146,7 +146,6 @@ trait ResolvesFromQueryBuilder
         if ($limit) {
             $query->take($limit);
         }
-//        $query->skip($offset)->take($limit);
 
         $hasNextPage = ($offset + $limit) < $count;
         $hasPreviousPage = $offset > 0;
