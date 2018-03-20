@@ -87,6 +87,22 @@ return [
                 test
             }
         }
-    "
+    ",
+
+    'examplePagination' => "
+        query Items(\$take: Int!, \$page: Int!) {
+            examplesPagination(take: \$take, page: \$page) {
+                items {
+                    test
+                }
+                cursor {
+                    total
+                    perPage
+                    currentPage
+                    hasPages
+                }
+            }
+        }
+    ",
 
 ];

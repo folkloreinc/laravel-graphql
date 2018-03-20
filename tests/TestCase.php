@@ -27,6 +27,7 @@ class TestCase extends BaseTestCase
                 'examplesRoot' => ExamplesRootQuery::class,
                 'examplesAuthorize' => ExamplesAuthorizeQuery::class,
                 'examplesAuthenticated' => ExamplesAuthenticatedQuery::class,
+                'examplesPagination' => ExamplesPaginationQuery::class,
             ],
             'mutation' => [
                 'updateExample' => UpdateExampleMutation::class
@@ -35,7 +36,7 @@ class TestCase extends BaseTestCase
 
         $app['config']->set('graphql.schemas.custom', [
             'query' => [
-                'examplesCustom' => ExamplesQuery::class
+                'examplesCustom' => ExamplesQuery::class,
             ],
             'mutation' => [
                 'updateExampleCustom' => UpdateExampleMutation::class
