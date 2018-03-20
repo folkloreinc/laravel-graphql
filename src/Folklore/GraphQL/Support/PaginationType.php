@@ -9,7 +9,7 @@ use GraphQL;
 
 class PaginationType extends ObjectType
 {
-    public function __construct(string $type)
+    public function __construct($type)
     {
         parent::__construct([
             'name' => $type . 'Pagination',
