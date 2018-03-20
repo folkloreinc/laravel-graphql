@@ -7,7 +7,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class ExamplesPaginationQuery extends Query
 {
     protected $attributes = [
-        'name' => 'examples'
+        'name' => 'Examples with pagination',
     ];
 
     public function type()

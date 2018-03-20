@@ -5,7 +5,7 @@ use Illuminate\Validation\Validator;
 class PaginationTest extends FieldTest
 {
     /**
-     * Test resolve.
+     * Test the pagination type
      *
      * @test
      */
