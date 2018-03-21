@@ -13,7 +13,7 @@ class DummyClass extends BasePayloadType
         'description' => 'A relay mutation payload type'
     ];
 
-    protected function fields()
+    public function fields()
     {
         return [
         

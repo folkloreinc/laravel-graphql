@@ -2,7 +2,7 @@
 
 namespace Folklore\GraphQL\Relay\Console;
 
-use Folklore\GraphQL\Console\GeneratorCommand;
+use Illuminate\Console\GeneratorCommand;
 
 class ConnectionMakeCommand extends GeneratorCommand
 {

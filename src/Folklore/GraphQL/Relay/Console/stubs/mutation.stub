@@ -18,7 +18,7 @@ class DummyClass extends BaseMutation
         return null;
     }
     
-    protected function type()
+    public function type()
     {
         return null;
     }
