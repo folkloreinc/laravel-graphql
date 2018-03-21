@@ -243,24 +243,6 @@ class GraphQLTest extends TestCase
 
         GraphQL::addType(CustomExampleType::class);
     }
-
-    /**
-     * Test that the add type event is not fired when fire_type_added_events is false
-     *
-     * @test
-     */
-    public function testAddTypeDoesNotFireEventWhenEventFiringIsDisabled()
-    {
-        config(['graphql.fire_type_added_events' => false]);
-
-        Event::fake(TypeAdded::class);
-
-        $this->app['events']->shouldReceive('listen');
-
-        GraphQL::addType(CustomExampleType::class);
-
-        Event::assertNotDispatched(TypeAdded::class);
-    }
     
     /**
      * Test add type with a name
