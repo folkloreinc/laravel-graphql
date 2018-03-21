@@ -7,6 +7,7 @@ use GraphQL\Error\Error;
 use Folklore\GraphQL\Error\ValidationError;
 use Folklore\GraphQL\Events\TypeAdded;
 use Folklore\GraphQL\Events\SchemaAdded;
+use Illuminate\Support\Facades\Event;
 
 class GraphQLTest extends TestCase
 {
@@ -215,10 +216,6 @@ class GraphQLTest extends TestCase
      */
     public function testAddType()
     {
-        $this->expectsEvents(TypeAdded::class);
-	
-	    $this->app['events']->shouldReceive('listen');
-        
         GraphQL::addType(CustomExampleType::class);
 
         $types = GraphQL::getTypes();
@@ -229,6 +226,40 @@ class GraphQLTest extends TestCase
 
         $type = GraphQL::type('CustomExample');
         $this->assertInstanceOf(\GraphQL\Type\Definition\ObjectType::class, $type);
+    }
+
+    /**
+     * Test that the add type event is fired when fire_type_added_events is true
+     *
+     * @test
+     */
+    public function testAddTypeFiresEventWhenEventFiringIsEnabled()
+    {
+        config(['graphql.fire_type_added_events' => true]);
+
+        $this->expectsEvents(TypeAdded::class);
+
+        $this->app['events']->shouldReceive('listen');
+
+        GraphQL::addType(CustomExampleType::class);
+    }
+
+    /**
+     * Test that the add type event is not fired when fire_type_added_events is false
+     *
+     * @test
+     */
+    public function testAddTypeDoesNotFireEventWhenEventFiringIsDisabled()
+    {
+        config(['graphql.fire_type_added_events' => false]);
+
+        Event::fake(TypeAdded::class);
+
+        $this->app['events']->shouldReceive('listen');
+
+        GraphQL::addType(CustomExampleType::class);
+
+        Event::assertNotDispatched(TypeAdded::class);
     }
     
     /**
