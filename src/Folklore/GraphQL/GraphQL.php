@@ -16,6 +16,9 @@ use Folklore\GraphQL\Exception\SchemaNotFound;
 use Folklore\GraphQL\Events\SchemaAdded;
 use Folklore\GraphQL\Events\TypeAdded;
 
+use Folklore\GraphQL\Support\PaginationType;
+use Folklore\GraphQL\Support\PaginationCursorType;
+
 class GraphQL
 {
     protected $app;
@@ -162,14 +165,15 @@ class GraphQL
         $context = array_get($opts, 'context', null);
         $schemaName = array_get($opts, 'schema', null);
         $operationName = array_get($opts, 'operationName', null);
+        $defaultFieldResolver = config('graphql.defaultFieldResolver', null);
 
         $additionalResolversSchemaName = is_string($schemaName) ? $schemaName : config('graphql.schema', 'default');
         $additionalResolvers = config('graphql.resolvers.' . $additionalResolversSchemaName, []);
-        $root = array_merge(array_get($opts, 'root', []), $additionalResolvers);
+        $root = is_array($additionalResolvers) ? array_merge(array_get($opts, 'root', []), $additionalResolvers) : $additionalResolvers;
 
         $schema = $this->schema($schemaName);
 
-        $result = GraphQLBase::executeAndReturnResult($schema, $query, $root, $context, $variables, $operationName);
+        $result = GraphQLBase::executeQuery($schema, $query, $root, $context, $variables, $operationName, $defaultFieldResolver);
 
         return $result;
     }
@@ -303,5 +307,20 @@ class GraphQL
         }
 
         return $error;
+    }
+
+    public function pagination(ObjectType $type)
+    {
+        // Only add the PaginationCursor when there is a pagination defined.
+        if (!isset($this->types['PaginationCursor'])) {
+            $this->types['PaginationCursor'] = new PaginationCursorType();
+        }
+
+        // If the instace type of the given pagination does not exists, create a new one!
+        if (!isset($this->typesInstances[$type->name . 'Pagination'])) {
+            $this->typesInstances[$type->name . 'Pagination'] = new PaginationType($type->name);
+        }
+
+        return $this->typesInstances[$type->name . 'Pagination'];
     }
 }
