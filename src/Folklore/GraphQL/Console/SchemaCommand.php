@@ -4,7 +4,6 @@ namespace Folklore\GraphQL\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
-use GraphQL;
 
 class SchemaCommand extends Command
 {
@@ -24,7 +23,7 @@ class SchemaCommand extends Command
      * @var string
      */
     protected $description = 'Generate a graphql schema';
-    
+
     /**
      * Filesystem instance for fs operations
      *
@@ -35,7 +34,7 @@ class SchemaCommand extends Command
     public function __construct(Filesystem $files)
     {
         parent::__construct();
-        
+
         $this->files = $files;
     }
 
@@ -50,15 +49,15 @@ class SchemaCommand extends Command
         if (empty($schema)) {
             $schema = config('graphql.schema');
         }
-        
-        $return = GraphQL::introspection($schema);
+
+        $return = app('graphql')->introspection($schema);
         $json = json_encode($return, JSON_PRETTY_PRINT);
-        
+
         if ($this->option('output')) {
             echo $json;
             return;
         }
-        
+
         $defaultPath = config('graphql.introspection.schema_output', base_path('resources/graphql/schema.json'));
         $path = $this->option('path') ? $this->option('path'):$defaultPath;
         $dirname = dirname($path);
@@ -66,7 +65,7 @@ class SchemaCommand extends Command
             $this->files->makeDirectory($dirname, 0775, true);
             $this->line('<info>Created:</info> Parent directory '.$dirname);
         }
-        
+
         $this->files->put($path, $json);
         $this->line('<info>Created:</info> Schema at '.$path);
     }
