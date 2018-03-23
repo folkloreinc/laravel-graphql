@@ -159,14 +159,15 @@ class GraphQL
         $context = array_get($opts, 'context', null);
         $schemaName = array_get($opts, 'schema', null);
         $operationName = array_get($opts, 'operationName', null);
+        $defaultFieldResolver = config('graphql.defaultFieldResolver', null);
 
         $additionalResolversSchemaName = is_string($schemaName) ? $schemaName : config('graphql.schema', 'default');
         $additionalResolvers = config('graphql.resolvers.' . $additionalResolversSchemaName, []);
-        $root = array_merge(array_get($opts, 'root', []), $additionalResolvers);
+        $root = is_array($additionalResolvers) ? array_merge(array_get($opts, 'root', []), $additionalResolvers) : $additionalResolvers;
 
         $schema = $this->schema($schemaName);
 
-        $result = GraphQLBase::executeAndReturnResult($schema, $query, $root, $context, $variables, $operationName);
+        $result = GraphQLBase::executeQuery($schema, $query, $root, $context, $variables, $operationName, $defaultFieldResolver);
 
         return $result;
     }

@@ -152,6 +152,19 @@ return [
     ],
 
     /*
+     * Overrides the default field resolver
+     * Useful to setup default loading of eager relationships
+     *
+     * Example:
+     *
+     * 'defaultFieldResolver' => function ($root, $args, $context, $info) {
+     *     // take a look at the defaultFieldResolver in
+     *     // https://github.com/webonyx/graphql-php/blob/master/src/Executor/Executor.php
+     * },
+     */
+    'defaultFieldResolver' => null,
+
+    /*
      * The types available in the application. You can access them from the
      * facade like this: GraphQL::type('user')
      *

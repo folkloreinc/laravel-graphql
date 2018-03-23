@@ -12,25 +12,25 @@ use GraphQL\Type\Definition\InputObjectType;
 class Type extends Fluent implements TypeConvertible
 {
     protected static $instances = [];
-    
+
     protected $inputObject = false;
     protected $enumObject = false;
-    
+
     public function attributes()
     {
         return [];
     }
-    
+
     public function fields()
     {
         return [];
     }
-    
+
     public function interfaces()
     {
         return [];
     }
-    
+
     protected function getFieldResolver($name, $field)
     {
         $resolveMethod = 'resolve'.studly_case($name).'Field';
@@ -43,10 +43,10 @@ class Type extends Fluent implements TypeConvertible
                 return call_user_func_array($resolver, $args);
             };
         }
-        
+
         return null;
     }
-    
+
     public function getFields()
     {
         $fields = $this->fields();
@@ -57,11 +57,9 @@ class Type extends Fluent implements TypeConvertible
                 $field->name = $name;
                 $allFields[$name] = $field->toArray();
             } else {
-
                 $resolver = $this->getFieldResolver($name, $field);
 
                 if (isset($field['class'])) {
-
                     $field = $field['class'];
 
                     if (is_string($field)) {
@@ -79,7 +77,7 @@ class Type extends Fluent implements TypeConvertible
                 $allFields[$name] = $field;
             }
         }
-        
+
         return $allFields;
     }
 
@@ -92,17 +90,17 @@ class Type extends Fluent implements TypeConvertible
     {
         $attributes = $this->attributes();
         $interfaces = $this->interfaces();
-        
+
         $attributes = array_merge($this->attributes, [
             'fields' => function () {
                 return $this->getFields();
             }
         ], $attributes);
-        
+
         if (sizeof($interfaces)) {
             $attributes['interfaces'] = $interfaces;
         }
-        
+
         return $attributes;
     }
 
@@ -115,7 +113,7 @@ class Type extends Fluent implements TypeConvertible
     {
         return $this->getAttributes();
     }
-    
+
     public function toType()
     {
         if ($this->inputObject) {
