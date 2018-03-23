@@ -77,13 +77,12 @@ class TypeMakeCommand extends GeneratorCommand
     {
         preg_match('/([^\\\]+)$/', $name, $matches);
 
-        $search = ['DummyType', 'DummyInputObject'];
         $replace = [$matches[1]];
 
         $this->addInputObjectAttribute($replace);
 
         return str_replace(
-            $search,
+            ['DummyType', 'DummyInputObject'],
             $replace,
             $stub
         );
