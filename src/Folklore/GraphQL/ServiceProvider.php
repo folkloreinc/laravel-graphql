@@ -205,6 +205,7 @@ class ServiceProvider extends BaseServiceProvider
         $this->commands(Console\FieldMakeCommand::class);
         $this->commands(Console\InterfaceMakeCommand::class);
         $this->commands(Console\ScalarMakeCommand::class);
+        $this->commands(Console\InputMakeCommand::class);
     }
 
     /**
