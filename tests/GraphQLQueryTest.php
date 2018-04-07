@@ -1,6 +1,6 @@
 <?php
 
-use GraphQL\Schema;
+use GraphQL\Type\Schema;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Error\Error;
@@ -112,6 +112,18 @@ class GraphQLQueryTest extends TestCase
         $result = GraphQL::query($this->queries['examplesWithAuthorize']);
         $this->assertNull($result['data']['examplesAuthorize']);
         $this->assertEquals('Unauthorized', $result['errors'][0]['message']);
+    }
+
+    /**
+     * Test query with authorize
+     *
+     * @test
+     */
+    public function testQueryAndReturnResultWithAuthenticated()
+    {
+        $result = GraphQL::query($this->queries['examplesWithAuthenticated']);
+        $this->assertNull($result['data']['examplesAuthenticated']);
+        $this->assertEquals('Unauthenticated', $result['errors'][0]['message']);
     }
 
     /**

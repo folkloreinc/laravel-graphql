@@ -25,7 +25,9 @@ class TestCase extends BaseTestCase
                 'examples' => ExamplesQuery::class,
                 'examplesContext' => ExamplesContextQuery::class,
                 'examplesRoot' => ExamplesRootQuery::class,
-                'examplesAuthorize' => ExamplesAuthorizeQuery::class
+                'examplesAuthorize' => ExamplesAuthorizeQuery::class,
+                'examplesAuthenticated' => ExamplesAuthenticatedQuery::class,
+                'examplesPagination' => ExamplesPaginationQuery::class,
             ],
             'mutation' => [
                 'updateExample' => UpdateExampleMutation::class
@@ -34,7 +36,7 @@ class TestCase extends BaseTestCase
 
         $app['config']->set('graphql.schemas.custom', [
             'query' => [
-                'examplesCustom' => ExamplesQuery::class
+                'examplesCustom' => ExamplesQuery::class,
             ],
             'mutation' => [
                 'updateExampleCustom' => UpdateExampleMutation::class
@@ -48,7 +50,7 @@ class TestCase extends BaseTestCase
 
     protected function assertGraphQLSchema($schema)
     {
-        $this->assertInstanceOf('GraphQL\Schema', $schema);
+        $this->assertInstanceOf('GraphQL\Type\Schema', $schema);
     }
 
     protected function assertGraphQLSchemaHasQuery($schema, $key)

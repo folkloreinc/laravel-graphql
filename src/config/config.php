@@ -100,7 +100,7 @@ return [
     /*
      * The schemas for query and/or mutation. It expects an array to provide
      * both the 'query' fields and the 'mutation' fields. You can also
-     * provide an GraphQL\Schema object directly.
+     * provide an GraphQL\Type\Schema object directly.
      *
      * Example:
      *
@@ -131,6 +131,38 @@ return [
             ]
         ]
     ],
+
+    /*
+     * Additional resolvers which can also be used with shorthand building of the schema
+     * using \GraphQL\Utils::BuildSchema feature
+     *
+     * Example:
+     *
+     * 'resolvers' => [
+     *     'default' => [
+     *         'echo' => function ($root, $args, $context) {
+     *              return 'Echo: ' . $args['message'];
+     *          },
+     *     ],
+     * ],
+     */
+    'resolvers' => [
+        'default' => [
+        ],
+    ],
+
+    /*
+     * Overrides the default field resolver
+     * Useful to setup default loading of eager relationships
+     *
+     * Example:
+     *
+     * 'defaultFieldResolver' => function ($root, $args, $context, $info) {
+     *     // take a look at the defaultFieldResolver in
+     *     // https://github.com/webonyx/graphql-php/blob/master/src/Executor/Executor.php
+     * },
+     */
+    'defaultFieldResolver' => null,
 
     /*
      * The types available in the application. You can access them from the

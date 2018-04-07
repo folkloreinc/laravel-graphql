@@ -27,6 +27,12 @@ return [
         }
     ",
 
+    'shorthandExamplesWithVariables' =>  "
+        query QueryShorthandExamplesVariables(\$message: String!) {
+            echo(message: \$message)
+        }
+    ",
+
     'examplesWithContext' =>  "
         query QueryExamplesContext {
             examplesContext {
@@ -38,6 +44,14 @@ return [
     'examplesWithAuthorize' =>  "
         query QueryExamplesAuthorize {
             examplesAuthorize {
+                test
+            }
+        }
+    ",
+
+    'examplesWithAuthenticated' =>  "
+        query QueryExamplesAuthenticated {
+            examplesAuthenticated {
                 test
             }
         }
@@ -73,6 +87,22 @@ return [
                 test
             }
         }
-    "
+    ",
+
+    'examplePagination' => "
+        query Items(\$take: Int!, \$page: Int!) {
+            examplesPagination(take: \$take, page: \$page) {
+                items {
+                    test
+                }
+                cursor {
+                    total
+                    perPage
+                    currentPage
+                    hasPages
+                }
+            }
+        }
+    ",
 
 ];

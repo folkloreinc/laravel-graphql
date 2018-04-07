@@ -1,6 +1,7 @@
 <?php
 
-use GraphQL\Schema;
+use GraphQL\Type\Schema;
+use GraphQL\Utils\BuildSchema;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Validator\DocumentValidator;
 
@@ -39,7 +40,24 @@ class ConfigTest extends TestCase
                     'mutation' => [
                         'updateExampleCustom' => UpdateExampleMutation::class
                     ]
-                ]
+                ],
+                'shorthand' => BuildSchema::build('
+                    schema {
+                        query: ShorthandExample
+                    }
+
+                    type ShorthandExample {
+                        echo(message: String!): String!
+                    }
+                '),
+            ],
+
+            'resolvers' => [
+                'shorthand' => [
+                    'echo' => function ($root, $args, $context) {
+                        return 'Echo: ' . $args['message'];
+                    },
+                ],
             ],
 
             'types' => [
@@ -100,6 +118,7 @@ class ConfigTest extends TestCase
 
         $this->assertArrayHasKey('default', $schemas);
         $this->assertArrayHasKey('custom', $schemas);
+        $this->assertArrayHasKey('shorthand', $schemas);
     }
 
     public function testVariablesInputName()
@@ -119,6 +138,24 @@ class ConfigTest extends TestCase
             'examples' => [
                 $this->data[0]
             ]
+        ]);
+    }
+
+    public function testVariablesInputNameForShorthandResolver()
+    {
+        $response = $this->call('GET', '/graphql_test/query/shorthand', [
+            'query' => $this->queries['shorthandExamplesWithVariables'],
+            'params' => [
+                'message' => 'Hello World!',
+            ],
+        ]);
+
+        $this->assertEquals($response->getStatusCode(), 200);
+
+        $content = $response->getData(true);
+        $this->assertArrayHasKey('data', $content);
+        $this->assertEquals($content['data'], [
+            'echo' => 'Echo: Hello World!',
         ]);
     }
 
