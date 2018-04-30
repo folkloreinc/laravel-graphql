@@ -33,9 +33,9 @@ class GraphQLController extends Controller
 
         $defaultSchema = config('graphql.schema');
         if (is_array($route)) {
-            $schema = array_get($route, '2.'.$prefix.'_schema', $defaultSchema);
+            $schema = array_get($route, '2.graphql_schema', $defaultSchema);
         } elseif (is_object($route)) {
-            $schema = $route->parameter($prefix.'_schema', $defaultSchema);
+            $schema = $route->parameter('graphql_schema', $defaultSchema);
         } else {
             $schema = $defaultSchema;
         }
