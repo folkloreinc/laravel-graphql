@@ -65,6 +65,14 @@ return [
         }
     ",
 
+    'examplesWithCustomAuthenticated' =>  "
+        query QueryExamplesCustomAuthenticated {
+            examplesCustomAuthenticated {
+                test
+            }
+        }
+    ",
+
     'examplesWithRoot' =>  "
         query QueryExamplesRoot {
             examplesRoot {
