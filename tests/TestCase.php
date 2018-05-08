@@ -26,6 +26,7 @@ class TestCase extends BaseTestCase
                 'examplesContext' => ExamplesContextQuery::class,
                 'examplesRoot' => ExamplesRootQuery::class,
                 'examplesAuthorize' => ExamplesAuthorizeQuery::class,
+                'examplesCustomAuthorize' => ExamplesCustomAuthorizeQuery::class,
                 'examplesAuthenticated' => ExamplesAuthenticatedQuery::class,
                 'examplesPagination' => ExamplesPaginationQuery::class,
             ],

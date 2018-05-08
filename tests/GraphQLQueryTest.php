@@ -115,6 +115,18 @@ class GraphQLQueryTest extends TestCase
     }
 
     /**
+     * Test query with custom authorize msg
+     *
+     * @test
+     */
+    public function testQueryAndReturnResultWithCustomAuthorize()
+    {
+        $result = GraphQL::query($this->queries['examplesWithCustomAuthorize']);
+        $this->assertNull($result['data']['examplesCustomAuthorize']);
+        $this->assertEquals('custom', $result['errors'][0]['message']);
+    }
+
+    /**
      * Test query with authorize
      *
      * @test
