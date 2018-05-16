@@ -127,7 +127,7 @@ config/graphql.php
 - [Schemas](#schemas)
 - [Creating a query](#creating-a-query)
 - [Creating a mutation](#creating-a-mutation)
-- [Adding validation to mutation](#adding-validation-to-mutation)
+- [Input Validation](#validation)
 
 #### Advanced Usage
 - [Query variables](docs/advanced.md#query-variables)
@@ -418,91 +418,100 @@ if you use homestead:
 http://homestead.app/graphql?query=mutation+users{updateUserPassword(id: "1", password: "newpassword"){id,email}}
 ```
 
-#### Adding validation to mutation
+### Validation
 
-It is possible to add validation rules to mutation. It uses the laravel `Validator` to performs validation against the `args`.
+It is possible to add additional validation rules to inputs, using the Laravel `Validator` to perform validation against the `args`.
+Validation is mostly used for Mutations, but can also be applied to Queries that take arguments.
 
-When creating a mutation, you can add a method to define the validation rules that apply by doing the following:
+Be aware that GraphQL has native types to define a field as either a List or as NonNull. Use those wrapping
+types instead of native Laravel validation via `array` or `required`. This way, those constraints are
+reflected through the schema and are validated by the underlying GraphQL implementation.
+
+#### Rule definition
+
+You can add validation rules directly to the arguments of Mutations or Queries:
+
 
 ```php
-namespace App\GraphQL\Mutation;
-
-use GraphQL;
-use GraphQL\Type\Definition\Type;
-use Folklore\GraphQL\Support\Mutation;
-use App\User;
+//...
 
 class UpdateUserEmailMutation extends Mutation
 {
-    protected $attributes = [
-        'name' => 'UpdateUserEmail'
-    ];
-
-    public function type()
-    {
-        return GraphQL::type('User');
-    }
+    //...
 
     public function args()
-    {
-        return [
-            'id' => ['name' => 'id', 'type' => Type::string()],
-            'email' => ['name' => 'email', 'type' => Type::string()]
-        ];
-    }
-
-    public function rules()
-    {
-        return [
-            'id' => ['required'],
-            'email' => ['required', 'email']
-        ];
-    }
-
-    public function resolve($root, $args)
-    {
-        $user = User::find($args['id']);
-
-        if (!$user) {
-            return null;
+        {
+            return [
+                'id' => [
+                    'name' => 'id',
+                    'type' => Type::nonNull(Type::string()),
+                    // Adding a rule for 'required' is not necessary
+                ],
+                'email' => [
+                    'name' => 'email',
+                    'type' => Type::nonNull(Type::string()),
+                    'rules' => ['email']
+                ],
+                'links' => [
+                    'name' => 'links',
+                    'type' => Type::listOf(Type::string()),
+                    // Validation is applied to each element of the list 
+                    'rules' => ['url']
+                ],
+                'name' => [
+                    'name' => 'name',
+                    'type' => GraphQL::type('NameInputObject')
+                ],
+            ];
         }
 
-        $user->email = $args['email'];
-        $user->save();
-
-        return $user;
-    }
+    //...
 }
 ```
 
-Alternatively you can define rules with each args
+#### Input Object Rules
 
-```php
-class UpdateUserEmailMutation extends Mutation
+Notice how the argument `name` has the type `NameInputObject`? The rules defined in Input Objects are also considered when
+validating the Mutation! The definition of those rules looks like this:
+
+````php
+<?php
+
+use GraphQL\Type\Definition\Type;
+use Folklore\GraphQL\Support\Type as BaseType;
+
+class NameInputObject extends BaseType
 {
-    //...
+    protected $inputObject = true;
 
-    public function args()
+    protected $attributes = [
+        'name' => 'NameInputObject'
+    ];
+    
+    public function fields()
     {
         return [
-            'id' => [
-                'name' => 'id',
+            'first' => [
+                'name' => 'first',
                 'type' => Type::string(),
-                'rules' => ['required']
+                'rules' => ['alpha']
             ],
-            'email' => [
-                'name' => 'email',
-                'type' => Type::string(),
-                'rules' => ['required', 'email']
-            ]
+            'last' => [
+                'name' => 'last',
+                'type' => Type::nonNull(Type::string()),
+                'rules' => ['alpha']
+            ],
         ];
     }
-
-    //...
 }
-```
+```` 
 
-When you execute a mutation, it will returns the validation errors. Since GraphQL specifications define a certain format for errors, the validation errors messages are added to the error object as a extra `validation` attribute. To find the validation error, you should check for the error with a `message` equals to `'validation'`, then the `validation` attribute will contain the normal errors messages returned by the Laravel Validator.
+Now, the rules in here ensure that if a name is passed to the above Mutation, it must contain at least a
+last name, and the first and last name can only contain alphabetic characters.
+
+#### Response format
+
+When you execute a mutation, it will return the validation errors. Since the GraphQL specification defines a certain format for errors, the validation error messages are added to the error object as an extra `validation` attribute. To find the validation error, you should check for the error with a `message` equals to `'validation'`, then the `validation` attribute will contain the normal errors messages returned by the Laravel Validator.
 
 ```json
 {
@@ -527,3 +536,19 @@ When you execute a mutation, it will returns the validation errors. Since GraphQ
   ]
 }
 ```
+
+#### Validation depth
+
+Laravel validation works by statically generating validation rules and then applying
+them to arguments all at once. However, field arguments may consist of Input Objects, which
+could have circular references. Because of this, the maximum depth for validation has to be
+set before. The default depth is set to `10`, it can be overwritten this way:
+
+````php
+class ExampleMutation extends Mutation
+{
+    protected $validationDepth = 15;
+    
+    //...
+}
+````

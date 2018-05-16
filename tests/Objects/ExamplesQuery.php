@@ -1,7 +1,8 @@
 <?php
 
-use GraphQL\Type\Definition\Type;
 use Folklore\GraphQL\Support\Query;
+use GraphQL\Type\Definition\ResolveInfo;
+use GraphQL\Type\Definition\Type;
 
 class ExamplesQuery extends Query
 {
@@ -17,13 +18,17 @@ class ExamplesQuery extends Query
     public function args()
     {
         return [
-            'index' => ['name' => 'index', 'type' => Type::int()]
+            'index' => [
+                'name' => 'index',
+                'type' => Type::int(),
+                'rules' => ['integer', 'max:100']
+            ]
         ];
     }
 
-    public function resolve($root, $args)
+    public function resolve($root, $args, $context, ResolveInfo $info)
     {
-        $data = include(__DIR__.'/data.php');
+        $data = include(__DIR__ . '/data.php');
 
         if (isset($args['index'])) {
             return [

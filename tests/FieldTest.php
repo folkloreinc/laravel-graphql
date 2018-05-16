@@ -1,14 +1,24 @@
 <?php
 
-use Folklore\Support\Field;
-use GraphQL\Type\Definition\Type;
-use GraphQL\Type\Definition\ObjectType;
+use Folklore\GraphQL\Support\Field;
 
 class FieldTest extends TestCase
 {
+    /**
+     * @return string
+     */
     protected function getFieldClass()
     {
         return ExampleField::class;
+    }
+
+    /**
+     * @return Field
+     */
+    protected function getFieldInstance()
+    {
+        $class = $this->getFieldClass();
+        return new $class();
     }
 
     /**
@@ -18,8 +28,7 @@ class FieldTest extends TestCase
      */
     public function testGetAttributes()
     {
-        $class = $this->getFieldClass();
-        $field = new $class();
+        $field = $this->getFieldInstance();
         $attributes = $field->getAttributes();
         
         $this->assertArrayHasKey('name', $attributes);
@@ -32,11 +41,11 @@ class FieldTest extends TestCase
     }
     
     /**
-     * Test resolve closure
+     * Test the calling of a custom resolve function.
      *
      * @test
      */
-    public function testResolve()
+    public function testResolveFunctionIsCalled()
     {
         $class = $this->getFieldClass();
         $field = $this->getMockBuilder($class)
@@ -47,7 +56,7 @@ class FieldTest extends TestCase
             ->method('resolve');
         
         $attributes = $field->getAttributes();
-        $attributes['resolve'](null, [], [], null);
+        $attributes['resolve'](null, [], [], new \GraphQL\Type\Definition\ResolveInfo([]));
     }
        
     /**
@@ -57,8 +66,7 @@ class FieldTest extends TestCase
      */
     public function testToArray()
     {
-        $class = $this->getFieldClass();
-        $field = new $class();
+        $field = $this->getFieldInstance();
         $array = $field->toArray();
         
         $this->assertInternalType('array', $array);

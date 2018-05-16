@@ -1,11 +1,5 @@
 <?php
 
-use GraphQL\Type\Schema;
-use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
-use GraphQL\Error\Error;
-use Folklore\GraphQL\Error\ValidationError;
-
 class GraphQLQueryTest extends TestCase
 {
     /**
@@ -166,26 +160,11 @@ class GraphQLQueryTest extends TestCase
     }
 
     /**
-     * Test query with validation error
+     * Test query with validation that passes successfully.
      *
      * @test
      */
-    public function testQueryWithValidationError()
-    {
-        $result = GraphQL::query($this->queries['examplesWithValidation']);
-
-        $this->assertArrayHasKey('data', $result);
-        $this->assertArrayHasKey('errors', $result);
-        $this->assertArrayHasKey('validation', $result['errors'][0]);
-        $this->assertTrue($result['errors'][0]['validation']->has('index'));
-    }
-
-    /**
-     * Test query with validation without error
-     *
-     * @test
-     */
-    public function testQueryWithValidation()
+    public function testQueryWithValidationSuccess()
     {
         $result = GraphQL::query($this->queries['examplesWithValidation'], [
             'index' => 0
@@ -193,5 +172,23 @@ class GraphQLQueryTest extends TestCase
 
         $this->assertArrayHasKey('data', $result);
         $this->assertArrayNotHasKey('errors', $result);
+    }
+
+    /**
+     * Test query with validation error.
+     *
+     * @test
+     */
+    public function testQueryWithValidationError()
+    {
+        $result = GraphQL::query($this->queries['examplesWithValidation'], [
+            // The validation requires this to be below 100
+            'index' => 9001
+        ]);
+
+        $this->assertArrayHasKey('data', $result);
+        $this->assertArrayHasKey('errors', $result);
+        $this->assertArrayHasKey('validation', $result['errors'][0]);
+        $this->assertTrue($result['errors'][0]['validation']->has('index'));
     }
 }

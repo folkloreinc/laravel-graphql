@@ -75,15 +75,15 @@ return [
 
     'examplesWithValidation' =>  "
         query QueryExamplesWithValidation(\$index: Int) {
-            examples {
-                test_validation(index: \$index)
+            examples(index: \$index) {
+                test
             }
         }
     ",
 
-    'updateExampleCustom' =>  "
-        mutation UpdateExampleCustom(\$test: String) {
-            updateExampleCustom(test: \$test) {
+    'exampleMutation' => "
+        mutation ExampleMutation(\$required: String) {
+            exampleMutation(required: \$required) {
                 test
             }
         }

@@ -2,11 +2,12 @@
 
 namespace Folklore\GraphQL\Support;
 
-use Validator;
-use Folklore\GraphQL\Error\ValidationError;
-use Folklore\GraphQL\Support\Traits\ShouldValidate;
-
-class Mutation extends Field
+/**
+ * Mutations are just fields which are expected to change state on the server.
+ *
+ * Class Mutation
+ * @package Folklore\GraphQL\Support
+ */
+abstract class Mutation extends Field
 {
-    use ShouldValidate;
 }

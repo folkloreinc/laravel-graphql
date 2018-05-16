@@ -5,7 +5,6 @@ namespace DummyNamespace;
 use Folklore\GraphQL\Support\Query;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
-use GraphQL;
 
 class DummyClass extends Query
 {
@@ -14,18 +13,41 @@ class DummyClass extends Query
         'description' => 'A query'
     ];
 
+    /**
+     * Define a GraphQL Type which is returned by this field.
+     *
+     * @return \Folklore\GraphQL\Support\Type
+     */
     public function type()
     {
         return Type::listOf(Type::string());
     }
 
+    /**
+     * Define the arguments expected by the field.
+     *
+     * @return array
+     */
     public function args()
     {
         return [
-            
+            'example' => [
+                'name' => 'example',
+                'type' => Type::nonNull(Type::string()),
+                'rules' => ['alpha', 'not_in:forbidden,value']
+            ]
         ];
     }
 
+    /**
+     * Return a result for the field which should match up with its return type.
+     *
+     * @param $root
+     * @param $args
+     * @param $context
+     * @param ResolveInfo $info
+     * @return array
+     */
     public function resolve($root, $args, $context, ResolveInfo $info)
     {
         return [];

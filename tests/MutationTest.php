@@ -6,142 +6,117 @@ class MutationTest extends FieldTest
 {
     protected function getFieldClass()
     {
-        return UpdateExampleMutationWithInputType::class;
-    }
-
-    protected function getEnvironmentSetUp($app)
-    {
-        parent::getEnvironmentSetUp($app);
-
-        $app['config']->set('graphql.types', [
-            'Example' => ExampleType::class,
-            'ExampleValidationInputObject' => ExampleValidationInputObject::class,
-            'ExampleNestedValidationInputObject' => ExampleNestedValidationInputObject::class,
-        ]);
+        return ExampleMutation::class;
     }
 
     /**
-     * Test get rules.
+     * Laravel based validation rules should be correctly constructed.
      *
      * @test
      */
     public function testGetRules()
     {
-        $class = $this->getFieldClass();
-        $field = new $class();
+        $field = $this->getFieldInstance();
         $rules = $field->getRules();
 
         $this->assertInternalType('array', $rules);
-        $this->assertArrayHasKey('test', $rules);
-        $this->assertArrayHasKey('test_with_rules', $rules);
-        $this->assertArrayHasKey('test_with_rules_closure', $rules);
-        $this->assertEquals($rules['test'], ['required']);
-        $this->assertEquals($rules['test_with_rules'], ['required']);
-        $this->assertEquals($rules['test_with_rules_closure'], ['required']);
-        $this->assertEquals($rules['test_with_rules_input_object'], ['required']);
-        $this->assertEquals(array_get($rules, 'test_with_rules_input_object.val'), ['required']);
-        $this->assertEquals(array_get($rules, 'test_with_rules_input_object.nest'), ['required']);
-        $this->assertEquals(array_get($rules, 'test_with_rules_input_object.nest.email'), ['email']);
-        $this->assertEquals(array_get($rules, 'test_with_rules_input_object.list'), ['required']);
-        $this->assertEquals(array_get($rules, 'test_with_rules_input_object.list.*.email'), ['email']);
-    }
 
-    /**
-     * Test resolve.
-     *
-     * @test
-     */
-    public function testResolve()
-    {
-        $class = $this->getFieldClass();
-        $field = $this->getMockBuilder($class)
-                    ->setMethods(['resolve'])
-                    ->getMock();
+        // Those three definitions must have the same result
+        $this->assertEquals(['email'], $rules['email_seperate_rules']);
+        $this->assertEquals(['email'], $rules['email_inline_rules']);
+        $this->assertEquals(['email'], $rules['email_closure_rules']);
 
-        $field->expects($this->once())
-            ->method('resolve');
+        // Apply array validation to values defined as GraphQL-Lists
+        $this->assertEquals(['email'], $rules['email_list.*']);
+        $this->assertEquals(['email'], $rules['email_list_of_lists.*.*']);
 
-        $attributes = $field->getAttributes();
-        $attributes['resolve'](null, [
-            'test' => 'test',
-            'test_with_rules' => 'test',
-            'test_with_rules_closure' => 'test',
-            'test_with_rules_input_object' => [
-                'val' => 'test',
-                'nest' => ['email' => 'test@test.com'],
-                'list' => [
-                    ['email' => 'test@test.com'],
-                ],
-            ],
-        ], [], null);
+        // Inferred rules from Input Objects
+        $this->assertEquals(['alpha'], $rules['input_object.alpha']);
+        $this->assertEquals(['email'], $rules['input_object.child.email']);
+        $this->assertEquals(['email'], $rules['input_object.child-list.*.email']);
+
+        // Self-referencing, nested InputObject
+        $this->assertEquals(['alpha'], $rules['input_object.self.alpha']);
+        $this->assertEquals(['email'], $rules['input_object.self.child.email']);
+        $this->assertEquals(['email'], $rules['input_object.self.child-list.*.email']);
+
+        // Go down a few levels
+        $this->assertEquals(['alpha'], $rules['input_object.self.self.self.self.alpha']);
+        $this->assertEquals(['email'], $rules['input_object.self.self.self.self.child.email']);
+        $this->assertEquals(['email'], $rules['input_object.self.self.self.self.child-list.*.email']);
+
+        $this->assertArrayNotHasKey(
+            'input_object.self.self.self.self.self.self.self.self.self.self.alpha',
+            $rules,
+            'Validation rules should not be set for such deep nesting.');
     }
 
     /**
      * Test resolve throw validation error.
      *
      * @test
-     * @expectedException \Folklore\GraphQL\Error\ValidationError
      */
     public function testResolveThrowValidationError()
     {
-        $class = $this->getFieldClass();
-        $field = new $class();
-
+        $field = $this->getFieldInstance();
         $attributes = $field->getAttributes();
-        $attributes['resolve'](null, [], [], null);
+
+        $this->expectException('\Folklore\GraphQL\Error\ValidationError');
+        $attributes['resolve'](null, [
+            'email_inline_rules' => 'not-an-email'
+        ], [], null);
     }
 
     /**
-     * Test validation error.
+     * Validation error messages are correctly constructed and thrown.
      *
      * @test
      */
-    public function testValidationError()
+    public function testValidationErrorMessages()
     {
-        $class = $this->getFieldClass();
-        $field = new $class();
-
+        $field = $this->getFieldInstance();
         $attributes = $field->getAttributes();
 
         try {
-            $attributes['resolve'](null, [], [], null);
+            $attributes['resolve'](null, [
+                'email_inline_rules' => 'not-an-email',
+                'email_list' => ['not-an-email', 'valid@email.com'],
+                'email_list_of_lists' => [
+                    ['valid@email.com'],
+                    ['not-an-email'],
+                ],
+                'input_object' => [
+                    'child' => [
+                        'email' => 'not-an-email'
+                    ],
+                    'self' => [
+                        'self' => [
+                            'alpha' => 'Not alphanumeric !"§)'
+                        ]
+                    ]
+                ]
+            ], [], null);
         } catch (\Folklore\GraphQL\Error\ValidationError $e) {
             $validator = $e->getValidator();
 
             $this->assertInstanceOf(Validator::class, $validator);
 
+            /** @var \Illuminate\Support\MessageBag $messages */
             $messages = $e->getValidatorMessages();
-            $this->assertTrue($messages->has('test'));
-            $this->assertTrue($messages->has('test_with_rules'));
-            $this->assertTrue($messages->has('test_with_rules_closure'));
-            $this->assertTrue($messages->has('test_with_rules_input_object.val'));
-            $this->assertTrue($messages->has('test_with_rules_input_object.nest'));
-            $this->assertTrue($messages->has('test_with_rules_input_object.list'));
-        }
-    }
+            $messageKeys = $messages->keys();
+            // Ensure that validation errors occurred only where necessary, ignoring the order
+            $this->assertEquals([
+                'email_inline_rules',
+                'email_list.0',
+                'email_list_of_lists.1.0',
+                'input_object.child.email',
+                'input_object.self.self.alpha',
+            ], $messageKeys, 'Not all the right fields were validated.', 0, 10, true);
 
-    /**
-     * Test custom validation error messages.
-     *
-     * @test
-     */
-    public function testCustomValidationErrorMessages()
-    {
-        $class = $this->getFieldClass();
-        $field = new $class();
-        $rules = $field->getRules();
-        $attributes = $field->getAttributes();
-        try {
-            $attributes['resolve'](null, [
-                 'test_with_rules_input_object' => [
-                     'nest' => ['email' => 'invalidTestEmail.com'],
-                 ],
-             ], [], null);
-        } catch (\Folklore\GraphQL\Error\ValidationError $e) {
-            $messages = $e->getValidatorMessages();
+            // The custom validation error message should override the default
+            $this->assertEquals('Has to be a valid email.', $messages->first('email_inline_rules'));
+            $this->assertEquals('Invalid email: not-an-email', $messages->first('input_object.child.email'));
 
-            $this->assertEquals($messages->first('test'), 'A test is required.');
-            $this->assertEquals($messages->first('test_with_rules_input_object.nest.email'), 'Invalid your email : invalidTestEmail.com');
         }
     }
 }

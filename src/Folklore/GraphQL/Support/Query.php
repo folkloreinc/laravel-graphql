@@ -2,7 +2,12 @@
 
 namespace Folklore\GraphQL\Support;
 
-class Query extends Field
+/**
+ * Queries are simply Fields which are supposed to be idempotent.
+ *
+ * Class Query
+ * @package Folklore\GraphQL\Support
+ */
+abstract class Query extends Field
 {
-    
 }
