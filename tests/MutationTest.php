@@ -53,7 +53,7 @@ class MutationTest extends FieldTest
 
     /**
      * Test resolve throw validation error.
-     *
+     * @expectedException \Folklore\GraphQL\Error\ValidationError
      * @test
      */
     public function testResolveThrowValidationError()
@@ -61,7 +61,6 @@ class MutationTest extends FieldTest
         $field = $this->getFieldInstance();
         $attributes = $field->getAttributes();
 
-        $this->expectException('\Folklore\GraphQL\Error\ValidationError');
         $attributes['resolve'](null, [
             'email_inline_rules' => 'not-an-email'
         ], [], null);
