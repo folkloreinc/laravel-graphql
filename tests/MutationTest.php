@@ -103,14 +103,16 @@ class MutationTest extends FieldTest
             /** @var \Illuminate\Support\MessageBag $messages */
             $messages = $e->getValidatorMessages();
             $messageKeys = $messages->keys();
-            // Ensure that validation errors occurred only where necessary, ignoring the order
-            $this->assertEquals([
+            $expectedKeys = [
                 'email_inline_rules',
                 'email_list.0',
                 'email_list_of_lists.1.0',
                 'input_object.child.email',
                 'input_object.self.self.alpha',
-            ], $messageKeys, 'Not all the right fields were validated.', 0, 10, true);
+            ];
+            // Ensure that validation errors occurred only where necessary
+            // Sort the arrays before comparison so that order does not matter
+            $this->assertEquals(sort($expectedKeys), sort($messageKeys), 'Not all the right fields were validated.');
 
             // The custom validation error message should override the default
             $this->assertEquals('Has to be a valid email.', $messages->first('email_inline_rules'));
