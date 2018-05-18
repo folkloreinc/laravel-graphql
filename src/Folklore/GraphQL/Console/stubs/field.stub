@@ -40,6 +40,19 @@ class DummyClass extends Field
     }
 
     /**
+     * Overwrite rules at any part in the tree of field arguments.
+     *
+     * The rules defined in here take precedence over the rules that are
+     * defined inline or inferred from nested Input Objects.
+     *
+     * @return array
+     */
+    public function rules()
+    {
+        return [];
+    }
+
+    /**
      * Return a result for the field which should match up with its return type.
      *
      * @param $root
