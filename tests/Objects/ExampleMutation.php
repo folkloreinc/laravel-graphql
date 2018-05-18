@@ -27,9 +27,16 @@ class ExampleMutation extends Mutation
                 'type' => Type::nonNull(Type::string()),
             ],
 
+            'required_with' => [
+                'name' => 'required_with',
+                'type' => Type::string(),
+            ],
+
             'email_seperate_rules' => [
                 'name' => 'email_seperate_rules',
-                'type' => Type::string()
+                'type' => Type::string(),
+                // Should be overwritten by those defined in rules()
+                'rules' => ['integer'],
             ],
 
             'email_inline_rules' => [
@@ -72,10 +79,12 @@ class ExampleMutation extends Mutation
         ];
     }
 
-    protected function rules()
+    public function rules()
     {
         return [
-            'email_seperate_rules' => ['email']
+            'email_seperate_rules' => ['email'],
+            'email_list' => ['max:2'],
+            'required_with' => ['required_with:required'],
         ];
     }
 

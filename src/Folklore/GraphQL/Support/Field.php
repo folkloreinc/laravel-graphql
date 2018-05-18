@@ -4,13 +4,12 @@ namespace Folklore\GraphQL\Support;
 
 use Folklore\GraphQL\Error\AuthorizationError;
 use Folklore\GraphQL\Error\ValidationError;
-use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\WrappingType;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Fluent;
+use Illuminate\Validation\Validator;
 
 /**
  * This is a generic class for fields.
@@ -23,20 +22,6 @@ use Illuminate\Support\Fluent;
  */
 abstract class Field extends Fluent
 {
-    /**
-     * Validation rules for the Field arguments.
-     *
-     * @var array
-     */
-    protected $rules = [];
-
-    /**
-     * How many levels of nesting should validation be applied to.
-     *
-     * @var int
-     */
-    protected $validationDepth = 10;
-
     /**
      * Override this in your queries or mutations to provide custom authorization.
      *
@@ -111,6 +96,33 @@ abstract class Field extends Fluent
     public abstract function type();
 
     /**
+     * Returns a function that wraps the resolve function with authentication and validation checks.
+     *
+     * @return \Closure
+     */
+    protected function getResolver()
+    {
+        return function () {
+            $resolutionArguments = func_get_args();
+
+            // Check authentication first
+            if (call_user_func_array([$this, 'authenticated'], $resolutionArguments) !== true) {
+                throw new AuthorizationError('Unauthenticated');
+            }
+
+            // After authentication, check specific authorization
+            if (call_user_func_array([$this, 'authorize'], $resolutionArguments) !== true) {
+                throw new AuthorizationError('Unauthorized');
+            }
+
+            call_user_func_array([$this, 'validate'], $resolutionArguments);
+
+
+            return call_user_func_array([$this, 'resolve'], $resolutionArguments);
+        };
+    }
+
+    /**
      * Return a result for the field.
      *
      * @param $root
@@ -124,63 +136,6 @@ abstract class Field extends Fluent
         // Use the default resolver, can be overridden in custom Fields, Queries or Mutations
         // This enables us to still apply authentication, authorization and validation upon the query
         return call_user_func(config('graphql.defaultFieldResolver'));
-    }
-
-    /**
-     * Returns a function that wraps the resolve function with authentication and validation checks.
-     *
-     * @return \Closure
-     */
-    protected function getResolver()
-    {
-        $authenticated = [$this, 'authenticated'];
-        $authorize = [$this, 'authorize'];
-        $resolve = [$this, 'resolve'];
-
-        return function () use ($authenticated, $authorize, $resolve) {
-            $args = func_get_args();
-
-            // Check authentication first
-            if (call_user_func_array($authenticated, $args) !== true) {
-                throw new AuthorizationError('Unauthenticated');
-            }
-
-            // After authentication, check specific authorization
-            if (call_user_func_array($authorize, $args) !== true) {
-                throw new AuthorizationError('Unauthorized');
-            }
-
-            // Apply additional validation
-            $rules = call_user_func_array([$this, 'getRules'], $args);
-            if (sizeof($rules)) {
-                $validationErrorMessages = call_user_func_array([$this, 'validationErrorMessages'], $args);
-                $inputArguments = array_get($args, 1, []);
-                $validator = $this->getValidator($inputArguments, $rules, $validationErrorMessages);
-                if ($validator->fails()) {
-                    throw with(new ValidationError('validation'))->setValidator($validator);
-                }
-            }
-
-            return call_user_func_array($resolve, $args);
-        };
-    }
-
-    /**
-     * @param $args
-     * @param $rules
-     * @param array $messages
-     *
-     * @return Validator
-     */
-    protected function getValidator($args, $rules, $messages = [])
-    {
-        /** @var Validator $validator */
-        $validator = app('validator')->make($args, $rules, $messages);
-        if (method_exists($this, 'withValidator')) {
-            $this->withValidator($validator, $args);
-        }
-
-        return $validator;
     }
 
     /**
@@ -208,84 +163,139 @@ abstract class Field extends Fluent
     }
 
     /**
-     * Get the combined explicit and type-inferred rules.
+     * Overwrite rules at any part in the tree of field arguments.
+     *
+     * The rules defined in here take precedence over the rules that are
+     * defined inline or inferred from nested Input Objects.
      *
      * @return array
      */
-    public function getRules()
+    public function rules()
     {
-        $arguments = func_get_args();
-
-        $argsRules = $this->getRulesFromArgs($this->args(), $this->validationDepth, null, $arguments);
-
-        // Merge rules that were set separately with those defined through args
-        $explicitRules = call_user_func_array([$this, 'rules'], $arguments);
-        return array_merge($argsRules, $explicitRules);
+        return [];
     }
 
     /**
-     * @param $fields
-     * @param $inputValueDepth
-     * @param $parentKey
-     * @param $resolutionArguments
-     * @return array
+     * Gather all the rules and throw if invalid.
      */
-    protected function getRulesFromArgs($fields, $inputValueDepth, $parentKey, $resolutionArguments)
+    protected function validate()
     {
-        // At depth 0, there are still field rules to gather
-        // once we get below 0, we have gathered all the rules necessary
-        // for the nesting depth
-        if ($inputValueDepth < 0) {
-            return [];
+        $resolutionArguments = func_get_args();
+        $inputArguments = array_get($resolutionArguments, 1, []);
+
+        $argumentRules = $this->getRulesForArguments($this->args(), $inputArguments);
+        $explicitRules = call_user_func_array([$this, 'rules'], $resolutionArguments);
+        $argumentRules = array_merge($argumentRules, $explicitRules);
+
+        foreach ($argumentRules as $key => $rules) {
+            $resolvedRules[$key] = $this->resolveRules($rules, $resolutionArguments);
         }
 
-        // We are going one level deeper
-        $inputValueDepth--;
+        if (isset($resolvedRules)) {
+            $validationErrorMessages = call_user_func_array([$this, 'validationErrorMessages'], $resolutionArguments);
+            $validator = $this->getValidator($inputArguments, $resolvedRules, $validationErrorMessages);
+            if ($validator->fails()) {
+                throw (new ValidationError('validation'))->setValidator($validator);
+            }
+        }
+    }
 
+    /**
+     * Get the combined explicit and type-inferred rules.
+     *
+     * @param $argDefinitions
+     * @param $argValues
+     * @return array
+     */
+    protected function getRulesForArguments($argDefinitions, $argValues)
+    {
         $rules = [];
-        // Merge in the rules of the Input Type
-        foreach ($fields as $fieldName => $field) {
-            // Count the depth per field
-            $fieldDepth = $inputValueDepth;
 
-            // If given, add the parent key
-            $key = $parentKey ? "{$parentKey}.{$fieldName}" : $fieldName;
+        foreach ($argValues as $name => $value) {
+            $definition = $argDefinitions[$name];
 
-            // The values passed in here may be of different types, depending on where they were defined
-            if ($field instanceof InputObjectField) {
-                // We can depend on type being set, since a field without type is not valid
-                $type = $field->type;
-                // Rules are optional so they may not be set
-                $fieldRules = isset($field->rules) ? $field->rules : [];
-            } else {
-                $type = $field['type'];
-                $fieldRules = isset($field['rules']) ? $field['rules'] : [];
-            }
+            $typeAndKey = $this->unwrapType($definition['type'], $name);
+            $key = $typeAndKey['key'];
+            $type = $typeAndKey['type'];
 
-            // Unpack until we get to the root type
-            while ($type instanceof WrappingType) {
-                if ($type instanceof ListOfType) {
-                    // This lets us skip one level of validation rules
-                    $fieldDepth--;
-                    // Add this to the prefix to allow Laravel validation for arrays
-                    $key .= '.*';
-                }
-
-                $type = $type->getWrappedType();
-            }
-
-            // Add explicitly set rules if they apply
-            if (sizeof($fieldRules)) {
-                $rules[$key] = $this->resolveRules($fieldRules, $resolutionArguments);
+            // Get rules that are directly defined on the field
+            if (isset($definition['rules'])) {
+                $rules[$key] = $definition['rules'];
             }
 
             if ($type instanceof InputObjectType) {
-                // Recursively call the parent method to get nested rules, passing in the new prefix
-                $rules = array_merge($rules, $this->getRulesFromArgs($type->getFields(), $fieldDepth, $key, $resolutionArguments));
+                $rules = array_merge($rules, $this->getRulesFromInputObjectType($key, $type, $value));
             }
         }
 
         return $rules;
+    }
+
+    /**
+     * @param $type
+     * @param $key
+     * @return array
+     */
+    protected function unwrapType($type, $key)
+    {
+        // Unpack until we get to the root type
+        while ($type instanceof WrappingType) {
+            if ($type instanceof ListOfType) {
+                // Add this to the prefix to allow Laravel validation for arrays
+                $key .= '.*';
+            }
+
+            $type = $type->getWrappedType();
+        }
+
+        return [
+            'type' => $type,
+            'key' => $key,
+        ];
+    }
+
+    protected function getRulesFromInputObjectType($parentKey, InputObjectType $inputObject, $values)
+    {
+        $rules = [];
+        // At this point we know we expect InputObjects, but there might be more then one value
+        // Since they might have different fields, we have to look at each of them individually
+        // If we have string keys, we are dealing with the values themselves
+        if ($this->hasStringKeys($values)) {
+            foreach ($values as $name => $value) {
+                $key = "{$parentKey}.{$name}";
+
+                $field = $inputObject->getFields()[$name];
+
+                $typeAndKey = $this->unwrapType($field->type, $key);
+                $key = $typeAndKey['key'];
+                $type = $typeAndKey['type'];
+
+                if (isset($field->rules)) {
+                    $rules[$key] = $field->rules;
+                }
+
+                if ($type instanceof InputObjectType) {
+                    // Recursively call the parent method to get nested rules, passing in the new prefix
+                    $rules = array_merge($rules, $this->getRulesFromInputObjectType($key, $type, $value));
+                }
+            }
+        } else {
+            // Go one level deeper so we deal with actual values
+            foreach ($values as $nestedValues) {
+                $rules = array_merge($rules, $this->getRulesFromInputObjectType($parentKey, $inputObject, $nestedValues));
+            }
+        }
+
+        return $rules;
+    }
+
+    /**
+     * @param array $array
+     * @return bool
+     */
+    protected function hasStringKeys(array $array)
+    {
+        return count(array_filter(array_keys($array), 'is_string')) > 0;
     }
 
     /**
@@ -295,7 +305,7 @@ abstract class Field extends Fluent
      */
     protected function resolveRules($rules, $arguments)
     {
-        // Rules can be defined as closures
+        // Rules can be defined as closures that are passed the resolution arguments
         if (is_callable($rules)) {
             return call_user_func_array($rules, $arguments);
         }
@@ -304,14 +314,21 @@ abstract class Field extends Fluent
     }
 
     /**
-     * Can be overwritten to define rules.
+     * @param $args
+     * @param $rules
+     * @param array $messages
      *
-     * @deprecated Will be removed in favour of defining rules together with the args.
-     * @return array
+     * @return Validator
      */
-    protected function rules()
+    protected function getValidator($args, $rules, $messages = [])
     {
-        return [];
+        /** @var Validator $validator */
+        $validator = app('validator')->make($args, $rules, $messages);
+        if (method_exists($this, 'withValidator')) {
+            $this->withValidator($validator, $args);
+        }
+
+        return $validator;
     }
 
     /**

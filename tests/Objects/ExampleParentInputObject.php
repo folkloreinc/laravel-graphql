@@ -31,8 +31,8 @@ class ExampleParentInputObject extends BaseType
                 'type' => GraphQL::type('ExampleChildInputObject'),
             ],
 
-            'child-list' => [
-                'name' => 'child-list',
+            'child_list' => [
+                'name' => 'child_list',
                 'type' => Type::listOf(GraphQL::type('ExampleChildInputObject')),
             ],
 

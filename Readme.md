@@ -429,12 +429,12 @@ reflected through the schema and are validated by the underlying GraphQL impleme
 
 #### Rule definition
 
-You can add validation rules directly to the arguments of Mutations or Queries:
+##### Inline Array
 
+The preferred way to add rules is to inline them with the arguments of Mutations or Queries.
 
 ```php
 //...
-
 class UpdateUserEmailMutation extends Mutation
 {
     //...
@@ -442,37 +442,82 @@ class UpdateUserEmailMutation extends Mutation
     public function args()
         {
             return [
-                'id' => [
-                    'name' => 'id',
-                    'type' => Type::nonNull(Type::string()),
-                    // Adding a rule for 'required' is not necessary
-                ],
                 'email' => [
                     'name' => 'email',
-                    'type' => Type::nonNull(Type::string()),
-                    'rules' => ['email']
-                ],
-                'links' => [
-                    'name' => 'links',
-                    'type' => Type::listOf(Type::string()),
-                    // Validation is applied to each element of the list 
-                    'rules' => ['url']
-                ],
-                'name' => [
-                    'name' => 'name',
-                    'type' => GraphQL::type('NameInputObject')
+                    'type' => Type::string(),
+                    'rules' => [
+                        'email',
+                        'exists:users,email'
+                    ]
                 ],
             ];
         }
-
-    //...
 }
 ```
 
+##### Inline Closure
+
+Rules may also be defined as closures. They are called before the resolve function of the field is called
+and receive the same arguments.
+
+````php
+'phone' => [
+    'name' => 'phone',
+    'type' => Type::nonNull(Type::string()),
+    'rules' => function ($root, $args, $context, \GraphQL\Type\Definition\ResolveInfo $resolveInfo){
+        return [];
+    }
+],
+````
+
+##### Rule Overwrites
+
+You can overwrite inline rules of fields or nested Input Objects by defining them like this:
+
+````php
+public function rules()
+{
+    return [
+        'email' => ['email', 'min:10'],
+        'nested.value' => ['alpha_num'],
+    ];
+}
+````
+
+Be aware that those rules are always applied, even if the argument is not given. You may want to prefix
+them with `sometimes` if the rule is optional.
+
+#### Required Arguments
+
+GraphQL has a built-in way of defining arguments as required, simply wrap them in a `Type::nonNull()`.
+
+````php
+'id' => [
+    'name' => 'id',
+    'type' => Type::nonNull(Type::string()),
+],
+````
+
+The presence of such arguments is checked before the arguments even reach the resolver, so there is
+no need to validate them through an additional rule, so you will not ever need `required`.
+Defining required arguments through the Non-Null type is preferable because it shows up in the schema definition. 
+
+Because GraphQL arguments are optional by default, the validation rules for them will only be applied if they are present.
+If you need more sophisticated validation of fields, using additional rules like `required_with` is fine.
+
 #### Input Object Rules
 
-Notice how the argument `name` has the type `NameInputObject`? The rules defined in Input Objects are also considered when
-validating the Mutation! The definition of those rules looks like this:
+You may use Input Objects as arguments like this:
+
+````php
+'name' => [
+    'name' => 'name',
+    'type' => GraphQL::type('NameInputObject')
+],
+````
+
+Rules defined in the Input Object are automatically added to the validation, even if nested Input Objects are used.
+The definition of those rules looks like this:
 
 ````php
 <?php
@@ -506,12 +551,46 @@ class NameInputObject extends BaseType
 }
 ```` 
 
-Now, the rules in here ensure that if a name is passed to the above Mutation, it must contain at least a
+Now, the rules in here ensure that if a name is passed to base field, it must contain at least a
 last name, and the first and last name can only contain alphabetic characters.
+
+#### Array Validation
+
+GraphQL allows arguments to be defined as lists by wrapping them in `Type::listOf()`.
+In most cases it is desirable to apply validation rules to the underlying elements of the array.
+If a type is wrapped as a list, the inline rules are automatically applied to the underlying
+elements.
+
+````php
+'links' => [
+    'name' => 'links',
+    'type' => Type::listOf(Type::string()), 
+    'rules' => ['url', 'distinct'],
+],
+````
+
+If validation on the array itself is required, you can do so by defining those rules seperately:
+
+````php
+public function rules()
+{
+    return [
+        'links' => ['max:10']
+    ];
+}
+```` 
+
+This ensures that `links` is an array of at most 10, distinct urls.
 
 #### Response format
 
-When you execute a mutation, it will return the validation errors. Since the GraphQL specification defines a certain format for errors, the validation error messages are added to the error object as an extra `validation` attribute. To find the validation error, you should check for the error with a `message` equals to `'validation'`, then the `validation` attribute will contain the normal errors messages returned by the Laravel Validator.
+When you execute a field with arguments, it will return the validation errors.
+Since the GraphQL specification defines a certain format for errors, the validation error messages
+are added to the error object as an extra `validation` attribute.
+
+To find the validation error, you should check for the error with a `message`
+equals to `'validation'`, then the `validation` attribute will contain the normal
+errors messages returned by the Laravel Validator.
 
 ```json
 {
@@ -536,19 +615,3 @@ When you execute a mutation, it will return the validation errors. Since the Gra
   ]
 }
 ```
-
-#### Validation depth
-
-Laravel validation works by statically generating validation rules and then applying
-them to arguments all at once. However, field arguments may consist of Input Objects, which
-could have circular references. Because of this, the maximum depth for validation has to be
-set before. The default depth is set to `10`, it can be overwritten this way:
-
-````php
-class ExampleMutation extends Mutation
-{
-    protected $validationDepth = 15;
-    
-    //...
-}
-````
