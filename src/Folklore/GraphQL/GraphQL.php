@@ -199,7 +199,6 @@ class GraphQL
 
     public function mergeSchemas($name, $schema)
     {
-        //d($name, $schema);
         if (isset($this->schemas[$name]) && $this->schemas[$name]) {
             $this->schemas[$name] = array_merge_recursive($this->schemas[$name], $schema);
         }
