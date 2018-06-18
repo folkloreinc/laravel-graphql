@@ -301,7 +301,7 @@ class UserType extends GraphQLType {
 
 ### Eager loading relationships
 
-The third argument passed to a query's resolve method is an instance of `GraphQL\Type\Definition\ResolveInfo` which you can use to retrieve keys from the request. The following is an example of using this information to eager load related Eloquent models.
+The fourth argument passed to a query's resolve method is an instance of `GraphQL\Type\Definition\ResolveInfo` which you can use to retrieve keys from the request. The following is an example of using this information to eager load related Eloquent models.
 
 Your Query would look like
 
