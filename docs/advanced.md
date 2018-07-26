@@ -106,7 +106,7 @@ Register the Enum in the 'types' array of the graphql.php config file:
 
 ```php
 // config/graphql.php
-'types' => ['TestEnum' => TestEnumType::class ];
+'types' => ['TestEnum' => TestEnumType::class];
 ```
 
 Then use it like:
