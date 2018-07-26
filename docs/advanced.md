@@ -63,7 +63,7 @@ public function fields()
         ],
     ];
 }
-    
+
 public function resolvePostsField($root, $args)
 {
     if (isset($args['id'])) {
@@ -106,7 +106,7 @@ Register the Enum in the 'types' array of the graphql.php config file:
 
 ```php
 // config/graphql.php
-'types' => [TestEnum' => TestEnumType::class ];
+'types' => ['TestEnum' => TestEnumType::class ];
 ```
 
 Then use it like:
@@ -144,7 +144,7 @@ class CharacterInterface extends InterfaceType {
             'name' => 'Character',
             'description' => 'Character interface.',
         ];
-    
+
         public function fields() {
             return [
                 'id' => [
@@ -157,7 +157,7 @@ class CharacterInterface extends InterfaceType {
                 ],
             ];
         }
-    
+
         public function resolveType($root) {
             // Use the resolveType to resolve the Type which is implemented trough this interface
             $type = $root['type'];
