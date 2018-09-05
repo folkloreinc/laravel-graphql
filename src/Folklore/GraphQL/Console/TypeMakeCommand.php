@@ -77,7 +77,7 @@ class TypeMakeCommand extends GeneratorCommand
     {
         preg_match('/([^\\\]+)$/', $name, $matches);
 
-        $search = ['DummyType', 'DummyInputObject'];
+        $search  = ['DummyType', 'DummyInputObject'];
         $replace = [$matches[1]];
 
         $this->addInputObjectAttribute($replace);
@@ -94,7 +94,7 @@ class TypeMakeCommand extends GeneratorCommand
      *
      * @param array $replace
      */
-    protected function addInputObjectAttribute(array &$replace): void
+    protected function addInputObjectAttribute(array &$replace)
     {
         if ($this->option('object')) {
             array_push($replace, 'protected $inputObject = true;');
