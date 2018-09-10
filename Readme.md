@@ -291,8 +291,14 @@ class UsersQuery extends Query
     public function args()
     {
         return [
-            'id' => ['name' => 'id', 'type' => Type::string()],
-            'email' => ['name' => 'email', 'type' => Type::string()]
+            'id' => [
+                'name' => 'id',
+                'type' => Type::string()
+            ],
+            'email' => [
+                'name' => 'email',
+                'type' => Type::string()
+            ]
         ];
     }
 
@@ -308,6 +314,32 @@ class UsersQuery extends Query
     }
 }
 ```
+
+If any part of the query has a default value, you can define this in the `args()` function by including `defaultValue` as an array key in one of the arguments, and setting the value to the default value.
+For example, if you had an optional argument in your query to `include_deleted_users` and the default value should be `false`, then you could edit the `args()` function as shown below:
+
+```
+public function args()
+{
+    return [
+        'id' => [
+            'name' => 'id',
+            'type' => Type::string()
+        ],
+        'email' => [
+            'name' => 'email',
+            'type' => Type::string()
+        ],
+        'include_deleted_users' => [
+            'name' => 'include_deleted_users',
+            'type' => Type::boolean(),
+            'defaultValue' => false
+        ]
+    ];
+}
+```
+
+You can also include descriptions for query fields by adding a `description` array key - this will be shown in the schema, and picked up by tools like GraphiQL.
 
 Add the query to the `config/graphql.php` configuration file
 

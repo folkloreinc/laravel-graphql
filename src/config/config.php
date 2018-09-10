@@ -91,6 +91,12 @@ return [
     ],
 
     /*
+     * Whether or not to fire the 'TypeAdded' event.
+     * You can set this to false if you don't use it in your application.
+     */
+    'fire_type_added_events' => true,
+
+    /*
      * The name of the default schema used when no arguments are provided
      * to GraphQL::schema() or when the route is used without the graphql_schema
      * parameter

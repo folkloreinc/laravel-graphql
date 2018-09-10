@@ -27,9 +27,12 @@ class GraphQL
     protected $types = [];
     protected $typesInstances = [];
 
+    private $fireEvents = true;
+
     public function __construct($app)
     {
         $this->app = $app;
+        $this->fireTypeAddedEvent = config('graphql.fire_type_added_events', true);
     }
 
     public function schema($schema = null)
@@ -187,13 +190,14 @@ class GraphQL
         $name = $this->getTypeName($class, $name);
         $this->types[$name] = $class;
 
-        event(new TypeAdded($class, $name));
+        if ($this->fireTypeAddedEvent === true) {
+            event(new TypeAdded($class, $name));
+        }
     }
 
     public function addSchema($name, $schema)
     {
         $this->schemas[$name] = $schema;
-
         event(new SchemaAdded($schema, $name));
     }
 
