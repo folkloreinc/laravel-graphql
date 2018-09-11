@@ -3,7 +3,6 @@
 namespace Folklore\GraphQL\Console;
 
 use Illuminate\Console\GeneratorCommand;
-use Symfony\Component\Console\Input\InputOption;
 
 class TypeMakeCommand extends GeneratorCommand
 {
@@ -12,7 +11,9 @@ class TypeMakeCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'make:graphql:type {name}';
+    protected $signature = 'make:graphql:type 
+                            {name : The name of the type class}
+                            {--O|object : Create a new input object type}';
 
     /**
      * The console command description.
@@ -41,7 +42,8 @@ class TypeMakeCommand extends GeneratorCommand
     /**
      * Get the default namespace for the class.
      *
-     * @param  string  $rootNamespace
+     * @param string $rootNamespace
+     *
      * @return string
      */
     protected function getDefaultNamespace($rootNamespace)
@@ -52,7 +54,8 @@ class TypeMakeCommand extends GeneratorCommand
     /**
      * Build the class with the given name.
      *
-     * @param  string  $name
+     * @param string $name
+     *
      * @return string
      */
     protected function buildClass($name)
@@ -65,19 +68,37 @@ class TypeMakeCommand extends GeneratorCommand
     /**
      * Replace the namespace for the given stub.
      *
-     * @param  string  $stub
-     * @param  string  $name
+     * @param string $stub
+     * @param string $name
+     *
      * @return $this
      */
     protected function replaceType($stub, $name)
     {
         preg_match('/([^\\\]+)$/', $name, $matches);
-        $stub = str_replace(
-            'DummyType',
-            $matches[1],
+
+        $replace = [$matches[1]];
+
+        $this->addInputObjectAttribute($replace);
+
+        return str_replace(
+            ['DummyType', 'DummyInputObject'],
+            $replace,
             $stub
         );
+    }
 
-        return $stub;
+    /**
+     * Add input object attribute to replace type.
+     *
+     * @param array $replace
+     */
+    protected function addInputObjectAttribute(array &$replace): void
+    {
+        if ($this->option('object')) {
+            array_push($replace, 'protected $inputObject = true;');
+        } else {
+            array_push($replace, '');
+        }
     }
 }
