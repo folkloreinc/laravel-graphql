@@ -73,7 +73,7 @@ class TypeMakeCommand extends GeneratorCommand
      *
      * @return $this
      */
-    protected function replaceType($stub, $name)
+    private function replaceType($stub, $name)
     {
         preg_match('/([^\\\]+)$/', $name, $matches);
 
@@ -94,7 +94,7 @@ class TypeMakeCommand extends GeneratorCommand
      *
      * @param array $replace
      */
-    protected function addInputObjectAttribute(array &$replace)
+    private function addInputObjectAttribute(array &$replace)
     {
         if ($this->option('object')) {
             array_push($replace, 'protected $inputObject = true;');
