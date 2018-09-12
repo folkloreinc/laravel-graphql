@@ -7,11 +7,15 @@ class TypeMakeCommandTest extends TestCase
 {
     protected $command;
 
-    protected $tmpPath = __DIR__.'/appTest/GraphQL/Type/';
+    protected $tmpPath;
 
     public function setUp()
     {
         parent::setUp();
+
+        $this->app->singleton('Illuminate\Contracts\Console\Kernel', TestKernel::class);
+
+        $this->tmpPath = __DIR__.'/appTest/GraphQL/Type/';
 
         $this->command = m::mock(
             'Folklore\GraphQL\Console\TypeMakeCommand[error,getPath,rootNamespace]',
@@ -78,5 +82,13 @@ class TypeMakeCommandTest extends TestCase
     private function mockGetPath($name)
     {
         $this->command->shouldReceive('getPath')->andReturn($this->tmpPath.$name.'.php');
+    }
+}
+
+class TestKernel extends \Illuminate\Foundation\Console\Kernel
+{
+    public function registerCommand($command)
+    {
+        $this->getArtisan()->add($command);
     }
 }
