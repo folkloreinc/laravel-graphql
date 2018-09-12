@@ -1,6 +1,5 @@
 <?php
 
-use GraphQL\Type\Definition\InputObjectType;
 use Mockery as m;
 
 class TypeMakeCommandTest extends TestCase
@@ -42,7 +41,7 @@ class TypeMakeCommandTest extends TestCase
 
         $this->artisan('make:graphql:type', ['name'=>'TestNormalType']);
 
-        $this->assertTrue(true);
+        $this->assertFileExists($this->tmpPath.'TestNormalType.php');
     }
 
     public function testItMakeAInputObjectTypeWithObjectOption()
@@ -53,11 +52,7 @@ class TypeMakeCommandTest extends TestCase
 
         $this->artisan('make:graphql:type', ['name' => 'TestObjectInputType', '-O' => true]);
 
-        include $this->tmpPath.'TestObjectInputType.php';
-
-        $inputType  =  new \AppTest\GraphQL\Type\TestObjectInputType();
-
-        $this->assertInstanceOf(InputObjectType::class, $inputType->toType());
+        $this->assertFileExists($this->tmpPath.'TestObjectInputType.php');
     }
 
     public function testItErrorsIfTypeAlradyExists()
@@ -71,7 +66,7 @@ class TypeMakeCommandTest extends TestCase
         $this->artisan('make:graphql:type', ['name'=>'TestExistsType']);
         $this->artisan('make:graphql:type', ['name'=>'TestExistsType']);
 
-        $this->assertTrue(true);
+        $this->assertFileExists($this->tmpPath.'TestExistsType.php');
     }
 
     private function registerCommand()
