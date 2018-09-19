@@ -19,7 +19,7 @@ class GraphQLController extends Controller
          * @see https://laravel.com/api/5.5/Illuminate/Http/Request.html#method_route
          */
         
-        $prefix = config('graphql.prefix');
+        $prefix = str_replace('/','_',config('graphql.prefix'));
         
         $routeName = is_object($route)
             ? $route->getName()
