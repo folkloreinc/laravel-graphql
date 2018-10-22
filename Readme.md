@@ -324,7 +324,7 @@ Add the query to the `config/graphql.php` configuration file
 
 And that's it. You should be able to query GraphQL with a request to the url `/graphql` (or anything you choose in your config). Try a GET request with the following `query` input
 
-```
+```javascript
 query FetchUsers {
   users {
     id
@@ -404,7 +404,7 @@ You then add the mutation to the `config/graphql.php` configuration file
 
 You should then be able to use the following query on your endpoint to do the mutation.
 
-```
+```javascript
 mutation users {
   updateUserPassword(id: "1", password: "newpassword") {
     id
