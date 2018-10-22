@@ -11,7 +11,7 @@
 
 GraphQL offer you the possibility to use variables in your query so you don't need to "hardcode" value. This is done like that:
 
-```
+```javascript
 query FetchUserByID($id: String) {
     user(id: $id) {
         id
@@ -30,7 +30,7 @@ http://homestead.app/graphql?query=query+FetchUserByID($id:String){user(id:$id){
 
 If you want to query nested resource like that :
 
-```
+```javascript
 query FetchUser{
     user(id: 123456789) {
         id
@@ -43,7 +43,7 @@ query FetchUser{
 
 you need to add post field and implement resolveField method in UserType:
 
-```
+```php
 public function fields()
 {
     return [
