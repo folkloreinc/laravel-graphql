@@ -24,7 +24,7 @@ class Relay
 
     public function connectionFieldFromEdgeType($edgeType, $config = [])
     {
-        $typeName = array_get($edgeType->config, 'name');
+        $typeName = $edgeType->name ? $edgeType->name : get_class($edgeType);
         $connectionName = array_get($config, 'connectionTypeName', str_plural($typeName).'Connection');
 
         $connectionType = new ConnectionType([
