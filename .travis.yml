@@ -7,62 +7,62 @@ cache:
     - ${TRAVIS_BUILD_DIR}/travis/extension-cache
 
 php:
-    - 7.1
-    - 7.2
-    - 7.3
+  - 7.1
+  - 7.2
+  - 7.3
 
 env:
-    - ILLUMINATE_VERSION=5.1.* PHPUNIT_VERSION=~4.0
-    - ILLUMINATE_VERSION=5.2.* PHPUNIT_VERSION=~4.0
-    - ILLUMINATE_VERSION=5.3.* PHPUNIT_VERSION=~5.0
-    - ILLUMINATE_VERSION=5.4.* PHPUNIT_VERSION=~5.7
-    - ILLUMINATE_VERSION=5.5.* PHPUNIT_VERSION=~6.0
-    - ILLUMINATE_VERSION=5.5.* PHPUNIT_VERSION=~6.0 COVERAGE=true
-    - ILLUMINATE_VERSION=5.6.* PHPUNIT_VERSION=~7.0
+  - ILLUMINATE_VERSION=5.1.* PHPUNIT_VERSION=~4.0
+  - ILLUMINATE_VERSION=5.2.* PHPUNIT_VERSION=~4.0
+  - ILLUMINATE_VERSION=5.3.* PHPUNIT_VERSION=~5.0
+  - ILLUMINATE_VERSION=5.4.* PHPUNIT_VERSION=~5.7
+  - ILLUMINATE_VERSION=5.5.* PHPUNIT_VERSION=~6.0
+  - ILLUMINATE_VERSION=5.5.* PHPUNIT_VERSION=~6.0 COVERAGE=true
+  - ILLUMINATE_VERSION=5.6.* PHPUNIT_VERSION=~7.0
 
 matrix:
-    # For each PHP version we exclude the coverage env, except for PHP 7.1
-    exclude:
-        # Test only Laravel 5.1 and 5.2 on PHP 5.5
-        - php: 5.5
-          env: ILLUMINATE_VERSION=5.3.* PHPUNIT_VERSION=~5.0
-        - php: 5.5
-          env: ILLUMINATE_VERSION=5.4.* PHPUNIT_VERSION=~5.7
-        - php: 5.5
-          env: ILLUMINATE_VERSION=5.5.* PHPUNIT_VERSION=~6.0
-        - php: 5.5
-          env: ILLUMINATE_VERSION=5.5.* PHPUNIT_VERSION=~6.0 COVERAGE=true
-        - php: 5.5
-          env: ILLUMINATE_VERSION=5.6.* PHPUNIT_VERSION=~7.0
-        # Don't test Laravel 5.5 on PHP 5.6
-        - php: 5.6
-          env: ILLUMINATE_VERSION=5.5.* PHPUNIT_VERSION=~6.0
-        - php: 5.6
-          env: ILLUMINATE_VERSION=5.5.* PHPUNIT_VERSION=~6.0 COVERAGE=true
-        - php: 5.6
-          env: ILLUMINATE_VERSION=5.6.* PHPUNIT_VERSION=~7.0
-        # Test everything on PHP 7.0
-        - php: 7.0
-          env: ILLUMINATE_VERSION=5.5.* PHPUNIT_VERSION=~6.0 COVERAGE=true
-        - php: 7.0
-          env: ILLUMINATE_VERSION=5.6.* PHPUNIT_VERSION=~7.0
-        # Test only Laravel 5.4 and 5.5 on PHP 7.1
-        - php: 7.1
-          env: ILLUMINATE_VERSION=5.1.* PHPUNIT_VERSION=~4.0
-        - php: 7.1
-          env: ILLUMINATE_VERSION=5.2.* PHPUNIT_VERSION=~4.0
-        - php: 7.1
-          env: ILLUMINATE_VERSION=5.3.* PHPUNIT_VERSION=~5.0
-        - php: 7.1
-          env: ILLUMINATE_VERSION=5.5.* PHPUNIT_VERSION=~6.0
+  # For each PHP version we exclude the coverage env, except for PHP 7.1
+  exclude:
+    # Test only Laravel 5.1 and 5.2 on PHP 5.5
+    - php: 5.5
+      env: ILLUMINATE_VERSION=5.3.* PHPUNIT_VERSION=~5.0
+    - php: 5.5
+      env: ILLUMINATE_VERSION=5.4.* PHPUNIT_VERSION=~5.7
+    - php: 5.5
+      env: ILLUMINATE_VERSION=5.5.* PHPUNIT_VERSION=~6.0
+    - php: 5.5
+      env: ILLUMINATE_VERSION=5.5.* PHPUNIT_VERSION=~6.0 COVERAGE=true
+    - php: 5.5
+      env: ILLUMINATE_VERSION=5.6.* PHPUNIT_VERSION=~7.0
+    # Don't test Laravel 5.5 on PHP 5.6
+    - php: 5.6
+      env: ILLUMINATE_VERSION=5.5.* PHPUNIT_VERSION=~6.0
+    - php: 5.6
+      env: ILLUMINATE_VERSION=5.5.* PHPUNIT_VERSION=~6.0 COVERAGE=true
+    - php: 5.6
+      env: ILLUMINATE_VERSION=5.6.* PHPUNIT_VERSION=~7.0
+    # Test everything on PHP 7.0
+    - php: 7.0
+      env: ILLUMINATE_VERSION=5.5.* PHPUNIT_VERSION=~6.0 COVERAGE=true
+    - php: 7.0
+      env: ILLUMINATE_VERSION=5.6.* PHPUNIT_VERSION=~7.0
+    # Test only Laravel 5.4 and 5.5 on PHP 7.1
+    - php: 7.1
+      env: ILLUMINATE_VERSION=5.1.* PHPUNIT_VERSION=~4.0
+    - php: 7.1
+      env: ILLUMINATE_VERSION=5.2.* PHPUNIT_VERSION=~4.0
+    - php: 7.1
+      env: ILLUMINATE_VERSION=5.3.* PHPUNIT_VERSION=~5.0
+    - php: 7.1
+      env: ILLUMINATE_VERSION=5.5.* PHPUNIT_VERSION=~6.0
 
 before_install:
-    - cp ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini ~/xdebug.ini
-    - phpenv config-rm xdebug.ini
-    - composer global require hirak/prestissimo --update-no-dev
-    - composer require "illuminate/support:${ILLUMINATE_VERSION}" --no-update --prefer-dist
-    - composer require "orchestra/testbench:${ILLUMINATE_VERSION/5\./3\.}" --no-update --prefer-dist
-    - composer require "phpunit/phpunit:${PHPUNIT_VERSION}" --no-update --prefer-dist
+  - cp ~/.phpenv/versions/${TRAVIS_PHP_VERSION}/etc/conf.d/xdebug.ini ~/xdebug.ini
+  - phpenv config-rm xdebug.ini
+  - composer global require hirak/prestissimo --update-no-dev
+  - composer require "illuminate/support:${ILLUMINATE_VERSION}" --no-update --prefer-dist
+  - composer require "orchestra/testbench:${ILLUMINATE_VERSION/5\./3\.}" --no-update --prefer-dist
+  - composer require "phpunit/phpunit:${PHPUNIT_VERSION}" --no-update --prefer-dist
 
 install: travis_retry composer install --no-interaction --prefer-dist
 
@@ -73,4 +73,4 @@ script: vendor/bin/phpunit
 after_success: sh -c "if [ ! -z ${COVERAGE+x} ]; then php vendor/bin/coveralls; fi"
 
 notifications:
-    email: false
+  email: false
