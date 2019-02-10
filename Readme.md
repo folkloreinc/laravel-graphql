@@ -1,5 +1,11 @@
 # Laravel GraphQL
 
+----
+
+## This package is no longuer maintained. Please use [rebing/graphql-laravel](https://github.com/rebing/graphql-laravel) or [other Laravel GraphQL packages](https://github.com/search?q=laravel+graphql&type=Repositories)
+
+----
+
 Use Facebook GraphQL with Laravel 5 or Lumen. It is based on the PHP implementation [here](https://github.com/webonyx/graphql-php). You can find more information about GraphQL in the [GraphQL Introduction](http://facebook.github.io/react/blog/2015/05/01/graphql-introduction.html) on the [React](http://facebook.github.io/react) blog or you can read the [GraphQL specifications](https://facebook.github.io/graphql/). This is a work in progress.
 
 This package is compatible with Eloquent model (or any other data source). See the example below.
