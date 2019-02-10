@@ -2,7 +2,7 @@
 
 ----
 
-## This package is no longuer maintained. Please use [rebing/graphql-laravel](https://github.com/rebing/graphql-laravel) or [other Laravel GraphQL packages](https://github.com/search?q=laravel+graphql&type=Repositories)
+### This package is no longuer maintained. Please use [rebing/graphql-laravel](https://github.com/rebing/graphql-laravel) or [other Laravel GraphQL packages](https://github.com/search?q=laravel+graphql&type=Repositories)
 
 ----
 
