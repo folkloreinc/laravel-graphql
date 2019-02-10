@@ -39,6 +39,9 @@
             "tests/"
         ]
     },
+    "suggest": {
+        "rebing/graphql-laravel": "folklore/graphql is no longuer maintained. Please use rebing/graphql-laravel"
+    },
     "extra": {
         "laravel": {
             "providers": [
