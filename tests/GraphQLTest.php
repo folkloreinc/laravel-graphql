@@ -77,14 +77,21 @@ class GraphQLTest extends TestCase
                 'updateExampleCustom' => UpdateExampleMutation::class
             ],
             'types' => [
-                CustomExampleType::class
+                CustomExampleType::class,
+                AnotherCustomExampleType::class
             ]
         ]);
-        
+
+        $graphql_types = GraphQL::getTypes();
+        $schema_types = $schema->getTypeMap();
+
         $this->assertGraphQLSchema($schema);
         $this->assertGraphQLSchemaHasQuery($schema, 'examplesCustom');
         $this->assertGraphQLSchemaHasMutation($schema, 'updateExampleCustom');
-        $this->assertArrayHasKey('CustomExample', $schema->getTypeMap());
+        $this->assertArrayHasKey('CustomExample', $schema_types);
+        $this->assertArrayHasKey('AnotherCustomExample', $schema_types);
+        $this->assertArrayHasKey('CustomExample', $graphql_types);
+        $this->assertArrayHasKey('AnotherCustomExample', $graphql_types);
     }
     
     /**

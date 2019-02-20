@@ -67,7 +67,7 @@ class GraphQL
                 $this->typesInstances[$name] = $objectType;
                 $types[] = $objectType;
                 
-                $this->addType($type, $name);
+                $this->addType($type, is_numeric($name) ? null : $name);
             }
         } else {
             foreach ($this->types as $name => $type) {
