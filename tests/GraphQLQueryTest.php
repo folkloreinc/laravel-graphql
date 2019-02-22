@@ -115,6 +115,18 @@ class GraphQLQueryTest extends TestCase
     }
 
     /**
+     * Test query with custom authorize msg
+     *
+     * @test
+     */
+    public function testQueryAndReturnResultWithCustomAuthorize()
+    {
+        $result = GraphQL::query($this->queries['examplesWithCustomAuthorize']);
+        $this->assertNull($result['data']['examplesCustomAuthorize']);
+        $this->assertEquals('custom', $result['errors'][0]['message']);
+    }
+
+    /**
      * Test query with authorize
      *
      * @test
@@ -124,6 +136,18 @@ class GraphQLQueryTest extends TestCase
         $result = GraphQL::query($this->queries['examplesWithAuthenticated']);
         $this->assertNull($result['data']['examplesAuthenticated']);
         $this->assertEquals('Unauthenticated', $result['errors'][0]['message']);
+    }
+
+    /**
+     * Test query with authorize
+     *
+     * @test
+     */
+    public function testQueryAndReturnResultWithCustomAuthenticated()
+    {
+        $result = GraphQL::query($this->queries['examplesWithCustomAuthenticated']);
+        $this->assertNull($result['data']['examplesCustomAuthenticated']);
+        $this->assertEquals('custom', $result['errors'][0]['message']);
     }
 
     /**

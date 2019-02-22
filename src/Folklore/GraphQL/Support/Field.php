@@ -7,7 +7,6 @@ use Folklore\GraphQL\Error\AuthorizationError;
 
 class Field extends Fluent
 {
-
     /**
      * Override this in your queries or mutations
      * to provide custom authorization
@@ -24,6 +23,26 @@ class Field extends Fluent
     public function authenticated($root, $args, $context)
     {
         return true;
+    }
+
+    /**
+     * Message of unauthorized error
+     *
+     * @return string
+     */
+    protected function unauthorized()
+    {
+        return 'Unauthorized';
+    }
+
+    /**
+     * Message of unauthenticated error
+     *
+     * @return string
+     */
+    protected function unauthenticated()
+    {
+        return 'Unauthenticated';
     }
 
     public function attributes()
@@ -56,12 +75,12 @@ class Field extends Fluent
 
             // Authenticated
             if (call_user_func_array($authenticate, $args) !== true) {
-                throw new AuthorizationError('Unauthenticated');
+                throw new AuthorizationError($this->unauthenticated());
             }
 
             // Authorize
             if (call_user_func_array($authorize, $args) !== true) {
-                throw new AuthorizationError('Unauthorized');
+                throw new AuthorizationError($this->unauthorized());
             }
 
             return call_user_func_array($resolver, $args);

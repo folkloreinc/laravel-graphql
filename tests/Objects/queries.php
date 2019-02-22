@@ -49,9 +49,25 @@ return [
         }
     ",
 
+    'examplesWithCustomAuthorize' =>  "
+        query QueryExamplesCustomAuthorize {
+            examplesCustomAuthorize {
+                test
+            }
+        }
+    ",
+
     'examplesWithAuthenticated' =>  "
         query QueryExamplesAuthenticated {
             examplesAuthenticated {
+                test
+            }
+        }
+    ",
+
+    'examplesWithCustomAuthenticated' =>  "
+        query QueryExamplesCustomAuthenticated {
+            examplesCustomAuthenticated {
                 test
             }
         }
