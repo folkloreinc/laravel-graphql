@@ -192,9 +192,19 @@ class GraphQL
 
     public function addSchema($name, $schema)
     {
-        $this->schemas[$name] = $schema;
+        $this->mergeSchemas($name, $schema);
 
         event(new SchemaAdded($schema, $name));
+    }
+
+    public function mergeSchemas($name, $schema)
+    {
+        if (isset($this->schemas[$name]) && $this->schemas[$name]) {
+            $this->schemas[$name] = array_merge_recursive($this->schemas[$name], $schema);
+        }
+        else {
+                $this->schemas[$name] = $schema;
+            }
     }
 
     public function clearType($name)
