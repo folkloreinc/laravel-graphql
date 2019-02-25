@@ -1,8 +1,6 @@
 <?php
 
-use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
-use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Validator\DocumentValidator;
 
 class ConfigTest extends TestCase
@@ -30,7 +28,7 @@ class ConfigTest extends TestCase
                         'examplesRoot' => ExamplesRootQuery::class
                     ],
                     'mutation' => [
-                        'updateExample' => UpdateExampleMutation::class
+                        'exampleMutation' => ExampleMutation::class
                     ]
                 ],
                 'custom' => [
@@ -38,7 +36,7 @@ class ConfigTest extends TestCase
                         'examplesCustom' => ExamplesQuery::class
                     ],
                     'mutation' => [
-                        'updateExampleCustom' => UpdateExampleMutation::class
+                        'exampleMutationCustom' => ExampleMutation::class
                     ]
                 ],
                 'shorthand' => BuildSchema::build('
@@ -62,7 +60,9 @@ class ConfigTest extends TestCase
 
             'types' => [
                 'Example' => ExampleType::class,
-                CustomExampleType::class
+                CustomExampleType::class,
+                'ExampleParentInputObject' => ExampleParentInputObject::class,
+                'ExampleChildInputObject' => ExampleChildInputObject::class,
             ],
 
             'security' => [
@@ -79,7 +79,7 @@ class ConfigTest extends TestCase
             'query' => $this->queries['examplesCustom']
         ]);
 
-        $this->assertEquals($response->getStatusCode(), 200);
+        $this->assertEquals(200, $response->getStatusCode());
 
         $content = $response->getData(true);
         $this->assertArrayHasKey('data', $content);
@@ -88,10 +88,13 @@ class ConfigTest extends TestCase
     public function testRouteMutation()
     {
         $response = $this->call('POST', '/graphql_test/mutation', [
-            'query' => $this->queries['updateExampleCustom']
+            'query' => $this->queries['exampleMutation'],
+            'params' => [
+                'required' => 'test'
+            ],
         ]);
 
-        $this->assertEquals($response->getStatusCode(), 200);
+        $this->assertEquals(200, $response->getStatusCode());
 
         $content = $response->getData(true);
         $this->assertArrayHasKey('data', $content);
@@ -130,7 +133,7 @@ class ConfigTest extends TestCase
             ]
         ]);
 
-        $this->assertEquals($response->getStatusCode(), 200);
+        $this->assertEquals(200, $response->getStatusCode());
 
         $content = $response->getData(true);
         $this->assertArrayHasKey('data', $content);
@@ -150,7 +153,7 @@ class ConfigTest extends TestCase
             ],
         ]);
 
-        $this->assertEquals($response->getStatusCode(), 200);
+        $this->assertEquals(200, $response->getStatusCode());
 
         $content = $response->getData(true);
         $this->assertArrayHasKey('data', $content);
@@ -181,6 +184,6 @@ class ConfigTest extends TestCase
             'graphql.error_formatter' => [$error, 'formatError']
         ]);
 
-        $result = GraphQL::query($this->queries['examplesWithError']);
+        GraphQL::query($this->queries['examplesWithError']);
     }
 }

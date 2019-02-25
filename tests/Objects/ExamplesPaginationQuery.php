@@ -1,7 +1,8 @@
 <?php
 
-use GraphQL\Type\Definition\Type;
 use Folklore\GraphQL\Support\Query;
+use GraphQL\Type\Definition\ResolveInfo;
+use GraphQL\Type\Definition\Type;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class ExamplesPaginationQuery extends Query
@@ -27,7 +28,7 @@ class ExamplesPaginationQuery extends Query
         ];
     }
 
-    public function resolve($root, $args)
+    public function resolve($root, $args, $context, ResolveInfo $info)
     {
         $data = include(__DIR__.'/data.php');
 

@@ -1,12 +1,12 @@
 <?php
 
-use GraphQL\Type\Schema;
+use Folklore\GraphQL\Error\ValidationError;
+use Folklore\GraphQL\Events\SchemaAdded;
+use Folklore\GraphQL\Events\TypeAdded;
+use GraphQL\Error\Error;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
-use GraphQL\Error\Error;
-use Folklore\GraphQL\Error\ValidationError;
-use Folklore\GraphQL\Events\TypeAdded;
-use Folklore\GraphQL\Events\SchemaAdded;
+use GraphQL\Type\Schema;
 
 class GraphQLTest extends TestCase
 {
@@ -21,7 +21,7 @@ class GraphQLTest extends TestCase
         
         $this->assertGraphQLSchema($schema);
         $this->assertGraphQLSchemaHasQuery($schema, 'examples');
-        $this->assertGraphQLSchemaHasMutation($schema, 'updateExample');
+        $this->assertGraphQLSchemaHasMutation($schema, 'exampleMutation');
         $this->assertArrayHasKey('Example', $schema->getTypeMap());
     }
     
@@ -58,7 +58,7 @@ class GraphQLTest extends TestCase
         
         $this->assertGraphQLSchema($schema);
         $this->assertGraphQLSchemaHasQuery($schema, 'examplesCustom');
-        $this->assertGraphQLSchemaHasMutation($schema, 'updateExampleCustom');
+        $this->assertGraphQLSchemaHasMutation($schema, 'exampleMutationCustom');
         $this->assertArrayHasKey('Example', $schema->getTypeMap());
     }
     
@@ -74,7 +74,7 @@ class GraphQLTest extends TestCase
                 'examplesCustom' => ExamplesQuery::class
             ],
             'mutation' => [
-                'updateExampleCustom' => UpdateExampleMutation::class
+                'updateExampleCustom' => ExampleMutation::class
             ],
             'types' => [
                 CustomExampleType::class
@@ -280,7 +280,7 @@ class GraphQLTest extends TestCase
                 'examplesCustom' => ExamplesQuery::class
             ],
             'mutation' => [
-                'updateExampleCustom' => UpdateExampleMutation::class
+                'updateExampleCustom' => ExampleMutation::class
             ],
             'types' => [
                 CustomExampleType::class

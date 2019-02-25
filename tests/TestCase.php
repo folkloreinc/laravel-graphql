@@ -30,7 +30,7 @@ class TestCase extends BaseTestCase
                 'examplesPagination' => ExamplesPaginationQuery::class,
             ],
             'mutation' => [
-                'updateExample' => UpdateExampleMutation::class
+                'exampleMutation' => ExampleMutation::class
             ]
         ]);
 
@@ -39,12 +39,14 @@ class TestCase extends BaseTestCase
                 'examplesCustom' => ExamplesQuery::class,
             ],
             'mutation' => [
-                'updateExampleCustom' => UpdateExampleMutation::class
+                'exampleMutationCustom' => ExampleMutation::class
             ]
         ]);
 
         $app['config']->set('graphql.types', [
-            'Example' => ExampleType::class
+            'Example' => ExampleType::class,
+            'ExampleParentInputObject' => ExampleParentInputObject::class,
+            'ExampleChildInputObject' => ExampleChildInputObject::class,
         ]);
     }
 

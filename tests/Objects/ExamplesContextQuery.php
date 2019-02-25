@@ -1,7 +1,7 @@
 <?php
 
-use GraphQL\Type\Definition\Type;
 use Folklore\GraphQL\Support\Query;
+use GraphQL\Type\Definition\ResolveInfo;
 
 class ExamplesContextQuery extends Query
 {
@@ -15,7 +15,7 @@ class ExamplesContextQuery extends Query
         return GraphQL::type('Example');
     }
 
-    public function resolve($root, $args, $context)
+    public function resolve($root, $args, $context, ResolveInfo $info)
     {
         return $context;
     }

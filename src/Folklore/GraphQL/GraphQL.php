@@ -1,23 +1,17 @@
 <?php namespace Folklore\GraphQL;
 
-use Folklore\GraphQL\Support\Contracts\TypeConvertible;
-use GraphQL\GraphQL as GraphQLBase;
-use GraphQL\Type\Schema;
-use GraphQL\Error\Error;
-
-use GraphQL\Type\Definition\ObjectType;
-
 use Folklore\GraphQL\Error\ValidationError;
-use Folklore\GraphQL\Error\AuthorizationError;
-
-use Folklore\GraphQL\Exception\TypeNotFound;
-use Folklore\GraphQL\Exception\SchemaNotFound;
-
 use Folklore\GraphQL\Events\SchemaAdded;
 use Folklore\GraphQL\Events\TypeAdded;
-
-use Folklore\GraphQL\Support\PaginationType;
+use Folklore\GraphQL\Exception\SchemaNotFound;
+use Folklore\GraphQL\Exception\TypeNotFound;
+use Folklore\GraphQL\Support\Contracts\TypeConvertible;
 use Folklore\GraphQL\Support\PaginationCursorType;
+use Folklore\GraphQL\Support\PaginationType;
+use GraphQL\Error\Error;
+use GraphQL\GraphQL as GraphQLBase;
+use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Schema;
 
 class GraphQL
 {
@@ -162,7 +156,7 @@ class GraphQL
         $context = array_get($opts, 'context', null);
         $schemaName = array_get($opts, 'schema', null);
         $operationName = array_get($opts, 'operationName', null);
-        $defaultFieldResolver = config('graphql.defaultFieldResolver', null);
+        $defaultFieldResolver = config('graphql.defaultFieldResolver', [\GraphQL\Executor\Executor::class, 'defaultFieldResolver']);
 
         $additionalResolversSchemaName = is_string($schemaName) ? $schemaName : config('graphql.schema', 'default');
         $additionalResolvers = config('graphql.resolvers.' . $additionalResolversSchemaName, []);

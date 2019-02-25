@@ -133,7 +133,7 @@ config/graphql.php
 - [Schemas](#schemas)
 - [Creating a query](#creating-a-query)
 - [Creating a mutation](#creating-a-mutation)
-- [Adding validation to mutation](#adding-validation-to-mutation)
+- [Input Validation](#validation)
 
 #### Advanced Usage
 - [Query variables](docs/advanced.md#query-variables)
@@ -424,91 +424,179 @@ if you use homestead:
 http://homestead.app/graphql?query=mutation+users{updateUserPassword(id: "1", password: "newpassword"){id,email}}
 ```
 
-#### Adding validation to mutation
+### Validation
 
-It is possible to add validation rules to mutation. It uses the laravel `Validator` to performs validation against the `args`.
+It is possible to add additional validation rules to inputs, using the Laravel `Validator` to perform validation against the `args`.
+Validation is mostly used for Mutations, but can also be applied to Queries that take arguments.
 
-When creating a mutation, you can add a method to define the validation rules that apply by doing the following:
+Be aware that GraphQL has native types to define a field as either a List or as NonNull. Use those wrapping
+types instead of native Laravel validation via `array` or `required`. This way, those constraints are
+reflected through the schema and are validated by the underlying GraphQL implementation.
+
+#### Rule definition
+
+##### Inline Array
+
+The preferred way to add rules is to inline them with the arguments of Mutations or Queries.
 
 ```php
-namespace App\GraphQL\Mutation;
-
-use GraphQL;
-use GraphQL\Type\Definition\Type;
-use Folklore\GraphQL\Support\Mutation;
-use App\User;
-
+//...
 class UpdateUserEmailMutation extends Mutation
 {
-    protected $attributes = [
-        'name' => 'UpdateUserEmail'
-    ];
-
-    public function type()
-    {
-        return GraphQL::type('User');
-    }
+    //...
 
     public function args()
-    {
-        return [
-            'id' => ['name' => 'id', 'type' => Type::string()],
-            'email' => ['name' => 'email', 'type' => Type::string()]
-        ];
-    }
-
-    public function rules()
-    {
-        return [
-            'id' => ['required'],
-            'email' => ['required', 'email']
-        ];
-    }
-
-    public function resolve($root, $args)
-    {
-        $user = User::find($args['id']);
-
-        if (!$user) {
-            return null;
+        {
+            return [
+                'email' => [
+                    'name' => 'email',
+                    'type' => Type::string(),
+                    'rules' => [
+                        'email',
+                        'exists:users,email'
+                    ]
+                ],
+            ];
         }
-
-        $user->email = $args['email'];
-        $user->save();
-
-        return $user;
-    }
 }
 ```
 
-Alternatively you can define rules with each args
+##### Inline Closure
 
-```php
-class UpdateUserEmailMutation extends Mutation
+Rules may also be defined as closures. They are called before the resolve function of the field is called
+and receive the same arguments.
+
+````php
+'phone' => [
+    'name' => 'phone',
+    'type' => Type::nonNull(Type::string()),
+    'rules' => function ($root, $args, $context, \GraphQL\Type\Definition\ResolveInfo $resolveInfo){
+        return [];
+    }
+],
+````
+
+##### Rule Overwrites
+
+You can overwrite inline rules of fields or nested Input Objects by defining them like this:
+
+````php
+public function rules()
 {
-    //...
+    return [
+        'email' => ['email', 'min:10'],
+        'nested.value' => ['alpha_num'],
+    ];
+}
+````
 
-    public function args()
+Be aware that those rules are always applied, even if the argument is not given. You may want to prefix
+them with `sometimes` if the rule is optional.
+
+#### Required Arguments
+
+GraphQL has a built-in way of defining arguments as required, simply wrap them in a `Type::nonNull()`.
+
+````php
+'id' => [
+    'name' => 'id',
+    'type' => Type::nonNull(Type::string()),
+],
+````
+
+The presence of such arguments is checked before the arguments even reach the resolver, so there is
+no need to validate them through an additional rule, so you will not ever need `required`.
+Defining required arguments through the Non-Null type is preferable because it shows up in the schema definition. 
+
+Because GraphQL arguments are optional by default, the validation rules for them will only be applied if they are present.
+If you need more sophisticated validation of fields, using additional rules like `required_with` is fine.
+
+#### Input Object Rules
+
+You may use Input Objects as arguments like this:
+
+````php
+'name' => [
+    'name' => 'name',
+    'type' => GraphQL::type('NameInputObject')
+],
+````
+
+Rules defined in the Input Object are automatically added to the validation, even if nested Input Objects are used.
+The definition of those rules looks like this:
+
+````php
+<?php
+
+use GraphQL\Type\Definition\Type;
+use Folklore\GraphQL\Support\Type as BaseType;
+
+class NameInputObject extends BaseType
+{
+    protected $inputObject = true;
+
+    protected $attributes = [
+        'name' => 'NameInputObject'
+    ];
+    
+    public function fields()
     {
         return [
-            'id' => [
-                'name' => 'id',
+            'first' => [
+                'name' => 'first',
                 'type' => Type::string(),
-                'rules' => ['required']
+                'rules' => ['alpha']
             ],
-            'email' => [
-                'name' => 'email',
-                'type' => Type::string(),
-                'rules' => ['required', 'email']
-            ]
+            'last' => [
+                'name' => 'last',
+                'type' => Type::nonNull(Type::string()),
+                'rules' => ['alpha']
+            ],
         ];
     }
-
-    //...
 }
-```
+```` 
 
-When you execute a mutation, it will returns the validation errors. Since GraphQL specifications define a certain format for errors, the validation errors messages are added to the error object as a extra `validation` attribute. To find the validation error, you should check for the error with a `message` equals to `'validation'`, then the `validation` attribute will contain the normal errors messages returned by the Laravel Validator.
+Now, the rules in here ensure that if a name is passed to base field, it must contain at least a
+last name, and the first and last name can only contain alphabetic characters.
+
+#### Array Validation
+
+GraphQL allows arguments to be defined as lists by wrapping them in `Type::listOf()`.
+In most cases it is desirable to apply validation rules to the underlying elements of the array.
+If a type is wrapped as a list, the inline rules are automatically applied to the underlying
+elements.
+
+````php
+'links' => [
+    'name' => 'links',
+    'type' => Type::listOf(Type::string()), 
+    'rules' => ['url', 'distinct'],
+],
+````
+
+If validation on the array itself is required, you can do so by defining those rules seperately:
+
+````php
+public function rules()
+{
+    return [
+        'links' => ['max:10']
+    ];
+}
+```` 
+
+This ensures that `links` is an array of at most 10, distinct urls.
+
+#### Response format
+
+When you execute a field with arguments, it will return the validation errors.
+Since the GraphQL specification defines a certain format for errors, the validation error messages
+are added to the error object as an extra `validation` attribute.
+
+To find the validation error, you should check for the error with a `message`
+equals to `'validation'`, then the `validation` attribute will contain the normal
+errors messages returned by the Laravel Validator.
 
 ```json
 {

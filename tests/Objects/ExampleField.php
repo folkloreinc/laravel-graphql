@@ -1,7 +1,7 @@
 <?php
 
-use GraphQL\Type\Definition\Type;
 use Folklore\GraphQL\Support\Field;
+use GraphQL\Type\Definition\Type;
 
 class ExampleField extends Field
 {
@@ -22,10 +22,5 @@ class ExampleField extends Field
                 'type' => Type::int()
             ]
         ];
-    }
-
-    public function resolve($root, $args)
-    {
-        return ['test'];
     }
 }

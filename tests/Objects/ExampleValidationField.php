@@ -1,13 +1,10 @@
 <?php
 
-use GraphQL\Type\Definition\Type;
 use Folklore\GraphQL\Support\Field;
-use Folklore\GraphQL\Support\Traits\ShouldValidate;
+use GraphQL\Type\Definition\Type;
 
 class ExampleValidationField extends Field
 {
-    use ShouldValidate;
-    
     protected $attributes = [
         'name' => 'example_validation'
     ];
@@ -23,13 +20,8 @@ class ExampleValidationField extends Field
             'index' => [
                 'name' => 'index',
                 'type' => Type::int(),
-                'rules' => ['required']
+                'rules' => ['integer', 'max:100']
             ]
         ];
-    }
-
-    public function resolve($root, $args)
-    {
-        return ['test'];
     }
 }
