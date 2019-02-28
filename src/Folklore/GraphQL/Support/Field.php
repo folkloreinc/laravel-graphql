@@ -10,6 +10,15 @@ class Field extends Fluent
 
     /**
      * Override this in your queries or mutations
+     * to setup models for authorize, authenticated, resolve
+     */
+    public function setup($root, $args, $context)
+    {
+        return true;
+    }
+
+    /**
+     * Override this in your queries or mutations
      * to provide custom authorization
      */
     public function authorize($root, $args)
@@ -47,12 +56,16 @@ class Field extends Fluent
             return null;
         }
 
+        $setup = array($this, 'setup');
         $resolver = array($this, 'resolve');
         $authenticate = [$this, 'authenticated'];
         $authorize = [$this, 'authorize'];
 
-        return function () use ($resolver, $authorize, $authenticate) {
+        return function () use ($setup, $resolver, $authorize, $authenticate) {
             $args = func_get_args();
+
+            //Setup
+            call_user_func_array($setup, $args);
 
             // Authenticated
             if (call_user_func_array($authenticate, $args) !== true) {
