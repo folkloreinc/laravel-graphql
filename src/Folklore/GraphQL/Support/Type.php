@@ -92,8 +92,16 @@ class Type extends Fluent implements TypeConvertible
         $interfaces = $this->interfaces();
 
         $attributes = array_merge($this->attributes, [
-            'fields' => function () {
-                return $this->getFields();
+            'fields' => function () use ($interfaces) {
+                return array_merge(
+                    call_user_func_array("array_merge",
+                        array_map( function ($interface) {
+                            return $interface->getFields();
+                        }, 
+                        $interfaces
+                    )), 
+                    $this->getFields()
+                );
             }
         ], $attributes);
 
