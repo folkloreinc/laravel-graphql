@@ -166,7 +166,9 @@ class GraphQL
 
         $additionalResolversSchemaName = is_string($schemaName) ? $schemaName : config('graphql.schema', 'default');
         $additionalResolvers = config('graphql.resolvers.' . $additionalResolversSchemaName, []);
-        $root = is_array($additionalResolvers) ? array_merge(array_get($opts, 'root', []), $additionalResolvers) : $additionalResolvers;
+        $root = array_get($opts, 'root', []);
+        if (is_array($root))
+            $root = is_array($additionalResolvers) ? array_merge($root, $additionalResolvers) : $additionalResolvers;
 
         $schema = $this->schema($schemaName);
 
